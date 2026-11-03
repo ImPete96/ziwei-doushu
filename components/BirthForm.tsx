@@ -69,6 +69,8 @@ export default function BirthForm({ onSubmit, loading, initialData, onFormSave, 
 
   const [touched, setTouched] = useState<Record<string, boolean>>({});
   const [submitAttempted, setSubmitAttempted] = useState(false);
+  // Giới tính không chọn sẵn: chỉ coi là đã chọn khi dữ liệu cũ truyền vào có giới tính hoặc người dùng bấm
+  const [genderChosen, setGenderChosen] = useState(Boolean(initialData?.gender));
 
   // 表单状态变化时实时同步给父级（合盘等场景下父级靠这个收集双方数据）
   useEffect(() => {
@@ -118,6 +120,7 @@ export default function BirthForm({ onSubmit, loading, initialData, onFormSave, 
       : '',
     // Việt Nam trước 13/6/1975: múi giờ khác theo miền → phải biết nơi sinh (và khu vực, nếu tỉnh mới vắt qua sông Bến Hải)
     province: vnProvinceRequired(form) ? vnProvinceRequiredMessage(form) : '',
+    gender: genderChosen ? '' : 'Vui lòng chọn giới tính',
   };
   const hasError = Object.values(errors).some(Boolean);
 
@@ -126,7 +129,7 @@ export default function BirthForm({ onSubmit, loading, initialData, onFormSave, 
     !!form.year && !!form.month && !!form.day && !errors.year && !errors.month && !errors.day,
     isVN ? !!form.province : !!form.province && !!form.city,
     form.unknownTime || (!!form.clockHour && !!form.clockMinute),
-    true, // 性别有默认值
+    genderChosen,
   ];
   const completedSteps = steps.filter(Boolean).length;
 
@@ -137,7 +140,7 @@ export default function BirthForm({ onSubmit, loading, initialData, onFormSave, 
         `${d}/${m}/${y}`,
         viPlace(form.city || form.province),
         form.unknownTime ? 'Không rõ giờ sinh' : `giờ ${viBranch(branch)}`,
-        form.gender === 'male' ? 'Nam' : 'Nữ',
+        genderChosen ? (form.gender === 'male' ? 'Nam' : 'Nữ') : '',
       ].filter(Boolean).join(' · ')
     : '';
 
@@ -175,7 +178,10 @@ export default function BirthForm({ onSubmit, loading, initialData, onFormSave, 
     onFormSave?.({ ...form });
     // 统一走 lib/ziwei/share.ts 的转换：它负责晚子时换日（23:00–23:59 按次日排盘）。
     // 在这里手拼 BirthInfo 会绕过这条规则，使 /chart 与 /heming 对同一份输入排出相差一天的盘。
-    onSubmit(formToBirthInfo(form));
+    // Cờ «không rõ giờ» gắn ở đây chứ không trong formToBirthInfo: hàm đó phải giữ nguyên đầu ra
+    // (test đối chiếu từng trường với bản gốc), cờ chỉ dùng để trang lá số và AI nói rõ là giả định giờ Tý.
+    const info = formToBirthInfo(form);
+    onSubmit(form.unknownTime ? { ...info, unknownTime: true } : info);
   };
 
   // ─── 样式变量 ────────────────────────────────────────────
@@ -253,6 +259,43 @@ export default function BirthForm({ onSubmit, loading, initialData, onFormSave, 
             style={{ flex: 1, height: '2px', borderRadius: '2px' }}
           />
         ))}
+      </div>
+
+      {/* ── 性别：đặt đầu form, không chọn sẵn (chọn nhầm Nam/Nữ là sai chiều đại hạn) ── */}
+      <div style={{ marginBottom: '20px' }}>
+        <div aria-hidden style={{ display: 'block', fontSize: '13px', color: labelClr, marginBottom: '6px', letterSpacing: '0.05em' }}>Giới tính</div>
+        <div role="radiogroup" aria-label="Giới tính" style={{ display: 'flex', gap: '10px' }}>
+          {(['male', 'female'] as const).map(g => {
+            const active = genderChosen && form.gender === g;
+            const isMale = g === 'male';
+            const accent = isMale ? '37,99,235' : '225,29,72';
+            return (
+              <motion.button
+                key={g}
+                type="button"
+                role="radio"
+                aria-checked={active}
+                onClick={() => { setForm({ ...form, gender: g }); setGenderChosen(true); }}
+                whileTap={{ scale: 0.97 }}
+                style={{
+                  flex: 1,
+                  padding: '11px',
+                  borderRadius: '14px',
+                  fontSize: '13px',
+                  fontWeight: 500,
+                  border: `1px solid ${active ? `rgba(${accent},0.6)` : inputBorder}`,
+                  background: active ? `rgba(${accent},0.08)` : inputBg,
+                  color: active ? `rgba(${accent},0.9)` : (isDark ? 'rgba(190,205,225,0.7)' : 'rgba(100,80,40,0.4)'),
+                  transition: 'all 0.2s',
+                  cursor: 'pointer',
+                }}
+              >
+                {isMale ? '♂ Nam' : '♀ Nữ'}
+              </motion.button>
+            );
+          })}
+        </div>
+        <FieldError msg={submitAttempted ? errors.gender : ''} />
       </div>
 
       {/* ── 姓名 ── */}
@@ -503,44 +546,10 @@ export default function BirthForm({ onSubmit, loading, initialData, onFormSave, 
             onChange={e => setForm({ ...form, unknownTime: e.target.checked })}
             style={{ width: '14px', height: '14px', borderRadius: '4px', cursor: 'pointer' }}
           />
-          <span style={{ fontSize: '10px', color: isDark ? 'rgba(165,185,210,0.7)' : 'rgba(140,100,20,0.45)' }}>
-            Không biết giờ sinh, lập lá số theo giờ Tý (23:00–01:00)
+          <span style={{ fontSize: '13px', color: labelClr }}>
+            Không biết giờ sinh (lá số sẽ tạm lập theo giờ Tý, kết quả kém chính xác)
           </span>
         </label>
-      </div>
-
-      {/* ── 性别 ── */}
-      <div style={{ marginBottom: '20px' }}>
-        <label style={{ display: 'block', fontSize: '11px', color: labelClr, marginBottom: '6px', letterSpacing: '0.05em' }}>Giới tính</label>
-        <div style={{ display: 'flex', gap: '10px' }}>
-          {(['male', 'female'] as const).map(g => {
-            const active = form.gender === g;
-            const isMale = g === 'male';
-            const accent = isMale ? '37,99,235' : '225,29,72';
-            return (
-              <motion.button
-                key={g}
-                type="button"
-                onClick={() => setForm({ ...form, gender: g })}
-                whileTap={{ scale: 0.97 }}
-                style={{
-                  flex: 1,
-                  padding: '11px',
-                  borderRadius: '14px',
-                  fontSize: '13px',
-                  fontWeight: 500,
-                  border: `1px solid ${active ? `rgba(${accent},0.6)` : inputBorder}`,
-                  background: active ? `rgba(${accent},0.08)` : inputBg,
-                  color: active ? `rgba(${accent},0.9)` : (isDark ? 'rgba(190,205,225,0.7)' : 'rgba(100,80,40,0.4)'),
-                  transition: 'all 0.2s',
-                  cursor: 'pointer',
-                }}
-              >
-                {isMale ? '♂ Nam' : '♀ Nữ'}
-              </motion.button>
-            );
-          })}
-        </div>
       </div>
 
       {/* ── 确认信息 Summary Chip ── */}

@@ -70,6 +70,7 @@ function parseBirthInfo(raw: unknown): BirthInfo | null {
     country: b.country === 'VN' ? 'VN' : undefined,
     utcOffsetMinutes: int(b.utcOffsetMinutes),
     longitude: typeof b.longitude === 'number' && Number.isFinite(b.longitude) ? b.longitude : undefined,
+    unknownTime: b.unknownTime === true ? true : undefined,
   } as BirthInfo;
 }
 
@@ -79,27 +80,27 @@ function clientIp(req: Request): string {
     || 'local';
 }
 
+// Câu đầu viết cho người xem lá số; phần "(Quản trị: …)" là gợi ý ngắn cho người tự chạy máy chủ.
+// Chi tiết lỗi đầy đủ đã được console.error ghi vào log máy chủ.
+const NOT_READY = 'Chức năng luận giải AI tạm thời chưa sẵn sàng. Lá số vẫn xem được bình thường.';
+
 function errorText(err: unknown): string {
   if (err instanceof OllamaError) {
-    if (err.kind === 'connect') return 'Không kết nối được Ollama. Hãy mở ứng dụng Ollama trên máy rồi thử lại.';
-    if (err.kind === 'model') return `Ollama chưa có model ${OLLAMA_MODEL}. Chạy lệnh: ollama pull ${OLLAMA_MODEL}`;
-    return `Ollama báo lỗi: ${err.message}`;
+    if (err.kind === 'connect') return `${NOT_READY} (Quản trị: mở Ollama trên máy chủ.)`;
+    if (err.kind === 'model') return `${NOT_READY} (Quản trị: chạy ollama pull ${OLLAMA_MODEL}.)`;
+    return 'AI chưa trả lời được lúc này, vui lòng thử lại.';
   }
   if (err instanceof LmStudioError) {
-    if (err.kind === 'connect') return 'Không kết nối được LM Studio. Mở LM Studio rồi bật máy chủ (lệnh: lms server start).';
-    if (err.kind === 'config') return 'Chưa chọn model LM Studio: thêm LMSTUDIO_MODEL vào file .env.local (xem tên bằng lệnh lms ls).';
-    return `LM Studio báo lỗi: ${err.message}`;
+    if (err.kind === 'connect') return `${NOT_READY} (Quản trị: mở LM Studio và chạy lms server start.)`;
+    if (err.kind === 'config') return `${NOT_READY} (Quản trị: đặt LMSTUDIO_MODEL trong .env.local.)`;
+    return 'AI chưa trả lời được lúc này, vui lòng thử lại.';
   }
-  if (err instanceof Anthropic.AuthenticationError) {
-    return 'API key Anthropic không hợp lệ. Kiểm tra ANTHROPIC_API_KEY trong file .env.local rồi khởi động lại máy chủ.';
-  }
-  if (err instanceof Anthropic.RateLimitError) return 'Anthropic đang giới hạn lượt gọi, vui lòng thử lại sau ít phút.';
-  if (err instanceof Anthropic.APIConnectionError) return 'Không kết nối được tới Anthropic, vui lòng thử lại sau.';
-  if (err instanceof Anthropic.APIError) return `Anthropic báo lỗi ${err.status ?? ''}, vui lòng thử lại sau.`;
-  if (err instanceof Anthropic.AnthropicError) {
-    return 'Chưa cấu hình Anthropic: thêm ANTHROPIC_API_KEY vào file .env.local rồi khởi động lại máy chủ.';
-  }
-  return 'Luận giải thất bại, vui lòng thử lại sau.';
+  if (err instanceof Anthropic.AuthenticationError) return `${NOT_READY} (Quản trị: kiểm tra ANTHROPIC_API_KEY.)`;
+  if (err instanceof Anthropic.RateLimitError) return 'AI đang quá tải, vui lòng thử lại sau ít phút.';
+  if (err instanceof Anthropic.APIConnectionError) return 'Không kết nối được dịch vụ AI, vui lòng thử lại sau.';
+  if (err instanceof Anthropic.APIError) return 'AI chưa trả lời được lúc này, vui lòng thử lại sau.';
+  if (err instanceof Anthropic.AnthropicError) return `${NOT_READY} (Quản trị: đặt ANTHROPIC_API_KEY trong .env.local.)`;
+  return 'Luận giải chưa thành công, vui lòng thử lại.';
 }
 
 export async function POST(req: Request) {
@@ -125,13 +126,14 @@ export async function POST(req: Request) {
   const encoder = new TextEncoder();
   const stream = new ReadableStream<Uint8Array>({
     async start(controller) {
-      const send = (text: string) =>
-        controller.enqueue(encoder.encode(`data: ${JSON.stringify({ delta: { text } })}\n\n`));
+      // error: true → bảng luận giải hiện nút "Thử lại" cho tin này
+      const send = (text: string, error = false) =>
+        controller.enqueue(encoder.encode(`data: ${JSON.stringify({ delta: { text }, ...(error ? { error: true } : {}) })}\n\n`));
       try {
         if (!quota.ok) {
           send(quota.reason === 'ip'
-            ? 'Bạn đã dùng hết lượt luận giải trong giờ này, vui lòng quay lại sau.'
-            : 'Hôm nay đã hết lượt luận giải AI, vui lòng quay lại vào ngày mai.');
+            ? 'Bạn đã dùng hết lượt luận giải AI trong giờ này, vui lòng quay lại sau.'
+            : 'Hôm nay đã hết lượt luận giải AI, vui lòng quay lại vào ngày mai.', true);
           return;
         }
         if (PROVIDER !== 'anthropic') {
@@ -172,7 +174,7 @@ export async function POST(req: Request) {
       } catch (err) {
         if (req.signal.aborted) return;
         console.error('[api/interpret]', err);
-        send(errorText(err));
+        send(errorText(err), true);
       } finally {
         try {
           controller.enqueue(encoder.encode('data: [DONE]\n\n'));

@@ -4,7 +4,6 @@ import { useRouter } from 'next/navigation';
 import { motion, useScroll, useTransform, useInView, AnimatePresence } from 'framer-motion';
 import StarField from '@/components/StarField';
 import { useTheme, type Theme } from '@/components/ThemeProvider';
-import AnnouncementModal from '@/components/AnnouncementModal';
 
 // ─── 滚动入场 wrapper ────────────────────────────────────
 function FadeIn({
@@ -131,50 +130,6 @@ const FEATURES = [
       'Tự động đánh dấu trường hợp Tứ Hóa nhập cung Mệnh, cung Thiên Di, nhắc những chủ đề đời người cần lưu tâm',
       'Cách cục được xếp theo mức cát hung, giúp bạn thấy ngay ưu thế và thử thách trong lá số',
     ],
-  },
-];
-
-// ─── 4 大学习板块（hero 后时间轴）──────────────────────────
-const SECTIONS = [
-  {
-    key: 'ziwei',
-    name: 'Tử Vi',
-    en: 'Zi Wei',
-    desc: '14 chính tinh · 13 cung vị · Luận giải AI',
-    status: 'ready' as const,
-    when: 'Tháng 5',
-    icon: '◉',  // 实心圆+内点，紫微星视觉
-    note: '',
-  },
-  {
-    key: 'tianji',
-    name: 'Thiên Kỷ',
-    en: 'Tian Ji',
-    desc: 'Tử Vi · Chu Dịch · Kỳ Môn Độn Giáp',
-    status: 'soon' as const,
-    when: 'Tháng 6',
-    icon: '⊙',  // 圆+内点（古文"日"），与 ◉ 同字宽
-    note: '',
-  },
-  {
-    key: 'diji',
-    name: 'Địa Kỷ',
-    en: 'Di Ji',
-    desc: 'Di nguyện dang dở của Nghê sư · Hậu học chú giải',
-    status: 'soon' as const,
-    when: 'Tháng 6',
-    icon: '⊞',  // 方+井（地/田视觉），与 ⊙ 同字宽
-    note: 'Nghiên cứu di cảo',
-  },
-  {
-    key: 'renji',
-    name: 'Nhân Kỷ',
-    en: 'Ren Ji',
-    desc: 'Nội Kinh · Thương Hàn · Kim Quỹ · Châm cứu',
-    status: 'soon' as const,
-    when: 'Tháng 7',
-    icon: '⊕',  // 圆+十字（医道/阴阳调和），与 ⊙/⊞ 同字宽
-    note: '',
   },
 ];
 
@@ -465,7 +420,6 @@ export default function HomePage() {
   return (
     <div style={{ background: c.bgBase, transition: 'background 0.35s ease' }} className="overflow-x-hidden">
       {/* 致用户公告——首次访问全屏覆盖，关闭后才进入首页 */}
-      <AnnouncementModal />
 
       <StarField />
 
@@ -490,13 +444,6 @@ export default function HomePage() {
         </div>
         <div className="flex items-center gap-1.5 sm:gap-3 flex-shrink-0">
           <ThemeToggle />
-          <motion.button
-            whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.97 }}
-            onClick={() => router.push('/heming')}
-            className="text-[11px] sm:text-xs px-2.5 sm:px-4 py-1 sm:py-1.5 rounded-full transition-all duration-300"
-            style={{ border: `1px solid ${c.navBorder}`, color: c.textMuted }}>
-            Hợp đôi
-          </motion.button>
           <motion.button
             whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.97 }}
             onClick={() => router.push('/chart')}
@@ -551,7 +498,7 @@ export default function HomePage() {
             transition={{ duration: 0.7, delay: 0.65 }}
             className="text-sm max-w-xl mx-auto leading-relaxed mb-10"
             style={{ color: c.textMuted }}>
-            Nhập năm, tháng, ngày, giờ sinh để lập lá số Tử Vi Đẩu Số của riêng bạn — các học phần Thiên Kỷ, Địa Kỷ, Nhân Kỷ sẽ lần lượt ra mắt.
+            Nhập ngày giờ và nơi sinh để lập lá số Tử Vi Đẩu Số của riêng bạn, kèm luận giải AI theo hệ Nghê Hải Hạ.
           </motion.p>
 
           {/* CTA */}
@@ -581,68 +528,6 @@ export default function HomePage() {
               </motion.div>
             ))}
           </motion.div>
-        </motion.div>
-
-        {/* 上线公告便利贴 — 桌面端绝对定位右侧 */}
-        <motion.div
-          initial={{ opacity: 0, x: 30, rotate: 0 }}
-          animate={{ opacity: 1, x: 0, rotate: -4 }}
-          transition={{ delay: 1.4, duration: 0.7, ease: [0.25, 0.1, 0.25, 1] }}
-          className="absolute hidden lg:block pointer-events-none"
-          style={{
-            right: 'clamp(2%, 6vw, 8%)',
-            top: '54%',
-            maxWidth: '240px',
-          }}
-        >
-          <div style={{
-            background: 'linear-gradient(135deg, #fff5e3 0%, #ffe1c0 100%)',
-            border: '2px dashed rgba(232,132,62,0.45)',
-            borderRadius: '16px',
-            padding: '14px 18px',
-            boxShadow: '0 8px 24px rgba(196,90,45,0.18), 0 2px 6px rgba(196,90,45,0.1)',
-            fontFamily: 'inherit',
-          }}>
-            <div style={{ fontSize: '20px', marginBottom: '6px', lineHeight: 1 }}>🎁</div>
-            <div style={{ fontSize: '13px', lineHeight: 1.7, color: '#8b3a1a', fontWeight: 500 }}>
-              <span style={{ color: '#c45a2d', fontWeight: 700, fontSize: '14px' }}>5/1 — 5/8</span>
-              <span> Tri ân có thời hạn</span>
-            </div>
-            <div style={{ fontSize: '13px', lineHeight: 1.7, color: '#8b3a1a', fontWeight: 500 }}>
-              Mọi tính năng + hỏi AI
-              <strong style={{ color: '#c45a2d' }}> đều miễn phí</strong>
-            </div>
-          </div>
-        </motion.div>
-
-        {/* 上线公告便利贴 — 手机端正常流式显示（hero 内容下方居中） */}
-        <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0, rotate: -2 }}
-          transition={{ delay: 1.4, duration: 0.7, ease: [0.25, 0.1, 0.25, 1] }}
-          className="lg:hidden mx-auto mt-8 mb-2 pointer-events-none"
-          style={{
-            maxWidth: 'min(280px, 84vw)',
-          }}
-        >
-          <div style={{
-            background: 'linear-gradient(135deg, #fff5e3 0%, #ffe1c0 100%)',
-            border: '2px dashed rgba(232,132,62,0.45)',
-            borderRadius: '14px',
-            padding: '12px 16px',
-            boxShadow: '0 6px 18px rgba(196,90,45,0.16), 0 2px 4px rgba(196,90,45,0.08)',
-            fontFamily: 'inherit',
-            textAlign: 'center',
-          }}>
-            <div style={{ fontSize: '18px', marginBottom: '4px', lineHeight: 1 }}>🎁</div>
-            <div style={{ fontSize: '12px', lineHeight: 1.7, color: '#8b3a1a', fontWeight: 500 }}>
-              <span style={{ color: '#c45a2d', fontWeight: 700, fontSize: '13px' }}>5/1 — 5/8</span>
-              <span> Tri ân có thời hạn</span>
-            </div>
-            <div style={{ fontSize: '12px', lineHeight: 1.7, color: '#8b3a1a', fontWeight: 500 }}>
-              Mọi tính năng + AI <strong style={{ color: '#c45a2d' }}>đều miễn phí</strong>
-            </div>
-          </div>
         </motion.div>
 
         {/* 滚动提示（绝对定位，不影响 hero opacity 计算） */}
@@ -696,118 +581,6 @@ export default function HomePage() {
             </motion.p>
           </div>
         </FadeIn>
-      </section>
-
-      {/* ══ 4 大学习板块时间轴 ════════════════════════════ */}
-      <section className="relative z-10 py-20 lg:py-24 px-6"
-        style={{
-          background: theme === 'dark'
-            ? 'linear-gradient(to bottom, transparent 0%, rgba(184,146,42,0.03) 50%, transparent 100%)'
-            : 'linear-gradient(to bottom, transparent 0%, rgba(184,146,42,0.04) 50%, transparent 100%)',
-        }}>
-        <FadeIn className="text-center mb-14">
-          <div className="flex items-center justify-center gap-3 mb-3">
-            <div className="h-px w-12" style={{ background: `linear-gradient(to right, transparent, ${c.goldLine})` }} />
-            <span className="text-[10px] tracking-[0.4em] uppercase" style={{ color: c.goldSolid, opacity: 0.7 }}>Curriculum</span>
-            <div className="h-px w-12" style={{ background: `linear-gradient(to left, transparent, ${c.goldLine})` }} />
-          </div>
-          <div className="text-2xl lg:text-3xl font-bold mb-2 tracking-[0.15em]" style={{ color: c.textPrimary }}>
-            Phương pháp luận của Nghê sư · Mở dần từng bước
-          </div>
-          <div className="text-xs lg:text-sm tracking-[0.1em]" style={{ color: c.textMuted }}>
-            Nhập môn từ Tử Vi, lần lượt mở các học phần Thiên Kỷ / Địa Kỷ / Nhân Kỷ
-          </div>
-        </FadeIn>
-
-        <div className="max-w-sm lg:max-w-5xl mx-auto relative">
-          {/* 横向连接线（仅桌面）*/}
-          <div className="hidden lg:block absolute top-7 left-[12.5%] right-[12.5%] h-0.5"
-            style={{
-              background: `linear-gradient(90deg, ${c.goldSolid} 0%, ${c.goldSolid} 25%, ${c.goldLine} 25%)`,
-              opacity: 0.6,
-            }} />
-
-          {/* 纵向连接线（仅手机）—— 圆点贴在线上，做"地铁线路图"风格 */}
-          <div className="lg:hidden absolute left-7 top-7 bottom-7 w-px -translate-x-1/2"
-            style={{
-              background: `linear-gradient(180deg, ${c.goldSolid} 0%, ${c.goldSolid} 22%, ${c.goldLine} 22%)`,
-              opacity: 0.6,
-            }} />
-
-          <div className="flex flex-col gap-5 lg:grid lg:grid-cols-4 lg:gap-4">
-            {SECTIONS.map((s, i) => {
-              const ready = s.status === 'ready';
-              return (
-                <motion.div key={s.key}
-                  initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ delay: i * 0.15, duration: 0.5 }}
-                  viewport={{ once: true }}
-                  className="relative flex flex-row lg:flex-col items-center lg:items-center text-left lg:text-center gap-4 lg:gap-0">
-                  {/* 节点圆 */}
-                  <div className="relative w-14 h-14 shrink-0 rounded-full flex items-center justify-center lg:mb-3"
-                    style={{
-                      background: ready
-                        ? `linear-gradient(135deg, ${c.goldSolid} 0%, ${c.goldSolid}cc 100%)`
-                        : (theme === 'dark' ? 'rgba(184,146,42,0.05)' : '#fdf8ee'),
-                      border: ready ? 'none' : `2px dashed ${c.goldLine}`,
-                      color: ready ? '#fff' : c.textMuted,
-                      boxShadow: ready ? `0 4px 16px ${c.goldSolid}55` : 'none',
-                    }}>
-                    <span className="text-2xl">{s.icon}</span>
-                    {ready && (
-                      <div className="absolute -bottom-1 -right-1 w-5 h-5 rounded-full flex items-center justify-center text-[10px] text-white"
-                        style={{ background: '#10b981', boxShadow: '0 2px 6px rgba(16,185,129,0.4)' }}>
-                        ✓
-                      </div>
-                    )}
-                  </div>
-                  {/* 文字组：手机端右排单列；桌面端居中堆叠 */}
-                  <div className="flex-1 lg:flex-none flex flex-col items-start lg:items-center min-w-0">
-                    {/* 顶行：时间标签 + 板块名 + note（手机端 inline；桌面端依然分行） */}
-                    <div className="flex items-baseline gap-2 lg:flex-col lg:gap-0 lg:mb-1">
-                      <div className="text-[10px] tracking-[0.25em] lg:mb-1.5"
-                        style={{ color: ready ? '#10b981' : c.textMuted, fontWeight: 500 }}>
-                        {s.when}
-                      </div>
-                      <div className="text-base lg:text-xl font-semibold tracking-[0.15em]"
-                        style={{ color: c.textPrimary }}>
-                        {s.name}
-                      </div>
-                      {s.note && (
-                        <div className="text-[9px] tracking-[0.15em] px-2 py-0.5 rounded-full lg:hidden"
-                          style={{
-                            color: c.goldSolid,
-                            background: theme === 'dark' ? 'rgba(184,146,42,0.1)' : 'rgba(184,146,42,0.08)',
-                            border: `1px solid ${c.goldLine}`,
-                            opacity: 0.85,
-                          }}>
-                          {s.note}
-                        </div>
-                      )}
-                    </div>
-                    {/* 桌面专属 note（手机已在顶行 inline 展示）*/}
-                    {s.note && (
-                      <div className="hidden lg:block text-[9px] tracking-[0.15em] mb-1.5 px-2 py-0.5 rounded-full"
-                        style={{
-                          color: c.goldSolid,
-                          background: theme === 'dark' ? 'rgba(184,146,42,0.1)' : 'rgba(184,146,42,0.08)',
-                          border: `1px solid ${c.goldLine}`,
-                          opacity: 0.85,
-                        }}>
-                        {s.note}
-                      </div>
-                    )}
-                    {/* 简介 */}
-                    <div className="text-[11px] lg:text-xs leading-relaxed lg:max-w-[200px] mt-0.5 lg:mt-0"
-                      style={{ color: c.textSecond }}>
-                      {s.desc}
-                    </div>
-                  </div>
-                </motion.div>
-              );
-            })}
-          </div>
-        </div>
       </section>
 
       {/* ══ 功能详解 ══════════════════════════════════════ */}
@@ -1032,59 +805,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ══ 合盘入口 ══════════════════════════════════════ */}
-      <section className="relative z-10 px-6 md:px-10 lg:px-14 py-20">
-        <div className="mx-auto" style={{ maxWidth: '1280px' }}>
-          <div className="rounded-2xl p-10 md:p-14 text-center"
-            style={{
-              background: theme === 'dark' ? 'rgba(255,255,255,0.03)' : 'rgba(255,255,255,0.8)',
-              border: `1px solid ${c.cardBorder}`,
-              boxShadow: c.cardShadow,
-            }}>
-            <FadeIn>
-              <div className="flex items-center justify-center gap-3 mb-6">
-                <div className="h-px w-8" style={{ background: c.goldLine }} />
-                <span className="text-[10px] tracking-[0.5em] uppercase" style={{ color: c.tagText }}>Compatibility · Analysis</span>
-                <div className="h-px w-8" style={{ background: c.goldLine }} />
-              </div>
-              <h2 className={`grad-text ${theme === 'dark' ? 'grad-text-dark' : 'grad-text-light'} font-bold mb-4 tracking-tight`}
-                style={{ fontSize: 'clamp(26px, 3.5vw, 40px)' }}>
-                Xem hợp đôi Tử Vi
-              </h2>
-              <p className="text-sm leading-relaxed mb-8 max-w-lg mx-auto" style={{ color: c.textSecond }}>
-                Nhập thông tin sinh của hai người, AI theo hệ Nghê Hải Hạ phân tích tham chiếu cung Phu Thê, độ tương hợp cung Mệnh và tương tác Tam phương tứ chính,<br className="hidden md:block" />
-                đưa ra mức hợp tình cảm, khả năng hợp tác và lời khuyên chung sống tốt nhất.
-              </p>
-              <div className="flex justify-center gap-3 flex-wrap mb-6">
-                {['Phân tích mức hợp tình cảm', 'Đánh giá hợp tác khởi nghiệp', 'Luận duyên cha mẹ – con cái', 'Đánh giá tương hợp trước hôn nhân'].map(item => (
-                  <span key={item} style={{
-                    fontSize: '12px', padding: '5px 14px', borderRadius: '20px',
-                    background: theme === 'dark' ? 'rgba(212,168,67,0.08)' : 'rgba(212,168,67,0.12)',
-                    border: `1px solid ${c.goldLine}`,
-                    color: c.goldSolid,
-                  }}>
-                    {item}
-                  </span>
-                ))}
-              </div>
-              <motion.button
-                whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}
-                onClick={() => router.push('/heming')}
-                className="px-10 py-3 font-medium text-sm tracking-widest rounded-full"
-                style={{
-                  background: theme === 'dark' ? 'rgba(255,255,255,0.08)' : 'rgba(140,100,20,0.1)',
-                  border: `1px solid ${c.goldLine}`,
-                  color: c.goldSolid,
-                  cursor: 'pointer',
-                }}>
-                Bắt đầu xem hợp đôi
-              </motion.button>
-            </FadeIn>
-          </div>
-        </div>
-      </section>
-
-      {/* ══ 最终 CTA ══════════════════════════════════════ */}
       <section className="relative z-10 py-40 px-6 text-center" style={{ background: c.altSection }}>
         <FadeIn>
           <p className="text-[10px] tracking-[0.6em] uppercase mb-6" style={{ color: c.tagText }}>Bắt đầu hành trình lá số của bạn</p>
@@ -1135,43 +855,6 @@ export default function HomePage() {
       {/* Footer */}
       <footer className="relative z-10 py-10 px-6"
         style={{ borderTop: `1px solid ${c.niCardBord}` }}>
-
-        {/* 4 板块导航占位（已上线 + 即将开放）*/}
-        <div className="max-w-4xl mx-auto mb-8">
-          <div className="text-[9px] tracking-[0.3em] text-center mb-4 uppercase"
-            style={{ color: c.textMuted, opacity: 0.6 }}>
-            Phương pháp luận của Nghê sư · Hệ thống học thuật
-          </div>
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
-            {SECTIONS.map(s => {
-              const ready = s.status === 'ready';
-              return (
-                <a
-                  key={s.key}
-                  href={ready ? '/chart' : undefined}
-                  onClick={ready ? undefined : (e) => e.preventDefault()}
-                  className="rounded-lg px-3 py-3 text-center transition-all"
-                  style={{
-                    background: ready ? c.starBg : 'transparent',
-                    border: `1px ${ready ? 'solid' : 'dashed'} ${ready ? c.goldLine : c.navBorder}`,
-                    cursor: ready ? 'pointer' : 'not-allowed',
-                    opacity: ready ? 1 : 0.5,
-                    textDecoration: 'none',
-                  }}
-                >
-                  <div className="text-base font-semibold mb-0.5 tracking-[0.1em]"
-                    style={{ color: ready ? c.goldSolid : c.textMuted }}>
-                    {s.name}
-                  </div>
-                  <div className="text-[9px] tracking-wider"
-                    style={{ color: ready ? '#10b981' : c.textMuted }}>
-                    {ready ? '✓ Đã ra mắt' : `Mở vào ${s.when.toLowerCase()}`}
-                  </div>
-                </a>
-              );
-            })}
-          </div>
-        </div>
 
         <div className="text-center">
           <p className="text-[10px] tracking-wider mb-3" style={{ color: c.footerText }}>

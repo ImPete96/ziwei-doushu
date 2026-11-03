@@ -9,6 +9,15 @@ interface Message {
   role: 'user' | 'assistant';
   content: string;
   hidden?: boolean; // don't show user bubble for auto/topic messages
+  /** Tin báo lỗi: không gửi lại cho AI, có nút Thử lại */
+  error?: boolean;
+}
+
+type ApiMessage = { role: 'user' | 'assistant'; content: string };
+
+/** Lịch sử gửi cho API: bỏ tin báo lỗi và tin trả lời rỗng (lượt bị dừng trước khi có chữ) */
+function toApiMessages(msgs: Message[]): ApiMessage[] {
+  return msgs.filter(m => !m.error && m.content.trim()).map(m => ({ role: m.role, content: m.content }));
 }
 
 interface SelectedSiHua {
@@ -193,7 +202,9 @@ export default function InsightPanel({ chart, selectedPalace, selectedSiHua }: I
   const messagesRef = useRef<Message[]>([]); // always-current copy for closures
   const loadingRef = useRef(false);
   const autoLoaded = useRef(false);
-  const lastPalaceBranch = useRef<number | undefined>(undefined);
+  const [pendingPalace, setPendingPalace] = useState<Palace | null>(null);
+  const [elapsed, setElapsed] = useState(0);
+  const abortRef = useRef<AbortController | null>(null);
   const lastSiHuaKey = useRef<string | undefined>(undefined);
   const scrollRef = useRef<HTMLDivElement>(null);
 
@@ -215,18 +226,29 @@ export default function InsightPanel({ chart, selectedPalace, selectedSiHua }: I
     sendMessage(TOPIC_PROMPTS.overview, true);
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // Inject palace analysis when palace selected
+  // Chọn cung chỉ hiện nút "Luận cung này"; người dùng bấm mới gọi AI (tránh tốn lượt khi chỉ xem Tam phương)
   useEffect(() => {
-    if (!selectedPalace || selectedPalace.branch === lastPalaceBranch.current) return;
-    lastPalaceBranch.current = selectedPalace.branch;
+    setPendingPalace(selectedPalace ?? null);
+  }, [selectedPalace]);
 
-    const majorStars = selectedPalace.stars.filter(s => s.type === 'major');
+  // Đồng hồ chờ: model chạy trên máy có thể mất vài phút trước khi ra chữ đầu tiên
+  useEffect(() => {
+    if (!loading) { setElapsed(0); return; }
+    const started = Date.now();
+    const id = setInterval(() => setElapsed(Math.floor((Date.now() - started) / 1000)), 1000);
+    return () => clearInterval(id);
+  }, [loading]);
+
+  const analyzePalace = (palace: Palace) => {
+    if (loadingRef.current) return;
+    setPendingPalace(null);
+    const majorStars = palace.stars.filter(s => s.type === 'major');
     const starDesc = majorStars.length > 0
       ? majorStars.map(s => `${viStar(s.name)}${s.siHua ? ' ' + viSihua(s.siHua) : ''}`).join(', ')
       : 'vô chính diệu (mượn sao cung đối)';
     // iztro 宫名除命宫外不带「宫」字，两种写法都查
-    const role = PALACE_ROLES[selectedPalace.name] ?? PALACE_ROLES[`${selectedPalace.name}宫`] ?? '';
-    const palaceVi = viPalaceFull(selectedPalace.name);
+    const role = PALACE_ROLES[palace.name] ?? PALACE_ROLES[`${palace.name}宫`] ?? '';
+    const palaceVi = viPalaceFull(palace.name);
 
     const prompt = `Hãy phân tích trọng điểm 【${palaceVi}】${role ? ` (chủ quản: ${role})` : ''}, chính tinh của cung là ${starDesc}. Trả lời bằng tiếng Việt, theo cấu trúc sau:
 
@@ -243,7 +265,7 @@ Lời giải theo hệ Nghê Hải Hạ về chính tinh ở cung này, dẫn qu
 Lời khuyên cụ thể dựa trên cung này.`;
 
     sendMessage(prompt, true);
-  }, [selectedPalace]); // eslint-disable-line react-hooks/exhaustive-deps
+  };
 
   // 注入四化飞化分析
   useEffect(() => {
@@ -281,49 +303,91 @@ Lời khuyên cụ thể, làm được, dựa trên Tứ Hóa này.`;
     sendMessage(prompt, true);
   }, [selectedSiHua]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const streamResponse = async (apiMessages: { role: 'user' | 'assistant'; content: string }[]) => {
+  const streamResponse = async (apiMessages: ApiMessage[]) => {
+    const controller = new AbortController();
+    abortRef.current = controller;
+    let started = false;
+    let serverError = false;
+    let assistantText = '';
+    const show = (content: string) => setMessages(prev => {
+      const updated = [...prev];
+      updated[updated.length - 1] = { role: 'assistant', content };
+      return updated;
+    });
     try {
       const res = await fetch('/api/interpret', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ chart, messages: apiMessages }),
+        // Máy chủ chỉ cần ngày giờ sinh để an lại lá số; không gửi họ tên
+        body: JSON.stringify({ chart: { birthInfo: { ...chart.birthInfo, name: undefined } }, messages: apiMessages }),
+        signal: controller.signal,
       });
-      if (res.status === 404) throw new Error('api-missing');
-      if (!res.ok) throw new Error('request-failed');
-      if (!res.body) throw new Error('no-stream');
+      if (!res.ok || !res.body) throw new Error(`HTTP ${res.status}`);
 
       const reader = res.body.getReader();
       const decoder = new TextDecoder();
-      let assistantText = '';
+      let buffer = '';
 
       setMessages(prev => [...prev, { role: 'assistant', content: '' }]);
+      started = true;
 
+      // Ghép theo dòng: một sự kiện SSE có thể bị cắt giữa hai lần đọc
+      const handle = (line: string) => {
+        if (!line.startsWith('data: ')) return;
+        const data = line.slice(6);
+        if (data === '[DONE]') return;
+        try {
+          const obj = JSON.parse(data) as { delta?: { text?: string }; error?: boolean };
+          assistantText += obj.delta?.text ?? '';
+          if (obj.error) serverError = true;
+          show(assistantText);
+        } catch { /* skip */ }
+      };
       while (true) {
         const { done, value } = await reader.read();
         if (done) break;
-        const chunk = decoder.decode(value, { stream: true });
-        for (const line of chunk.split('\n')) {
-          if (!line.startsWith('data: ')) continue;
-          const data = line.slice(6);
-          if (data === '[DONE]') break;
-          try {
-            const delta = JSON.parse(data).delta?.text ?? '';
-            assistantText += delta;
-            setMessages(prev => {
-              const updated = [...prev];
-              updated[updated.length - 1] = { role: 'assistant', content: assistantText };
-              return updated;
-            });
-          } catch { /* skip */ }
+        buffer += decoder.decode(value, { stream: true });
+        let nl: number;
+        while ((nl = buffer.indexOf('\n')) >= 0) {
+          handle(buffer.slice(0, nl));
+          buffer = buffer.slice(nl + 1);
         }
       }
+      handle(buffer + decoder.decode());
+      // Máy chủ báo lỗi bằng một sự kiện có error: true → đánh dấu tin để hiện nút Thử lại
+      if (serverError) {
+        setMessages(prev => {
+          const updated = [...prev];
+          updated[updated.length - 1] = { role: 'assistant', content: assistantText, error: true };
+          return updated;
+        });
+      }
     } catch (e) {
-      const missing = e instanceof Error && e.message === 'api-missing';
-      setMessages(prev => [...prev, { role: 'assistant', content: missing ? 'Bản mã nguồn mở không có API luận giải AI (/api/interpret); bạn cần tự triển khai mới dùng được, xem mục «Bắt đầu nhanh» trong README. Bản thân việc lập lá số không cần API Key nào.' : 'Luận giải thất bại, vui lòng thử lại sau.' }]);
+      if (controller.signal.aborted) {
+        if (started) show(assistantText ? `${assistantText}\n\n(Đã dừng.)` : '(Đã dừng.)');
+      } else {
+        console.error('[InsightPanel]', e);
+        const errorMsg: Message = { role: 'assistant', content: 'Chưa luận giải được lúc này. Bạn thử lại nhé.', error: true };
+        setMessages(prev => (started ? [...prev.slice(0, -1), errorMsg] : [...prev, errorMsg]));
+      }
     } finally {
+      abortRef.current = null;
       setLoading(false);
       loadingRef.current = false;
     }
+  };
+
+  const stopStreaming = () => abortRef.current?.abort();
+
+  /** Bỏ tin báo lỗi cuối và gửi lại đúng lịch sử trước đó */
+  const retry = () => {
+    if (loadingRef.current) return;
+    const kept = messagesRef.current.filter(m => !m.error);
+    messagesRef.current = kept;
+    setMessages(kept);
+    loadingRef.current = true;
+    setLoading(true);
+    streamResponse(toApiMessages(kept));
   };
 
   const sendMessage = (text: string, hidden = false) => {
@@ -333,10 +397,7 @@ Lời khuyên cụ thể, làm được, dựa trên Tứ Hóa này.`;
 
     const userMsg: Message = { role: 'user', content: text, hidden };
     // Capture current messages synchronously via ref (avoids stale closure)
-    const apiMessages = [...messagesRef.current, userMsg].map(m => ({
-      role: m.role,
-      content: m.content,
-    }));
+    const apiMessages = toApiMessages([...messagesRef.current, userMsg]);
 
     setMessages(prev => [...prev, userMsg]);
     setInput('');
@@ -366,8 +427,9 @@ Lời khuyên cụ thể, làm được, dựa trên Tứ Hóa này.`;
               <button
                 key={t.key}
                 onClick={() => handleTopicClick(t.key)}
-                disabled={loading}
-                className="py-1.5 px-0.5 text-[12px] leading-tight font-medium rounded-lg transition-all duration-150 disabled:opacity-40 whitespace-nowrap"
+                aria-disabled={loading}
+                aria-pressed={isActive}
+                className={`py-1.5 px-0.5 text-[12px] leading-tight font-medium rounded-lg transition-all duration-150 whitespace-nowrap ${loading ? 'opacity-40 cursor-not-allowed' : ''}`}
                 style={{
                   background: isActive ? 'rgba(212,168,67,0.12)' : 'transparent',
                   border: `1px solid ${isActive ? 'rgba(212,168,67,0.3)' : 'var(--t-border)'}`,
@@ -382,15 +444,7 @@ Lời khuyên cụ thể, làm được, dựa trên Tứ Hóa này.`;
       </div>
 
       {/* ── Messages ── */}
-      <div ref={scrollRef} className="flex-1 overflow-y-auto p-4 space-y-4 min-h-0">
-
-        {/* Loading state before first message */}
-        {messages.length === 0 && (
-          <div className="flex flex-col items-center justify-center h-full text-center">
-            <div className="text-4xl mb-3" style={{ color: 'var(--t-gold)', opacity: 0.1 }}>✦</div>
-            <p className="text-[13px] animate-pulse" style={{ color: 'var(--t-faint)' }}>Đang tạo lời luận mệnh cách…</p>
-          </div>
-        )}
+      <div ref={scrollRef} role="log" aria-busy={loading} className="flex-1 overflow-y-auto p-4 space-y-4 min-h-0">
 
         <AnimatePresence initial={false}>
           {messages.map((msg, i) => {
@@ -434,11 +488,53 @@ Lời khuyên cụ thể, làm được, dựa trên Tứ Hóa này.`;
                   Luận giải mệnh lý
                 </div>
                 <AiContent text={msg.content} streaming={loading && isLastMsg} />
+                {msg.error && isLastMsg && !loading && (
+                  <button
+                    type="button"
+                    onClick={retry}
+                    className="mt-2 px-3 py-1.5 rounded-lg text-[13px] font-medium"
+                    style={{ border: '1px solid var(--t-border-acc)', color: 'var(--t-gold)' }}
+                  >
+                    Thử lại
+                  </button>
+                )}
               </motion.div>
             );
           })}
         </AnimatePresence>
+
+        {/* Đang chờ chữ đầu tiên: tin cuối chưa phải câu trả lời có nội dung */}
+        {loading && !(messages.at(-1)?.role === 'assistant' && messages.at(-1)?.content) && (
+          <div className="flex items-center gap-3 py-2" style={{ color: 'var(--t-faint)' }}>
+            <span className="inline-block w-2 h-2 rounded-full animate-pulse" style={{ background: 'var(--t-gold)' }} />
+            <span className="text-[14px]">
+              Đang luận giải… {elapsed > 0 && <span className="tabular-nums">{elapsed}s</span>}
+              {elapsed >= 20 && <span className="block text-[12px] mt-0.5">Model chạy trên máy có thể mất vài phút.</span>}
+            </span>
+          </div>
+        )}
       </div>
+
+      {/* aria-live tách riêng: báo trạng thái ngắn thay vì đọc từng chữ đang chạy */}
+      <div className="sr-only" aria-live="polite">{loading ? 'Đang luận giải' : messages.length > 0 ? 'Đã luận giải xong' : ''}</div>
+
+      {/* ── Cung đang chọn: chỉ luận khi người dùng bấm ── */}
+      {pendingPalace && (
+        <div className="flex-shrink-0 flex items-center justify-between gap-2 px-3 py-2" style={{ borderTop: '1px solid var(--t-border)' }}>
+          <span className="text-[13px]" style={{ color: 'var(--t-text2)' }}>
+            Đang chọn <strong style={{ color: 'var(--t-gold)' }}>{viPalaceFull(pendingPalace.name)}</strong>
+          </span>
+          <button
+            type="button"
+            onClick={() => analyzePalace(pendingPalace)}
+            disabled={loading}
+            className="px-3 py-1.5 rounded-lg text-[13px] font-medium disabled:opacity-40 disabled:cursor-not-allowed"
+            style={{ background: 'rgba(212,168,67,0.15)', border: '1px solid var(--t-border-acc)', color: 'var(--t-gold)' }}
+          >
+            Luận cung này
+          </button>
+        </div>
+      )}
 
       {/* ── Input ── */}
       <div className="flex-shrink-0 px-3 pb-3 pt-2" style={{ borderTop: '1px solid var(--t-border)' }}>
@@ -448,27 +544,40 @@ Lời khuyên cụ thể, làm được, dựa trên Tứ Hóa này.`;
             value={input}
             onChange={e => setInput(e.target.value)}
             onKeyDown={e => e.key === 'Enter' && !e.shiftKey && handleSend()}
+            aria-label="Câu hỏi thêm cho AI"
             placeholder="Hỏi thêm, ví dụ: năm nay có nên đổi việc không?"
             disabled={loading}
-            className="flex-1 rounded-lg px-3 py-2 text-[14px] focus:outline-none transition-colors"
+            className="flex-1 rounded-lg px-3 py-2 text-[14px] transition-colors"
             style={{
               background: 'var(--t-card)',
               border: '1px solid var(--t-border)',
               color: 'var(--t-text)',
             }}
           />
-          <button
-            onClick={handleSend}
-            disabled={loading || !input.trim()}
-            className="px-3 py-2 rounded-lg text-[14px] font-medium transition-all disabled:opacity-30 disabled:cursor-not-allowed"
-            style={{
-              background: 'rgba(212,168,67,0.15)',
-              border: '1px solid rgba(212,168,67,0.25)',
-              color: 'var(--t-gold)',
-            }}
-          >
-            {loading ? '…' : 'Hỏi'}
-          </button>
+          {loading ? (
+            <button
+              type="button"
+              onClick={stopStreaming}
+              className="px-3 py-2 rounded-lg text-[14px] font-medium transition-all"
+              style={{ border: '1px solid var(--t-border)', color: 'var(--t-text2)' }}
+            >
+              Dừng
+            </button>
+          ) : (
+            <button
+              type="button"
+              onClick={handleSend}
+              disabled={!input.trim()}
+              className="px-3 py-2 rounded-lg text-[14px] font-medium transition-all disabled:opacity-30 disabled:cursor-not-allowed"
+              style={{
+                background: 'rgba(212,168,67,0.15)',
+                border: '1px solid rgba(212,168,67,0.25)',
+                color: 'var(--t-gold)',
+              }}
+            >
+              Hỏi
+            </button>
+          )}
         </div>
       </div>
 

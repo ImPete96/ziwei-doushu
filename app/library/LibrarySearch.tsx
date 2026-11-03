@@ -36,7 +36,7 @@ export default function LibrarySearch() {
         value={q}
         onChange={e => setQ(e.target.value)}
         onKeyDown={e => e.key === 'Enter' && submit()}
-        placeholder="Tìm trong nguyên văn hoặc bản dịch, ví dụ: 七杀朝斗 / Hóa Kỵ / Thất Sát"
+        placeholder="Tìm trong nguyên văn hoặc bản dịch, ví dụ: Thất Sát / hoa ky / 七杀朝斗"
         style={{
           flex: 1,
           padding: '10px 14px',

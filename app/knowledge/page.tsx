@@ -9,8 +9,8 @@ import { TOPIC_LABEL } from '@/lib/ziwei/db-analysis';
 import { viPalaceFull, viStar } from '@/lib/vi/terms';
 
 export const metadata = {
-  title: 'Kho tri thức Tử Vi Đẩu Số · 14 chính tinh × 13 cung vị · Hệ chính tông Nghê Hải Hạ',
-  description: 'Kho tri thức Tử Vi Đẩu Số biên soạn theo hệ «Thiên Kỷ» của Nghê Hải Hạ và các cổ thư «Tử Vi Đẩu Số Toàn Tập», «Cốt Tủy Phú». Bao quát lời luận đầy đủ của 14 chính tinh tại 13 cung vị, gồm câu định hướng, luận điểm cốt lõi, căn cứ lá số và xuất xứ kinh điển.',
+  title: 'Kho tri thức Tử Vi Đẩu Số · 14 chính tinh · Hệ chính tông Nghê Hải Hạ',
+  description: 'Kho tri thức Tử Vi Đẩu Số biên soạn theo hệ «Thiên Kỷ» của Nghê Hải Hạ và các cổ thư «Tử Vi Đẩu Số Toàn Tập», «Cốt Tủy Phú». Tóm lược tính chất 14 chính tinh, kèm lối vào thư viện cổ thư.',
   keywords: ['Tử Vi Đẩu Số', 'Nghê Hải Hạ', 'Tử Vi Đẩu Số Nghê Hải Hạ', 'Tử Vi Đẩu Số Toàn Tập', 'Tử Vi Đẩu Số Toàn Thư', '14 chính tinh', '12 cung'],
 };
 
@@ -37,15 +37,15 @@ export default function KnowledgeHomePage() {
       <div className="text-center px-6 py-14">
         <div className="flex items-center justify-center gap-3 mb-4">
           <div style={{ height: '1px', width: '48px', background: 'linear-gradient(to right, transparent, rgba(184,146,42,0.4))' }} />
-          <span style={{ fontSize: '11px', color: 'var(--ac)', letterSpacing: '0.4em' }}>KNOWLEDGE BASE</span>
+          <span style={{ fontSize: '12px', color: 'var(--ac)', letterSpacing: '0.4em' }}>KIẾN THỨC</span>
           <div style={{ height: '1px', width: '48px', background: 'linear-gradient(to left, transparent, rgba(184,146,42,0.4))' }} />
         </div>
         <h1 style={{ fontSize: 'clamp(28px, 4vw, 42px)', fontWeight: 700, color: 'var(--tx-0)', letterSpacing: '0.05em', marginBottom: '12px' }}>
           Kho tri thức Tử Vi Đẩu Số
         </h1>
         <p style={{ fontSize: '14px', color: 'var(--tx-2)', letterSpacing: '0.08em', maxWidth: '600px', margin: '0 auto', lineHeight: 1.7 }}>
-          14 chính tinh × 13 cung vị = <strong style={{ color: 'var(--ac)' }}>{ALL_STARS.length * ALL_TOPICS.length}</strong> chuyên đề<br />
-          Biên soạn theo hệ «Thiên Kỷ» của Nghê Hải Hạ · Có dẫn chứng cổ thư
+          Tóm lược tính chất <strong style={{ color: 'var(--ac)' }}>{ALL_STARS.length}</strong> chính tinh theo hệ «Thiên Kỷ» của Nghê Hải Hạ.<br />
+          Nguyên văn và bản dịch cổ thư xem ở <Link href="/library" style={{ color: 'var(--ac)' }}>Thư viện cổ thư</Link>.
         </p>
       </div>
 
@@ -58,7 +58,7 @@ export default function KnowledgeHomePage() {
           {ALL_STARS.map(star => (
             <Link
               key={star}
-              href={`/knowledge/${STAR_TO_SLUG[star]}/overview`}
+              href={`#sao-${STAR_TO_SLUG[star]}`}
               style={{
                 display: 'block',
                 padding: '14px 10px',
@@ -81,7 +81,8 @@ export default function KnowledgeHomePage() {
         {/* 详细列表（每个主星 + 简介 + 进入按钮） */}
         <div className="mt-14 space-y-4">
           {ALL_STARS.map(star => (
-            <div key={star} style={{
+            <div key={star} id={`sao-${STAR_TO_SLUG[star]}`} style={{
+              scrollMarginTop: '24px',
               background: 'var(--bg-card)',
               border: '1px solid rgba(184,146,42,0.18)',
               borderRadius: '12px',
@@ -92,10 +93,10 @@ export default function KnowledgeHomePage() {
                   Sao {viStar(star)}
                 </span>
                 <span style={{ fontSize: '11px', color: 'var(--tx-3)', letterSpacing: '0.15em' }}>
-                  ZI WEI · 14 STARS
+                  Chính tinh
                 </span>
               </div>
-              <p style={{ fontSize: '12px', color: 'var(--tx-2)', lineHeight: 1.7, marginBottom: '12px' }}>
+              <p style={{ fontSize: '15px', color: 'var(--tx-2)', lineHeight: 1.7, marginBottom: '12px' }}>
                 {STAR_DESCRIPTIONS_QUICK[star] || ''}
               </p>
               <div className="flex flex-wrap gap-2">

@@ -55,7 +55,8 @@ export function getParagraphById(id: string) {
  * 全文搜索
  *
  * 简单子字符串匹配（不分词，对中文 OK）
- * 先匹配原文 text，再匹配越南语译文 translation（大小写不敏感）。
+ * 先匹配原文 text，再匹配越南语译文 translation（大小写、dấu tiếng Việt đều不敏感：
+ * "that sat" khớp "Thất Sát", "hoa ky" khớp "Hóa Kỵ"）。
  * 繁简转换暂不支持
  */
 export function searchClassics(query: string, limit = 30): SearchHit[] {
@@ -71,7 +72,7 @@ export function searchClassics(query: string, limit = 30): SearchHit[] {
         let idx = source.indexOf(q);
         if (idx < 0 && p.translation) {
           source = p.translation;
-          idx = indexOfIgnoreCase(source, q);
+          idx = indexOfFolded(source, q);
         }
         if (idx < 0) continue;
 
@@ -104,14 +105,23 @@ export function searchClassics(query: string, limit = 30): SearchHit[] {
   return hits;
 }
 
-/** 大小写不敏感的 indexOf；小写化改变长度时退回精确匹配，保证下标可用于原串 */
-function indexOfIgnoreCase(haystack: string, needle: string): number {
-  const h = haystack.toLowerCase();
-  const n = needle.toLowerCase();
-  if (h.length !== haystack.length || n.length !== needle.length) {
-    return haystack.indexOf(needle);
+/**
+ * Bỏ dấu + chữ thường theo từng ký tự, giữ nguyên độ dài chuỗi (mỗi chữ tiếng Việt dạng NFC là
+ * một code unit, gấp về đúng một chữ cái), nên vị trí tìm được trên chuỗi đã gấp dùng thẳng cho chuỗi gốc.
+ */
+export function foldVi(s: string): string {
+  let out = '';
+  for (const ch of s) {
+    let f = ch === 'đ' || ch === 'Đ' ? 'd' : ch.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+    if (f.length !== ch.length) f = ch.toLowerCase().length === ch.length ? ch.toLowerCase() : ch;
+    out += f;
   }
-  return h.indexOf(n);
+  return out;
+}
+
+/** indexOf không phân biệt hoa thường và dấu tiếng Việt; trả về vị trí trên chuỗi gốc */
+function indexOfFolded(haystack: string, needle: string): number {
+  return foldVi(haystack).indexOf(foldVi(needle));
 }
 
 function escapeHtml(s: string): string {

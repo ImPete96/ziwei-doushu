@@ -61,6 +61,9 @@ export function buildChartBrief(chart: ZiweiChart, viewYear: number): string {
   out.push('## Thông tin chung');
   out.push(`- Giới tính: ${birthInfo.gender === 'male' ? 'Nam' : 'Nữ'}${chart.yinYangGender ? ` (${viTerm(chart.yinYangGender)})` : ''}`);
   out.push(`- Năm sinh âm lịch: ${viStem(lunarInfo.yearStem)} ${viBranch(lunarInfo.yearBranch)}; ngày ${lunarInfo.lunarDay} tháng ${lunarInfo.isLeapMonth ? 'nhuận ' : ''}${lunarMonth}; giờ ${viBranch(birthInfo.hour)}`);
+  if (birthInfo.unknownTime) {
+    out.push('- LƯU Ý: người hỏi không rõ giờ sinh, lá số tạm lập theo giờ Tý. Cung Mệnh, Thân và các sao an theo giờ có thể sai; hãy nói rõ điều này và ưu tiên những nhận định không phụ thuộc giờ (Tứ Hóa năm sinh, sao an theo năm).');
+  }
   out.push(`- Cục: ${viWuxingJu(chart.wuxingJuName)}`);
   if (chart.mingZhu || chart.shenZhu) {
     out.push(`- Mệnh chủ: ${chart.mingZhu ? viStar(chart.mingZhu) : '?'}; Thân chủ: ${chart.shenZhu ? viStar(chart.shenZhu) : '?'}`);
