@@ -91,6 +91,50 @@
   --bg-page: #020810;
 }
 
+/* ─── Token --t-* cho trang lá số ───────────────────────────
+ * ChartBoard, PalaceCell, InsightPanel, TimeNav… dùng họ --t-* nhưng bản gốc chưa từng
+ * định nghĩa, nên lưới cung mất kẻ ô, khung AI mất nền và chữ "faint/gold" lấy màu kế thừa.
+ * Tỷ lệ tương phản ghi kèm là so với --t-bg của từng chế độ.
+ */
+:root {
+  --t-bg: var(--bg-0);
+  --t-surface: var(--bg-1);
+  --t-card: var(--bg-card);
+  --t-border: var(--bdr-heavy);
+  --t-border-acc: rgba(122,95,26,0.45);
+  --t-text: var(--tx-1);
+  --t-text1: var(--tx-1);
+  --t-text2: var(--tx-2);
+  --t-faint: #5f6470;  /* 5.67 */
+  --t-gold: #7a5f1a;   /* 5.78 */
+}
+[data-theme="dark"] {
+  --t-bg: #020810;
+  --t-surface: #0a1020;
+  --t-card: rgba(255,255,255,0.04);
+  --t-border: rgba(255,255,255,0.14);
+  --t-border-acc: rgba(212,168,67,0.4);
+  --t-text: #e8eef6;
+  --t-text1: #e8eef6;
+  --t-text2: #c3cfe2;
+  --t-faint: #9db0d0;  /* 9.14 */
+  --t-gold: #d4a843;   /* 9.07 */
+}
+
+/* Khung kính mờ dùng cho InsightPanel, PatternsCard, FamousPersonCard (cũng chưa từng định nghĩa) */
+.card-glass {
+  background: var(--t-card);
+  border: 1px solid var(--t-border);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+/* Chỉ báo focus bàn phím chung; !important để thắng các style inline outline:none của form */
+:focus-visible {
+  outline: 2px solid var(--t-gold) !important;
+  outline-offset: 2px;
+}
+
 /* ─── 全局基础 ───────────────────────────────────────────── */
 *, *::before, *::after { box-sizing: border-box; }
 
