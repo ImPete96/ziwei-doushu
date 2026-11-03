@@ -94,8 +94,11 @@ export function buildChartBrief(chart: ZiweiChart, viewYear: number): string {
   if (patterns.length) {
     out.push('', '## Cách cục engine nhận diện');
     for (const pt of patterns) {
-      // Bỏ câu trích nguyên văn chữ Hán (mô tả đã kèm bản dịch trong ngoặc)
-      const plain = pt.description.replace(/“[^”]*[㐀-鿿][^”]*”\s*/g, '');
+      // Bỏ câu trích nguyên văn chữ Hán (mô tả đã kèm bản dịch trong ngoặc), trong ngoặc kép
+      // cong hoặc thẳng; chữ Hán lẻ còn sót thì bỏ luôn
+      const plain = pt.description
+        .replace(/[“"][^”"]*[㐀-鿿][^”"]*[”"]\s*/g, '')
+        .replace(/[㐀-鿿]+/g, '');
       const desc = plain.length > 300 ? `${plain.slice(0, 300)}…` : plain;
       out.push(`- ${pt.name} [${pt.level}]: ${desc}`);
     }

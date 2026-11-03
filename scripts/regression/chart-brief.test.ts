@@ -53,6 +53,12 @@ async function main() {
   assert.ok(!brief.includes('Nguyễn Văn Thử'), 'không gửi họ tên');
   assert.equal(chart.palaces.length, 12);
 
+  // Phủ Tướng triều viên trích cổ thư trong ngoặc kép thẳng "府相朝垣…" (khác ca trên dùng “…”)
+  const chart2 = generateChart({ year: 1996, month: 12, day: 28, hour: 0, gender: 'male', country: 'VN', utcOffsetMinutes: 420, longitude: 106.25 }, { now: new Date('2026-11-03T00:00:00Z') });
+  const brief2 = buildChartBrief(chart2, 2026);
+  assert.match(brief2, /Phủ Tướng triều viên/);
+  assert.doesNotMatch(brief2, /[㐀-鿿]/, 'không còn chữ Hán trong ngoặc kép thẳng');
+
   console.log('✅ chart-brief: âm lịch VN, Tứ Hóa năm sinh/lưu niên, 12 cung, không chữ Hán, không họ tên');
 }
 
