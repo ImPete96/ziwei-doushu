@@ -51,7 +51,7 @@ const checks: { pattern: string; bonus: string; expect: (c: ZiweiChart) => boole
     pattern: 'Phủ Tướng triều viên', bonus: 'cung Mệnh gặp Lộc',
     expect: c => c.palaces.some(p => p.branch === c.mingGongBranch && p.stars.some(s => s.name === '禄存' || s.siHua === '禄')),
   },
-  { pattern: 'Sát Phá Lang', bonus: 'tam phương có Hóa Lộc hoặc Hóa Quyền (động mà có lực)', expect: c => sanFangHasSiHua(c, '禄') || sanFangHasSiHua(c, '权') },
+  { pattern: 'Sát Phá Tham', bonus: 'tam phương có Hóa Lộc hoặc Hóa Quyền (động mà có lực)', expect: c => sanFangHasSiHua(c, '禄') || sanFangHasSiHua(c, '权') },
   { pattern: 'Cơ Nguyệt Đồng Lương', bonus: 'lại hội Hóa Khoa', expect: c => sanFangHasSiHua(c, '科') },
   { pattern: 'Dương Lương Xương Lộc', bonus: 'lại hội Hóa Khoa', expect: c => sanFangHasSiHua(c, '科') },
 ];

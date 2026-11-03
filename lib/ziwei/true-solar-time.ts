@@ -100,12 +100,20 @@ export function branchFromSolarMinutes(normalizedMinutes: number): number {
   return Math.floor((normalizedMinutes - 60) / 120) + 1;
 }
 
+/** 钟表时区的中央经线 = 时区偏移 / 4（480 分钟 → 120°，420 → 105°）；不传 = 北京时间 120° */
+export function zoneMeridian(utcOffsetMinutes?: number): number {
+  return utcOffsetMinutes !== undefined && Number.isFinite(utcOffsetMinutes) ? utcOffsetMinutes / 4 : 120;
+}
+
+/** 经度修正（分钟）=（出生地经度 − 中央经线）× 4；国内仍是原式 (经度 − 120) × 4，结果逐位不变 */
+export function longitudeCorrection(longitude: number, utcOffsetMinutes?: number): number {
+  return (longitude - zoneMeridian(utcOffsetMinutes)) * 4;
+}
+
 export function calculateTrueSolarTime(input: TrueSolarTimeInput): TrueSolarTimeResult {
   const dateValid = isValidGregorianDate(input.year, input.month, input.day);
   const corrected = input.longitude !== undefined && Number.isFinite(input.longitude);
-  // 中央经线 = 时区偏移 / 4（480 分钟 → 120°）；国内仍是原式 (经度 − 120) × 4，结果逐位不变
-  const meridian = input.utcOffsetMinutes !== undefined && Number.isFinite(input.utcOffsetMinutes) ? input.utcOffsetMinutes / 4 : 120;
-  const longitudeCorrectionMinutes = corrected ? (input.longitude! - meridian) * 4 : 0;
+  const longitudeCorrectionMinutes = corrected ? longitudeCorrection(input.longitude!, input.utcOffsetMinutes) : 0;
   const eot = corrected && dateValid
     ? equationOfTimeMinutes(input.year, input.month, input.day, input.clockHour, input.clockMinute)
     : 0;

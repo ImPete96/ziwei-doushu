@@ -12,10 +12,14 @@
  *   · 闰月用**负月份**表示：闰五月 = -5。
  *   · 月天数与闰月是否存在，一律查 `LunarMonth` 表，不用公历的月长去猜。
  *
+ * Tham số cuối `lunarUtcOffsetMinutes` (tùy chọn): vắng = lịch Trung Quốc của lunar-javascript như trên;
+ * 420 = âm lịch Việt Nam (lunar-calendar-tz.ts; chọn múi theo miền/thời kỳ ở vn-lunar-calendar.ts).
+ *
  * ⚠️ 这里**不许**出现排盘 / 时辰 / 真太阳时 / 四化 任何一行。
  *    那些属于 lib/ziwei/algorithm.ts 与 /api/generate，别顺手塞进来。
  */
 import { Lunar, LunarMonth } from 'lunar-javascript';
+import { lunarMonthTz, lunarToSolarTz } from './lunar-calendar-tz';
 
 export interface SolarDate {
   year: number;
@@ -35,8 +39,9 @@ function isIntInRange(value: unknown, min: number, max: number): value is number
  * 该农历年该月的天数（29 或 30）。
  * 月份不存在（例如那年根本没有闰四月）返回 0。
  */
-export function lunarMonthDayCount(year: number, month: number, isLeapMonth = false): number {
+export function lunarMonthDayCount(year: number, month: number, isLeapMonth = false, lunarUtcOffsetMinutes?: number): number {
   if (!isIntInRange(year, LUNAR_YEAR_MIN, LUNAR_YEAR_MAX) || !isIntInRange(month, 1, 12)) return 0;
+  if (lunarUtcOffsetMinutes !== undefined) return lunarMonthTz(year, month, isLeapMonth, lunarUtcOffsetMinutes)?.days ?? 0;
   try {
     const lunarMonth = LunarMonth.fromYm(year, isLeapMonth ? -month : month);
     const dayCount = lunarMonth?.getDayCount();
@@ -47,18 +52,18 @@ export function lunarMonthDayCount(year: number, month: number, isLeapMonth = fa
 }
 
 /** 该农历年的闰月月份（1-12）；无闰月返回 0 */
-export function leapMonthOfLunarYear(year: number): number {
+export function leapMonthOfLunarYear(year: number, lunarUtcOffsetMinutes?: number): number {
   if (!isIntInRange(year, LUNAR_YEAR_MIN, LUNAR_YEAR_MAX)) return 0;
   for (let month = 1; month <= 12; month++) {
-    if (lunarMonthDayCount(year, month, true) > 0) return month;
+    if (lunarMonthDayCount(year, month, true, lunarUtcOffsetMinutes) > 0) return month;
   }
   return 0;
 }
 
 /** 农历日期是否真实存在（含闰月是否存在、当月是否有这一天） */
-export function isValidLunarDate(year: number, month: number, day: number, isLeapMonth = false): boolean {
+export function isValidLunarDate(year: number, month: number, day: number, isLeapMonth = false, lunarUtcOffsetMinutes?: number): boolean {
   if (!isIntInRange(day, 1, 30)) return false;
-  const dayCount = lunarMonthDayCount(year, month, isLeapMonth);
+  const dayCount = lunarMonthDayCount(year, month, isLeapMonth, lunarUtcOffsetMinutes);
   return dayCount > 0 && day <= dayCount;
 }
 
@@ -66,8 +71,9 @@ export function isValidLunarDate(year: number, month: number, day: number, isLea
  * 农历 → 公历。输入非法（年份越界 / 闰月不存在 / 当月没这天）一律返回 null，
  * **绝不静默滚动到相邻日期**——那会让用户排到一张错盘还不知道。
  */
-export function lunarToSolar(year: number, month: number, day: number, isLeapMonth = false): SolarDate | null {
-  if (!isValidLunarDate(year, month, day, isLeapMonth)) return null;
+export function lunarToSolar(year: number, month: number, day: number, isLeapMonth = false, lunarUtcOffsetMinutes?: number): SolarDate | null {
+  if (!isValidLunarDate(year, month, day, isLeapMonth, lunarUtcOffsetMinutes)) return null;
+  if (lunarUtcOffsetMinutes !== undefined) return lunarToSolarTz(year, month, day, isLeapMonth, lunarUtcOffsetMinutes);
   try {
     const solar = Lunar.fromYmd(year, isLeapMonth ? -month : month, day).getSolar();
     const result = { year: solar.getYear(), month: solar.getMonth(), day: solar.getDay() };

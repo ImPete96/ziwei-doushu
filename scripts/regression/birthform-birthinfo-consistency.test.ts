@@ -16,7 +16,7 @@
  *
  * 本回归钉住三件事：
  *   1. BirthForm 必须复用 `formToBirthInfo`，不得自行拼装 BirthInfo；
- *   2. BirthForm 不得再带一份自己的 `calcTrueSolarBranch`（真太阳时只有一处实现）；
+ *   2. BirthForm 不得再带一份自己的 `calcTrueSolarBranch`（真太阳时只有一处实现：share.ts 的 `formSolarTime`）；
  *   3. `formToBirthInfo` 的晚子时 / 早子时边界行为，含跨月与跨年进位。
  *
  * 第 1、2 条走源码解析（组件是 .tsx，仓库没有 DOM 测试环境），
@@ -46,7 +46,7 @@ assert.equal(
 assert.equal(
   /function\s+calcTrueSolarBranch\s*\(/.test(src),
   false,
-  'BirthForm 不得重复实现 calcTrueSolarBranch，请复用 lib/ziwei/share.ts 的同名导出',
+  'BirthForm 不得重复实现 calcTrueSolarBranch，请复用 lib/ziwei/share.ts 的 formSolarTime',
 );
 
 // ── 3) formToBirthInfo 的边界行为 ───────────────────────────────

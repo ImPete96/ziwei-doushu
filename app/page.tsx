@@ -126,7 +126,7 @@ const FEATURES = [
     title: 'Tự động phát hiện\ncách cục lá số',
     subtitle: 'Từ tổ hợp tinh diệu tìm ra điều đã định trong mệnh bạn',
     points: [
-      'Tự động nhận diện 11 cách cục kinh điển: Tử Phủ đồng cung, Sát Phá Lang, Cơ Nguyệt Đồng Lương, Liêm Tướng, Vũ Khúc Thất Sát…',
+      'Tự động nhận diện 11 cách cục kinh điển: Tử Phủ đồng cung, Sát Phá Tham, Cơ Nguyệt Đồng Lương, Liêm Tướng, Vũ Khúc Thất Sát…',
       'Phát hiện chính xác các cách đặc biệt như Phụ Bật giáp Mệnh, Nhật Nguyệt giáp Mệnh, kèm lời giải chuẩn theo hệ Nghê Hải Hạ',
       'Tự động đánh dấu trường hợp Tứ Hóa nhập cung Mệnh, cung Thiên Di, nhắc những chủ đề đời người cần lưu tâm',
       'Cách cục được xếp theo mức cát hung, giúp bạn thấy ngay ưu thế và thử thách trong lá số',
@@ -406,7 +406,7 @@ function FeatureVisual({ index, colors: c }: { index: number; colors: ReturnType
 
   if (index === 3) {
     const patterns = [
-      { name: 'Cách Sát Phá Lang', desc: 'Mệnh khai sáng, tiến thủ', ok: true },
+      { name: 'Cách Sát Phá Tham', desc: 'Mệnh khai sáng, tiến thủ', ok: true },
       { name: 'Cách Liêm Tướng',   desc: 'Cách hành chính, ấn thụ', ok: true },
       { name: 'Hóa Kỵ nhập Mệnh', desc: 'Cần lưu tâm chủ đề tâm lý', ok: false },
     ];

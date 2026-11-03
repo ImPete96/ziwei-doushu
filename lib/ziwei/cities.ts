@@ -699,6 +699,6 @@ export const PROVINCES: ProvinceInfo[] = [
     ],
   },
 
-  // 注：海外出生暂未支持，因 share.ts 真太阳时算法假设输入为北京时间(UTC+8)。
-  // 海外用户请把当地时间换算成北京时间再填写（或填出生时所在的中国时区相对城市）。
+  // 注：本表只用于「Trung Quốc」：钟表时间按北京时间(UTC+8)、中央经线 120° 校正（share.ts formSolarTime）。
+  // Việt Nam 出生地见 lib/ziwei/vn-places.ts，钟表时区按越南历史时区（vn-timezone.ts）。其他国家暂未支持。
 ];

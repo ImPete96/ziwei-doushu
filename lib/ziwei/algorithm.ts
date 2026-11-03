@@ -4,12 +4,14 @@
  */
 
 import { astro } from 'iztro';
-import { Solar, LunarMonth } from 'lunar-javascript';
+import { Solar, Lunar, LunarMonth } from 'lunar-javascript';
 import type { BirthInfo, LunarInfo, Star, Palace, DaXian, DaXianSiHua, ZiweiChart } from './types';
 import { BRANCHES, STEMS } from './constants';
 import { schoolStarBrightness, type BrightnessSchool } from './school-data';
 import { SCHOOL_AX } from './school-tables.generated';
 import { DEFAULT_LEAP_MONTH } from './school-config';
+import { lunarMonthTz, solarToLunarTz } from './lunar-calendar-tz';
+import { CN_LUNAR_OFFSET_MINUTES, VN_LUNAR_OFFSET_MINUTES, vnLunarCalendar } from './vn-lunar-calendar';
 // 飞星派工具仅供导出，不再在排盘时调用（倪师《天纪 03》：四化星永远固定不动）
 // import { detectSelfSihua, getSiHuaByStem } from './sihua';
 
@@ -91,6 +93,9 @@ const DEFAULT_BRIGHTNESS: Record<string, string[]> = {
 // 模块加载即写入默认亮度表 + 农历正月初一换年规则（astro.config 为全局副作用）
 astro.config({
   yearDivide: 'normal',
+  // Mặc định của iztro vốn là 'normal'; ghi tường minh vì nhánh âm lịch theo múi giờ (astrolabeForLunarDate)
+  // dựa trên việc thần sát năm cũng đổi năm theo Tết, không theo Lập xuân.
+  horoscopeDivide: 'normal',
   brightness: DEFAULT_BRIGHTNESS,
 });
 
@@ -139,6 +144,11 @@ export function resolveEffectiveLunarDate(
   month: number,
   day: number,
   policy: LunarMonthPolicy = 'prev-month',
+  /**
+   * Múi giờ (phút) của âm lịch dùng để đổi ngày. Vắng = lịch Trung Quốc của lunar-javascript (y như trước);
+   * 420 = âm lịch Việt Nam (lunar-calendar-tz.ts). Xem vn-lunar-calendar.ts.
+   */
+  lunarUtcOffsetMinutes?: number,
 ): EffectiveLunarDate {
   // 闰月归属是字面量联合类型，但本函数可从运行时 JavaScript / JSON API 直接调用，
   // 类型形同虚设。拼错的 policy 原本会落进下方 if/else 链的尾部，静默按「归本月」
@@ -149,15 +159,17 @@ export function resolveEffectiveLunarDate(
       `leapMonth policy must be one of 'split' | 'next-month' | 'prev-month' | 'origin-month'; received ${String(policy)}`,
     );
   }
-  const lunar = Solar.fromYmd(year, month, day).getLunar();
-  const rawLunarMonth = Number(lunar.getMonth());
-  const rawLunarDay = Number(lunar.getDay());
+  const tzLunar = lunarUtcOffsetMinutes === undefined ? undefined : solarToLunarTz(year, month, day, lunarUtcOffsetMinutes);
+  const lunar = tzLunar ? undefined : Solar.fromYmd(year, month, day).getLunar();
+  const rawLunarYear = tzLunar ? tzLunar.year : Number(lunar!.getYear());
+  const rawLunarMonth = tzLunar ? (tzLunar.isLeap ? -tzLunar.month : tzLunar.month) : Number(lunar!.getMonth());
+  const rawLunarDay = tzLunar ? tzLunar.day : Number(lunar!.getDay());
   const isRawLeapMonth = rawLunarMonth < 0;
   const absoluteMonth = Math.abs(rawLunarMonth);
 
   if (!isRawLeapMonth) {
     return {
-      lunarYear: Number(lunar.getYear()),
+      lunarYear: rawLunarYear,
       lunarMonth: absoluteMonth,
       lunarDay: rawLunarDay,
       isLeapMonth: false,
@@ -166,7 +178,7 @@ export function resolveEffectiveLunarDate(
     };
   }
 
-  let lunarYear = Number(lunar.getYear());
+  let lunarYear = rawLunarYear;
   let lunarMonth = absoluteMonth;
   let isLeapMonth = false;
 
@@ -188,7 +200,9 @@ export function resolveEffectiveLunarDate(
   let lunarDay = rawLunarDay;
   try {
     const monthKey = isLeapMonth ? -lunarMonth : lunarMonth;
-    const dayCount = LunarMonth.fromYm(lunarYear, monthKey)?.getDayCount?.();
+    const dayCount = lunarUtcOffsetMinutes === undefined
+      ? LunarMonth.fromYm(lunarYear, monthKey)?.getDayCount?.()
+      : lunarMonthTz(lunarYear, lunarMonth, isLeapMonth, lunarUtcOffsetMinutes)?.days;
     if (typeof dayCount === 'number' && dayCount > 0 && lunarDay > dayCount) lunarDay = dayCount;
   } catch { /* 查不到月信息则保留原日，维持下游既有容错 */ }
 
@@ -209,17 +223,28 @@ export function getLunarInfo(
   day: number,
   hour?: number,
   policy: LunarMonthPolicy = 'prev-month',
+  /** Múi giờ âm lịch (phút); vắng = lịch Trung Quốc như trước. Xem resolveEffectiveLunarDate. */
+  lunarUtcOffsetMinutes?: number,
+  /**
+   * Offset UTC (phút) mà giờ giữa canh `hour * 2` được hiểu theo, để so với điểm giao tiết (tiết khí là thời điểm
+   * tuyệt đối, lunar-javascript cho theo giờ Bắc Kinh). Vắng = bằng múi âm lịch, vắng nốt = giờ Bắc Kinh (như trước).
+   * Người sinh ở VN: luôn 420 (giờ mặt trời địa phương ≈ UTC+7), kể cả khi ngày âm theo lịch +8.
+   */
+  birthClockUtcOffsetMinutes?: number,
 ): LunarInfo {
   const solar = Solar.fromYmd(year, month, day);
   const lunar = solar.getLunar();
-  const effective = resolveEffectiveLunarDate(year, month, day, policy);
+  const effective = resolveEffectiveLunarDate(year, month, day, policy, lunarUtcOffsetMinutes);
   // lunar-javascript 没有 .d.ts，立春换年方法只在 runtime 上有，用 any 绕过
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const lu = lunar as any;
   // 紫微斗数排盘年（正月初一换年，与上方 astro.config:yearDivide='normal' 同口径）
   // 注意：节气四柱(下方)用 getEightChar() 精确到立春/节的时刻，八字四柱永远立春换年，跟紫微的"农历年"是两套
-  const yearStem = STEMS.indexOf(lu.getYearGan());
-  const yearBranch = BRANCHES.indexOf(lu.getYearZhi());
+  // Âm lịch theo múi giờ khác (VN): năm âm (Tết) theo lịch đó → can chi năm = (năm âm − 4) mod 10 / 12.
+  // Can chi ngày không phụ thuộc lịch (chỉ theo ngày dương) nên vẫn lấy từ lunar-javascript.
+  const tzLunarYear = lunarUtcOffsetMinutes === undefined ? undefined : solarToLunarTz(year, month, day, lunarUtcOffsetMinutes).year;
+  const yearStem = tzLunarYear === undefined ? STEMS.indexOf(lu.getYearGan()) : (((tzLunarYear - 4) % 10) + 10) % 10;
+  const yearBranch = tzLunarYear === undefined ? BRANCHES.indexOf(lu.getYearZhi()) : (((tzLunarYear - 4) % 12) + 12) % 12;
   // ★ 节气四柱（年柱/月柱/日柱/时柱）+ 非节气四柱（农历口径月柱）
   let fourPillars: [string, string, string, string] | undefined;
   let fourPillarsLunar: [string, string, string, string] | undefined;
@@ -232,8 +257,16 @@ export function getLunarInfo(
     //   时刻用「时辰中点」(index*2 点)近似，与排盘既有的真太阳时时辰同口径；日柱/时柱不受立春影响、保持原算法。
     //   非节气日新旧完全一致（只有落在立春/十二节当天、交节时刻前后的人才会变），已抽样 12 例逐一比对验证。
     const effHour = (hour !== undefined && hour >= 0 && hour <= 11) ? hour * 2 : 0;
+    // Quy thời điểm sinh về giờ Bắc Kinh trước khi so với điểm giao tiết (xem birthClockUtcOffsetMinutes).
+    const birthClock = birthClockUtcOffsetMinutes ?? lunarUtcOffsetMinutes;
+    const shift = birthClock === undefined ? 0 : CN_LUNAR_OFFSET_MINUTES - birthClock;
+    const at = new Date(Date.UTC(year, month - 1, day, effHour, shift, 0));
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const ec = (Solar as any).fromYmdHms(year, month, day, effHour, 0, 0).getLunar().getEightChar();
+    const ec = (shift === 0
+      ? (Solar as any).fromYmdHms(year, month, day, effHour, 0, 0)
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      : (Solar as any).fromYmdHms(at.getUTCFullYear(), at.getUTCMonth() + 1, at.getUTCDate(), at.getUTCHours(), at.getUTCMinutes(), 0)
+    ).getLunar().getEightChar();
     const yearGZ = ec.getYear() as string;    // 节气四柱年柱：立春精确换年
     const monthGZ = ec.getMonth() as string;  // 节气四柱月柱：节气精确换月 + 五虎遁用立春校正后的年干
     const dayGZ = `${lu.getDayGan()}${lu.getDayZhi()}`;
@@ -450,9 +483,67 @@ function applySchoolFuxun(palaces: Palace[]): void {
   pushNatalStar(palaces, fu, '副旬');
 }
 
+/**
+ * Dựng astrolabe iztro cho một ngày âm KHÔNG theo lịch Trung Quốc (vd. âm lịch Việt Nam).
+ *
+ * iztro chỉ nhận ngày dương và tự đổi sang âm lịch Trung Quốc (lunar-lite, UTC+8). Lá số gốc của iztro chỉ phụ
+ * thuộc can chi năm âm (yearDivide/horoscopeDivide = 'normal'), chỉ số tháng (utils.fixLunarMonthIndex: tháng,
+ * +1 nếu nhuận & fixLeap & ngày > 15), ngày âm, giờ và giới tính — không dùng số năm, can chi ngày/tháng hay
+ * ngày dương để an sao. Nên ta tìm ngày dương S' mà theo lịch Trung Quốc cho đúng các đại lượng đó rồi gọi
+ * bySolar(S'), theo thứ tự ưu tiên:
+ *   1. cùng năm âm, tháng thường M, cùng ngày;
+ *   2. năm âm cách 60·k năm (cùng can chi), tháng thường M;
+ *   3. … hoặc tháng nhuận M (fixLeap = false), hoặc tháng nhuận M−1 với ngày > 15 (fixLeap = true).
+ * Cần 2/3 cho ngày 30 mà tháng M của lịch Trung Quốc chỉ có 29 ngày (độ dài tháng gần như lặp lại theo chu kỳ
+ * 60 năm nên có khi phải lùi/tiến nhiều vòng). Kết quả kiểm lại từ rawDates của chính iztro; không khớp thì
+ * báo lỗi thay vì lập lá số sai. Tuổi mụ không lấy từ astrolabe này (generateChart tự tính).
+ */
+function astrolabeForLunarDate(
+  lunarYear: number,
+  lunarMonth: number,
+  lunarDay: number,
+  hour: number,
+  iztroGender: '男' | '女',
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+): any {
+  const stem = STEMS[(((lunarYear - 4) % 10) + 10) % 10];
+  const branch = BRANCHES[(((lunarYear - 4) % 12) + 12) % 12];
+  const candidates: Array<{ month: number; leap: boolean; fixLeap: boolean }> = [{ month: lunarMonth, leap: false, fixLeap: true }];
+  candidates.push({ month: lunarMonth, leap: true, fixLeap: false });
+  if (lunarDay > 15 && lunarMonth > 1) candidates.push({ month: lunarMonth - 1, leap: true, fixLeap: true });
+  for (let k = 0; k <= 30; k++) {
+    for (const y of k === 0 ? [lunarYear] : [lunarYear + 60 * k, lunarYear - 60 * k]) {
+      if (y < 1000 || y > 3000) continue;
+      for (const c of candidates) {
+        let dayCount: number | undefined;
+        try { dayCount = LunarMonth.fromYm(y, c.leap ? -c.month : c.month)?.getDayCount(); } catch { dayCount = undefined; }
+        if (!dayCount || lunarDay > dayCount) continue;
+        const solar = Lunar.fromYmd(y, c.leap ? -c.month : c.month, lunarDay).getSolar();
+        const astrolabe = astro.bySolar(`${solar.getYear()}-${solar.getMonth()}-${solar.getDay()}`, hour, iztroGender, c.fixLeap, 'zh-CN');
+        const ld = astrolabe.rawDates?.lunarDate;
+        const yearly = astrolabe.rawDates?.chineseDate?.yearly as string[] | undefined;
+        if (
+          ld?.lunarYear === y && ld?.lunarMonth === c.month && ld?.lunarDay === lunarDay && !!ld?.isLeap === c.leap &&
+          yearly?.[0] === stem && yearly?.[1] === branch
+        ) return astrolabe;
+      }
+    }
+  }
+  throw new RangeError(`cannot build iztro chart for lunar date ${lunarYear}-${lunarMonth}-${lunarDay}`);
+}
+
 export function generateChart(
   birthInfo: BirthInfo,
-  opts?: { leapMonth?: LunarMonthPolicy },
+  opts?: {
+    leapMonth?: LunarMonthPolicy;
+    /**
+     * Ép múi giờ âm lịch (phút) — chỉ cho kiểm thử / đối chiếu. Mặc định: country 'VN' → vn-lunar-calendar.ts
+     * (UTC+8 thì đi đúng nhánh lịch Trung Quốc như trước); còn lại → lịch Trung Quốc.
+     */
+    lunarUtcOffsetMinutes?: number;
+    /** «Hôm nay» để tính tuổi mụ / đại hạn hiện tại — chỉ cho kiểm thử; mặc định thời điểm gọi. */
+    now?: Date;
+  },
 ): ZiweiChart {
   const { year, month, day, hour, gender } = birthInfo;
   if (!Number.isInteger(hour) || hour < 0 || hour > 11) {
@@ -473,12 +564,41 @@ export function generateChart(
   // 默认 = DEFAULT_LEAP_MONTH（2026-09-05 起 split：主流排盘默认口径「月中分界」，150 组金标准盘对照验证；倪师派归下月可经流派抽屉切 next-month）
   // 非 split 时先算农历，闰月才切 byLunar；非闰月仍走 bySolar，与 split 行为完全一致
   const leapMode = opts?.leapMonth ?? DEFAULT_LEAP_MONTH;
-  const effectiveLunar = resolveEffectiveLunarDate(year, month, day, leapMode);
+  // Âm lịch Việt Nam (UTC+7) cho người sinh ở VN; UTC+8 trùng lịch Trung Quốc → nhánh cũ, y nguyên.
+  let lunarTz = opts?.lunarUtcOffsetMinutes;
+  if (lunarTz === undefined && birthInfo.country === 'VN') {
+    const cal = vnLunarCalendar(birthInfo);
+    if (cal.offsetMinutes !== CN_LUNAR_OFFSET_MINUTES) lunarTz = cal.offsetMinutes;
+  }
+  const effectiveLunar = resolveEffectiveLunarDate(year, month, day, leapMode, lunarTz);
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let astrolabe: any;
+  /** Năm âm iztro coi là năm sinh (tính tuổi mụ) — chỉ dùng ở nhánh lịch theo múi giờ */
+  let tzBirthLunarYear = 0;
 
-  if (leapMode !== 'split' && effectiveLunar.rawLunarMonth < 0) {
+  if (lunarTz !== undefined) {
+    const cfg = astro.getConfig();
+    if (cfg.yearDivide !== 'normal' || cfg.horoscopeDivide !== 'normal') {
+      throw new Error(`âm lịch theo múi giờ cần astro.config yearDivide/horoscopeDivide = 'normal' (đang là ${cfg.yearDivide}/${cfg.horoscopeDivide})`);
+    }
+    // Cùng ngữ nghĩa với hai nhánh dưới, nhưng ngày âm lấy từ lịch theo múi giờ:
+    //  · tháng thường / split: như bySolar(fixLeap=true) — tháng nhuận nửa sau (ngày > 15) tính tháng kế;
+    //  · không split + tháng nhuận: như byLunar(ngày âm hiệu dụng) — năm/tháng/ngày đã qua chính sách nhuận.
+    let ty: number, tm: number, td: number;
+    if (leapMode !== 'split' && effectiveLunar.rawLunarMonth < 0) {
+      ty = effectiveLunar.lunarYear; tm = effectiveLunar.lunarMonth; td = effectiveLunar.lunarDay;
+    } else {
+      const rawMonth = Math.abs(effectiveLunar.rawLunarMonth);
+      const addOne = effectiveLunar.rawLunarMonth < 0 && effectiveLunar.rawLunarDay > 15;
+      // fixLunarMonthIndex của iztro lấy modulo 12 và giữ nguyên can chi năm khi tháng nhuận 12 sang «tháng 13»
+      ty = solarToLunarTz(year, month, day, lunarTz).year;
+      tm = addOne ? (rawMonth % 12) + 1 : rawMonth;
+      td = effectiveLunar.rawLunarDay;
+    }
+    tzBirthLunarYear = ty;
+    astrolabe = astrolabeForLunarDate(ty, tm, td, hour, iztroGender);
+  } else if (leapMode !== 'split' && effectiveLunar.rawLunarMonth < 0) {
       // 闰月生人 → 按用户选项切换月份归属
       const lunarDateStr = `${effectiveLunar.lunarYear}-${effectiveLunar.lunarMonth}-${effectiveLunar.lunarDay}`;
       astrolabe = astro.byLunar(
@@ -583,8 +703,26 @@ export function generateChart(
   // "大限没走对，似乎还在走上一个大限"。统一用 iztro 自身口径修复。
   let currentAge: number;
   try {
-    const horo = (astrolabe as unknown as { horoscope: () => { age: { nominalAge: number } } }).horoscope();
-    currentAge = horo.age.nominalAge;
+    if (birthInfo.country === 'VN') {
+      // Người sinh ở VN: tuổi mụ như iztro (ageDivide 'normal') = năm âm HÔM NAY theo lịch VN (ngày hiện tại ở
+      // UTC+7, lịch +7) − năm âm sinh (theo lịch đã chọn cho ngày sinh, +7 hoặc +8) + 1.
+      const birthLunarYear = lunarTz !== undefined
+        ? tzBirthLunarYear
+        // Nhánh lịch TQ: như iztro — byLunar(ngày âm hiệu dụng) cho tháng nhuận không split, còn lại bySolar
+        : leapMode !== 'split' && effectiveLunar.rawLunarMonth < 0
+          ? effectiveLunar.lunarYear
+          : Number(Solar.fromYmd(year, month, day).getLunar().getYear());
+      const vnNow = new Date((opts?.now ?? new Date()).getTime() + VN_LUNAR_OFFSET_MINUTES * 60000);
+      currentAge = solarToLunarTz(vnNow.getUTCFullYear(), vnNow.getUTCMonth() + 1, vnNow.getUTCDate(), VN_LUNAR_OFFSET_MINUTES).year - birthLunarYear + 1;
+    } else if (lunarTz !== undefined) {
+      // Chỉ khi ép múi âm lịch (kiểm thử): astrolabe có thể dựng từ năm âm cách 60 năm → tự tính như iztro:
+      // năm âm hôm nay (cùng lịch, ngày hệ thống như iztro) − năm âm sinh + 1.
+      const now = opts?.now ?? new Date();
+      currentAge = solarToLunarTz(now.getFullYear(), now.getMonth() + 1, now.getDate(), lunarTz).year - tzBirthLunarYear + 1;
+    } else {
+      const horo = (astrolabe as unknown as { horoscope: (date?: Date) => { age: { nominalAge: number } } });
+      currentAge = (opts?.now ? horo.horoscope(opts.now) : horo.horoscope()).age.nominalAge;
+    }
   } catch {
     // fallback：iztro 接口异常时回退到虚岁推导
     currentAge = new Date().getFullYear() - year + 1;
@@ -640,7 +778,7 @@ export function generateChart(
   );
 
   // ── 农历信息（含节气四柱）──
-  const lunarInfo = getLunarInfo(year, month, day, hour, leapMode);
+  const lunarInfo = getLunarInfo(year, month, day, hour, leapMode, lunarTz, birthInfo.country === 'VN' ? VN_LUNAR_OFFSET_MINUTES : undefined);
 
   // ★ 2026-08-14 金标准盘核对：截空/副截阴干对调 + 年支大耗 + 旬空成对副旬
   applySchoolJiekong(palaces, lunarInfo.yearStem);

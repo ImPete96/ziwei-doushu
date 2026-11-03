@@ -307,12 +307,12 @@ function detectShaPoLang(chart: ZiweiChart, ming: Palace, patterns: Pattern[]) {
   if (hasShaInPalace(ming, SHA_KONG)) breaking.push('Mệnh tọa Không Kiếp (động mà vất vả)');
 
   patterns.push({
-    name: 'Sát Phá Lang',
+    name: 'Sát Phá Tham',
     level: breaking.length ? 'caution' : 'good',
     description: 'Thất Sát, Phá Quân, Tham Lang hội Mệnh — mệnh cách khai sáng, xông pha. Cả đời nhiều biến động, không cam bình thường; hợp khởi nghiệp, quân đội cảnh sát, kinh doanh, bán hàng. Sau trung niên mới ổn định giữ thành, lúc trẻ dễ thất bại vì bốc đồng.',
     palaces: getSanFangPalaces(chart).filter(p => has.includes(getMajorStarNames(p)[0])).map(p => p.name),
     conditions: { required, bonus, breaking },
-    source: 'Tử Vi Đẩu Số Toàn Thư · Sát Phá Lang',
+    source: 'Tử Vi Đẩu Số Toàn Thư · Sát Phá Tham',
   });
 }
 

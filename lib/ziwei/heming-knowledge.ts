@@ -176,7 +176,7 @@ export const HEMING_METHODOLOGY = `
 **Bước 1: Đánh giá nền tảng mệnh cách hai bên**
 - Cách cục cung Mệnh hai bên có xứng đôi không (cùng loại hay bổ sung)
 - Trọng điểm: phối hợp tính sao của cung Mệnh + Thân cung + cung Phúc Đức
-- Cảnh giác: cả hai đều là cách Sát Phá Lang (hai hổ tranh nhau); hoặc một mạnh một yếu chênh lệch quá xa
+- Cảnh giác: cả hai đều là cách Sát Phá Tham (hai hổ tranh nhau); hoặc một mạnh một yếu chênh lệch quá xa
 
 **Bước 2: Đối chiếu cung Phu Thê**
 - Chính tinh cung Phu Thê bên A → có ứng với sao ở cung Mệnh / tam hợp của bên B không?
@@ -291,7 +291,7 @@ export const HEMING_METHODOLOGY = `
 | Thất Sát + Thất Sát | ★★ | Hai hổ tranh nhau, lửa lớn, mâu thuẫn nhiều |
 | Phá Quân + Phá Quân | ★★ | Song Phá, phá hoại lẫn nhau, hôn nhân bất ổn |
 | Liêm Trinh + Thất Sát / Phá Quân | ★ | Hai trong tổ hợp tam hung, rủi ro sinh ly tử biệt cao nhất |
-| Sát Phá Lang + Cơ Nguyệt Đồng Lương | ★★★ | Động tĩnh bổ sung nhưng cần mài giũa, một bên khai phá một bên giữ thành |
+| Sát Phá Tham + Cơ Nguyệt Đồng Lương | ★★★ | Động tĩnh bổ sung nhưng cần mài giũa, một bên khai phá một bên giữ thành |
 | Tử Phá + Liêm Phủ | ★★★★ | Cách cục tương xứng, hút nhau |
 | Vũ Khúc + Thiên Đồng | ★★★ | Cương nhu tương tế, Vũ Khúc thu liễm gặp Thiên Đồng ôn hòa, bổ sung được cho nhau |
 

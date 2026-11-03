@@ -34,7 +34,7 @@ const ZHIWEI_LAYOUT: Array<{ branch: number; row: number; col: number }> = [
 
 interface ShareCardProps {
   chart: ZiweiChart;
-  birth: { year: string; month: string; day: string; hour: string; minute: string; gender: 'male' | 'female'; city?: string };
+  birth: { year: string; month: string; day: string; hour: string; minute: string; gender: 'male' | 'female'; city?: string; province?: string };
   highlight?: string;
 }
 
@@ -103,7 +103,7 @@ export default function ShareCardCanvas({ chart, birth, highlight }: ShareCardPr
             {birth.day}/{birth.month}/{birth.year} · {birth.hour.padStart(2,'0')}:{birth.minute.padStart(2,'0')}
             <span style={{ margin: '0 4px', color: '#b8922a' }}>·</span>
             {birth.gender === 'male' ? 'Mệnh nam' : 'Mệnh nữ'}
-            {birth.city && <><span style={{ margin: '0 4px', color: '#b8922a' }}>·</span>{viPlace(birth.city)}</>}
+            {(birth.city || birth.province) && <><span style={{ margin: '0 4px', color: '#b8922a' }}>·</span>{viPlace(birth.city || birth.province)}</>}
           </div>
           <div style={{ fontSize: '8px', color: '#b8922a', letterSpacing: '0.08em', marginTop: '2px' }}>
             {SITE_HOST}

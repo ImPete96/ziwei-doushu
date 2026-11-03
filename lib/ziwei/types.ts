@@ -1,3 +1,6 @@
+/** Quốc gia nơi sinh trên form. Dữ liệu cũ (lịch sử, link chia sẻ) không có trường này = 'CN'. */
+export type BirthCountry = 'VN' | 'CN';
+
 export interface BirthInfo {
   year: number;      // Gregorian year（已经过子时换日修正后的"排盘日"）
   month: number;     // Gregorian month (1-12)
@@ -8,6 +11,10 @@ export interface BirthInfo {
   province?: string;   // 出生省份
   city?: string;       // 出生城市
   longitude?: number;  // 出生地经度（用于真太阳时校正）
+  /** Chỉ có khi sinh ở Việt Nam; vắng = Trung Quốc (giờ Bắc Kinh), như dữ liệu cũ. */
+  country?: BirthCountry;
+  /** Offset UTC (phút) của giờ đồng hồ đã nhập — VN theo lịch sử múi giờ (vn-timezone.ts). */
+  utcOffsetMinutes?: number;
   /**
    * 原始输入（用户在表单里实际填的时间），已知出生时间时始终保留。
    * 例：用户输入 5/9 23:55 → year/month/day 会被改成 5/10（次日子时），

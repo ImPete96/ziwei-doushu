@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import ts from 'typescript';
+import { vnProvinceRequired, VN_PROVINCE_REQUIRED_MESSAGE } from '../../lib/ziwei/share';
 
 // Feed real byte chunks through the page's original reader callback.
 const source = readFileSync(new URL('../../app/heming/page.tsx', import.meta.url), 'utf8');
@@ -10,7 +11,7 @@ assert.ok(start >= 0 && end > start);
 const body = `export function makeRun(ctx) {
   const {chartA,chartB,formA,formB,generateChart,formToBirthInfo,setFormError,
     setAnalyzing,setAnalysis,setAnalysisError,setChartA,setChartB,fetch,
-    setApiMissing,analysisRef} = ctx;
+    setApiMissing,analysisRef,vnProvinceRequired,VN_PROVINCE_REQUIRED_MESSAGE} = ctx;
   const useCallback = (fn) => fn;
   ${source.slice(start, end)}
   return runAnalysis;
@@ -26,7 +27,7 @@ async function consume(chunks: Uint8Array[]) {
   let failed = false;
   await moduleExports.makeRun({
     chartA: {}, chartB: {}, formA: form, formB: form,
-    generateChart: async () => ({}), formToBirthInfo: () => ({}),
+    generateChart: async () => ({}), formToBirthInfo: () => ({}), vnProvinceRequired, VN_PROVINCE_REQUIRED_MESSAGE,
     setChartA: noop, setChartB: noop, setFormError: noop, setAnalyzing: noop,
     setAnalysis: (value: string) => { text = value; },
     setAnalysisError: (value: boolean) => { failed = value; },

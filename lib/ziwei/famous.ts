@@ -132,7 +132,7 @@ export const FAMOUS_PERSONS: FamousPerson[] = [
     descriptionEn: 'Founder of SpaceX and CEO of Tesla',
     year: 1971, month: 6, day: 28, hour: 4,  // 辰时（7:30AM 有文献记录）
     gender: 'male',
-    notable: 'Thể hiện tột cùng của cách Sát Phá Lang; sao dịch mã trên lá số vượng thịnh, cả đời mở rộng biên giới tương lai của nhân loại',
+    notable: 'Thể hiện tột cùng của cách Sát Phá Tham; sao dịch mã trên lá số vượng thịnh, cả đời mở rộng biên giới tương lai của nhân loại',
     notableEn: 'An intense expression of the Sha Po Lang pattern, with a powerful Travel Horse star and a life devoted to pushing the boundaries of humanity’s future.',
   },
 

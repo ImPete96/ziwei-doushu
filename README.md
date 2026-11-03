@@ -202,7 +202,7 @@ Chúng tôi mở mã nguồn một bộ dữ liệu mẫu lá số Tử Vi Đẩ
 | `birthInfo.year` / `month` / `day` | Ngày sinh **dương lịch**: năm 1924–1983 (một vòng Giáp Tý đầy đủ), mỗi tháng lấy ngày 1–30 |
 | `birthInfo.hour` | **Chỉ số canh giờ 0–11**, không phải giờ đồng hồ 0–23: Tý = 0, Sửu = 1 …… Hợi = 11 |
 | `birthInfo.gender` | `male` / `female` |
-| `birthInfo.longitude` | Cố định 120 (kinh độ Đông 120°, chưa hiệu chỉnh giờ mặt trời thật theo từng nơi) |
+| `birthInfo.longitude` | Cố định 120 (kinh độ Đông 120°, chưa hiệu chỉnh giờ mặt trời thật theo từng nơi) — chỉ là chuẩn của bộ dữ liệu này; form lập lá số trên web hiệu chỉnh theo nơi sinh (Việt Nam / Trung Quốc, xem mục 4.1) |
 | Tên tệp `YYYY-MM-DD-hHH-性别.json` (`性别` = giới tính) | Trong đó `hHH` cũng là chỉ số canh giờ, ví dụ `h11` là giờ Hợi, không phải 11 giờ sáng |
 
 Đối chiếu chỉ số canh giờ với giờ đồng hồ:
@@ -314,8 +314,9 @@ Toàn bộ lõi lập lá số nằm trong `lib/ziwei/`.
 
 | Năng lực | Mô tả |
 |------|------|
-| **Hiệu chỉnh giờ mặt trời thật** | Tính chênh lệch giờ theo kinh độ nơi sinh + phương trình thời gian, tránh lệch một canh giờ theo hướng Đông–Tây |
+| **Hiệu chỉnh giờ mặt trời thật** | Tính chênh lệch giờ theo kinh độ nơi sinh + phương trình thời gian, tránh lệch một canh giờ theo hướng Đông–Tây. Form lập lá số (`share.ts` `formSolarTime`) hiệu chỉnh theo kinh độ: mặc định **Việt Nam** — 34 tỉnh/thành từ 1/7/2025 (tỉnh cũ là khu vực tùy chọn), giờ đồng hồ hiểu theo **múi giờ Việt Nam lúc sinh** (UTC+7 hiện nay; trước 13/6/1975 theo lịch sử tzdata từng miền, ví dụ miền Nam 1960–1975 là UTC+8), kinh tuyến chuẩn = múi giờ / 4; chọn **Trung Quốc** thì như trước: giờ Bắc Kinh UTC+8, kinh tuyến 120°. Nước khác chưa hỗ trợ |
 | **Giờ mùa hè Trung Quốc** | Tự động xác định khoảng giờ mùa hè các năm 1986–1991 (chỉ xác định, không tự động trừ; số đọc đồng hồ sau khi người dùng xác nhận thì dùng `clock-adjust.ts` chuyển thành giờ chuẩn) |
+| **Âm lịch Việt Nam** | Người sinh ở Việt Nam (`country: 'VN'`) đổi dương → âm theo **âm lịch Việt Nam**: sóc và trung khí tính theo giờ UTC+7 (kinh tuyến 105°E, quy tắc Hồ Ngọc Đức; thiên văn Meeus + VSOP87 rút gọn, `lunar-calendar-tz.ts`), áp dụng cho miền Bắc từ 1/1/1968 và miền Nam từ 13/6/1975; trước đó dùng lịch Trung Quốc (UTC+8) như thực tế lịch sử (`vn-lunar-calendar.ts`). Ví dụ Tết 1985: VN 21/1, TQ 20/2; Tết 2007: VN 17/2, TQ 18/2. Năm/tháng/ngày âm, tháng nhuận, can chi năm, tuổi mụ và tứ trụ (điểm giao tiết so theo giờ VN thật) đều theo lịch VN; chọn Trung Quốc thì giữ nguyên lịch lunar-javascript |
 | **Bốn chuẩn tháng nhuận** | Tháng nhuận quy về tháng trước / quy về tháng sau / chia theo ngày / theo tháng này, có thể cấu hình, không cố định theo một phái |
 | **Đổi ngày ở giờ Tý muộn** | 23:00–23:59 lập lá số theo ngày hôm sau, 00:00–00:59 theo ngày hôm đó; khi đã điền nơi sinh thì xét theo giờ mặt trời thật (cùng chuẩn với canh giờ); chiến lược đổi ngày có thể chuyển đổi |
 | **Độ sáng sao 7 mức** | Miếu / Vượng / Đắc / Lợi / Bình / Bất / Hãm, ngoài ra giữ 3 mức phân loại thô để hạ cấp khi hiển thị |
@@ -335,6 +336,8 @@ Toàn bộ lõi lập lá số nằm trong `lib/ziwei/`.
 | `heming-knowledge.ts` | Phương pháp luận xem hợp đôi: logic so sánh hai lá số theo hệ thống của Nghê sư |
 | `types.ts` | Định nghĩa kiểu TypeScript |
 | `cities.ts` | Kinh vĩ độ các thành phố Trung Quốc, dùng để hiệu chỉnh giờ mặt trời thật |
+| `vn-places.ts` / `vn-timezone.ts` | 34 tỉnh/thành Việt Nam theo NQ 202/2025/QH15 (toạ độ trung tâm hành chính mới; 63 tỉnh cũ + Vĩnh Linh là khu vực tùy chọn với toạ độ tỉnh lỵ cũ và miền 1954–1975; tên tỉnh cũ trong link cũ vẫn tra được; Quảng Trị mới vắt qua sông Bến Hải nên bắt buộc chọn khu vực khi hai miền khác múi giờ) và lịch sử múi giờ Việt Nam theo miền (bảng tĩnh theo IANA tzdata) |
+| `lunar-calendar-tz.ts` / `vn-lunar-calendar.ts` | Âm lịch theo múi giờ tham số (UTC+8 khớp lunar-javascript từng ngày 1960–2050) và quy tắc chọn âm lịch Việt Nam theo miền / thời kỳ, kèm nguồn |
 | `famous.ts` | Dữ liệu ví dụ lá số của danh nhân lịch sử |
 | `school-data.ts` / `school-tables.generated.ts` / `school-config.ts` | Dữ liệu và bảng đối chiếu trường phái độ sáng sao, cấu hình chuẩn tháng nhuận và giờ Tý muộn |
 | `shier-shen.ts` | Thập nhị thần sát (bản mệnh khởi theo chi năm sinh, tầng Lưu niên khởi theo chi năm lưu niên) |

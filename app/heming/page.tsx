@@ -2,7 +2,7 @@
 import { useState, useCallback, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import BirthForm, { type BirthFormState } from '@/components/BirthForm';
-import { formToBirthInfo } from '@/lib/ziwei/share';
+import { formToBirthInfo, vnProvinceRequired, VN_PROVINCE_REQUIRED_MESSAGE } from '@/lib/ziwei/share';
 import { generateChart as buildChart } from '@/lib/ziwei/algorithm';
 import type { BirthInfo, ZiweiChart } from '@/lib/ziwei/types';
 import { useTheme } from '@/components/ThemeProvider';
@@ -88,6 +88,12 @@ export default function HemingPage() {
     setFormError(null);
     if (!isFormReady(formA) || !isFormReady(formB)) {
       setFormError('Vui lòng điền đầy đủ thông tin sinh của cả hai người');
+      return;
+    }
+    // Cùng điều kiện chặn như BirthForm: sinh ở VN trước 13/6/1975 phải chọn tỉnh
+    const needProvince = [formA!, formB!].map(vnProvinceRequired);
+    if (needProvince.some(Boolean)) {
+      setFormError(`${needProvince[0] && needProvince[1] ? 'Cả hai người' : needProvince[0] ? 'Người thứ nhất (A)' : 'Người thứ hai (B)'} — ${VN_PROVINCE_REQUIRED_MESSAGE}`);
       return;
     }
     setAnalyzing(true);
