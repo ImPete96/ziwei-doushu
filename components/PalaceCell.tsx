@@ -30,16 +30,16 @@ export const BRIGHTNESS_ABBR: Record<string, string> = {
 
 const Brightness = ({ raw, className }: { raw?: string; className?: string }) =>
   raw && BRIGHTNESS_ABBR[raw] ? (
-    <span title={viBrightness(raw)} className={clsx('ml-0.5 font-normal opacity-70', className)}>
+    <span title={viBrightness(raw)} className={clsx('ml-0.5 font-normal', className)}>
       ({BRIGHTNESS_ABBR[raw]})
     </span>
   ) : null;
 
-const SIHUA_STYLES: Record<string, string> = {
-  '禄': 'text-emerald-400 bg-emerald-500/10 border-emerald-500/30',
-  '权': 'text-blue-400 bg-blue-500/10 border-blue-500/30',
-  '科': 'text-yellow-400 bg-yellow-500/10 border-yellow-500/30',
-  '忌': 'text-red-400 bg-red-500/10 border-red-500/30',
+const SIHUA_VAR: Record<string, string> = { '禄': 'var(--t-lu)', '权': 'var(--t-quan)', '科': 'var(--t-ke)', '忌': 'var(--t-ji)' };
+
+const sihuaStyle = (siHua: string): React.CSSProperties => {
+  const c = SIHUA_VAR[siHua] ?? 'var(--t-faint)';
+  return { color: c, background: `color-mix(in srgb, ${c} 12%, transparent)`, borderColor: `color-mix(in srgb, ${c} 45%, transparent)` };
 };
 
 const SiHuaBadge = ({
@@ -56,14 +56,14 @@ const SiHuaBadge = ({
   return (
     <span
       className={clsx(
-        'inline-flex items-center text-[8px] px-1 rounded-full border leading-none py-px font-bold ml-0.5 flex-shrink-0 whitespace-nowrap',
-        SIHUA_STYLES[siHua],
-        overlay && 'border-dashed opacity-80',
-        onClick && 'cursor-pointer hover:opacity-100',
+        'inline-flex items-center text-[11px] px-1.5 rounded-full border leading-none py-0.5 font-bold ml-1 flex-shrink-0 whitespace-nowrap',
+        overlay && 'border-dashed',
+        onClick && 'cursor-pointer',
       )}
+      style={sihuaStyle(siHua)}
       onClick={onClick}
     >
-      {overlay && label && <span className="mr-0.5 opacity-70">{label}</span>}
+      {overlay && label && <span className="mr-0.5 font-medium">{label}</span>}
       {viSihuaShort(siHua)}
     </span>
   );
@@ -105,35 +105,37 @@ export default function PalaceCell({
         boxShadow: isCurrentDaXian
           ? 'inset 3px 0 0 rgba(147,51,234,0.5)'
           : isSelected
-          ? 'inset 0 0 0 1.5px rgba(37,99,235,0.7)'
+          ? 'inset 0 0 0 2px var(--t-sel)'
           : isSanFang
-          ? 'inset 0 0 0 1px rgba(37,99,235,0.4)'
+          ? 'inset 0 0 0 1px color-mix(in srgb, var(--t-sel) 70%, transparent)'
           : 'none',
       }}
     >
       {/* 宫名行 */}
       <div className="flex flex-wrap items-center gap-x-1 mb-0.5">
-        <span className={clsx('text-[9px] sm:text-[10px] font-medium leading-tight',
-          isMingGong ? 'text-amber-500' : isShenGong ? 'text-sky-500' : ''
-        )}
-          style={!isMingGong && !isShenGong ? { color: 'var(--t-faint)' } : undefined}
+        <button
+          type="button"
+          aria-pressed={!!isSelected}
+          aria-label={`${viPalace(name)}, ${ganzhi}${daXianAge ? `, đại hạn ${daXianAge[0]}–${daXianAge[1]} tuổi` : ''}`}
+          className="text-[13px] font-medium leading-tight text-left"
+          style={{ color: isMingGong ? 'var(--t-gold)' : isShenGong ? 'var(--t-shen)' : 'var(--t-text2)' }}
         >
           {viPalace(name)}
-        </span>
+        </button>
         {isMingGong && (
-          <span className="text-[7px] text-amber-500/80 border border-amber-500/30 px-0.5 rounded leading-tight whitespace-nowrap">Mệnh</span>
+          <span className="text-[11px] px-1 rounded leading-tight whitespace-nowrap border" style={{ color: 'var(--t-gold)', borderColor: 'var(--t-border-acc)' }}>Mệnh</span>
         )}
         {isShenGong && (
-          <span className="text-[7px] text-sky-500/80 border border-sky-500/30 px-0.5 rounded leading-tight whitespace-nowrap">Thân</span>
+          <span className="text-[11px] px-1 rounded leading-tight whitespace-nowrap border" style={{ color: 'var(--t-shen)', borderColor: 'color-mix(in srgb, var(--t-shen) 45%, transparent)' }}>Thân</span>
         )}
       </div>
 
       {/* 干支 + 大限年龄（越南文宫名较长，年龄从右上角绝对定位移到这一行，避免与宫名重叠） */}
-      <div className="flex flex-wrap items-baseline justify-between gap-x-1 mb-1 text-[8px] sm:text-[9px]">
-        <span className="font-mono" style={{ color: 'var(--t-faint)', opacity: 0.75 }}>{ganzhi}</span>
+      <div className="flex flex-wrap items-baseline justify-between gap-x-1 mb-1 text-[12px]">
+        <span className="font-mono" style={{ color: 'var(--t-faint)' }}>{ganzhi}</span>
         {daXianAge && (
-          <span className={clsx('font-mono tabular-nums', isCurrentDaXian ? 'text-purple-400' : '')}
-            style={!isCurrentDaXian ? { color: 'var(--t-faint)', opacity: 0.75 } : undefined}
+          <span className="font-mono tabular-nums"
+            style={{ color: isCurrentDaXian ? 'var(--t-purple)' : 'var(--t-faint)' }}
           >
             {daXianAge[0]}–{daXianAge[1]}
           </span>
@@ -143,23 +145,22 @@ export default function PalaceCell({
       {/* 主星 */}
       <div className="flex flex-col gap-0.5 flex-1">
         {majorStars.length === 0 && (
-          <span className="text-[9px] sm:text-[10px] italic leading-tight" style={{ color: 'var(--t-faint)', opacity: 0.6 }}>Vô chính diệu</span>
+          <span className="text-[13px] italic leading-tight" style={{ color: 'var(--t-faint)' }}>Vô chính diệu</span>
         )}
         {majorStars.map((star) => {
           const overlaySiHua = overlayStarSiHua?.[star.name];
           return (
-            <div
-              key={star.name}
-              className="flex flex-wrap items-center"
-              onClick={e => { e.stopPropagation(); onStarClick?.(star); }}
-            >
-              <span className={clsx(
-                'text-[11px] sm:text-[13px] leading-tight font-bold tracking-tight cursor-pointer hover:brightness-125 transition-all',
-                star.brightness === 'bright' ? 'text-amber-300' : star.brightness === 'dim' ? 'text-amber-700/80' : 'text-amber-500',
-              )}>
+            <div key={star.name} className="flex flex-wrap items-center">
+              {/* Nút thật: bấm chuột hay Enter đều mở chi tiết sao, không chọn cung */}
+              <button
+                type="button"
+                onClick={e => { e.stopPropagation(); onStarClick?.(star); }}
+                className="text-[15px] leading-tight font-bold tracking-tight text-left hover:brightness-125 transition-all"
+                style={{ color: star.brightness === 'bright' ? 'var(--t-star-bright)' : star.brightness === 'dim' ? 'var(--t-dim)' : 'var(--t-star)' }}
+              >
                 {viStar(star.name)}
-                <Brightness raw={star.brightnessRaw} className="text-[9px] sm:text-[10px]" />
-              </span>
+                <Brightness raw={star.brightnessRaw} className="text-[12px]" />
+              </button>
               {star.siHua && <SiHuaBadge siHua={star.siHua} />}
               {overlaySiHua && (
                 <SiHuaBadge
@@ -179,11 +180,12 @@ export default function PalaceCell({
 
       {/* 吉星 */}
       {luckyStars.length > 0 && (
-        <div className="flex flex-wrap gap-x-1 mt-0.5">
+        <div className="flex flex-wrap gap-x-1.5 mt-1">
+          <span className="sr-only">Cát tinh:</span>
           {luckyStars.map(s => {
             const overlaySiHua = overlayStarSiHua?.[s.name];
             return (
-              <span key={s.name} className="inline-flex flex-wrap items-center text-[8px] sm:text-[9px] text-sky-500/70 leading-tight">
+              <span key={s.name} className="inline-flex flex-wrap items-center text-[12px] leading-snug" style={{ color: 'var(--t-lucky)' }}>
                 {viStar(s.name)}
                 <Brightness raw={s.brightnessRaw} />
                 {s.siHua && <SiHuaBadge siHua={s.siHua} />}
@@ -206,9 +208,10 @@ export default function PalaceCell({
 
       {/* 煞星 */}
       {shaStars.length > 0 && (
-        <div className="flex flex-wrap gap-x-1">
+        <div className="flex flex-wrap gap-x-1.5">
+          <span className="sr-only">Sát tinh:</span>
           {shaStars.map(s => (
-            <span key={s.name} className="text-[8px] sm:text-[9px] text-red-500/60 leading-tight">
+            <span key={s.name} className="text-[12px] leading-snug" style={{ color: 'var(--t-sha)' }}>
               {viStar(s.name)}<Brightness raw={s.brightnessRaw} />{s.siHua && <SiHuaBadge siHua={s.siHua} />}
             </span>
           ))}

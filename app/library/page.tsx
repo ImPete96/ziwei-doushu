@@ -16,19 +16,6 @@ export const metadata = {
 export default function LibraryHomePage() {
   return (
     <div style={{ background: 'var(--bg-page)', minHeight: '100vh' }}>
-      {/* 顶栏 */}
-      <div className="px-6 py-4 flex items-center justify-between"
-        style={{ borderBottom: '1px solid rgba(184,146,42,0.15)', background: 'var(--bg-page)' }}>
-        <Link href="/" style={{ fontSize: '12px', color: 'var(--ac)', letterSpacing: '0.06em', textDecoration: 'none' }}>
-          ← Về trang chủ
-        </Link>
-        <div style={{ fontSize: '12px', color: 'var(--tx-3)', letterSpacing: '0.06em', textAlign: 'center' }}>
-          Thư viện cổ thư · CLASSICS
-        </div>
-        <Link href="/chart" style={{ fontSize: '12px', color: 'var(--ac)', letterSpacing: '0.06em', textDecoration: 'none' }}>
-          Lập lá số →
-        </Link>
-      </div>
 
       {/* Hero */}
       <div className="text-center px-6 py-16">

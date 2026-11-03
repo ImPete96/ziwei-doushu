@@ -19,12 +19,12 @@
   --tx-0: #0D0D0B;
   --tx-1: #1A1A18;
   --tx-2: #4A4A45;
-  --tx-3: #8A8A82;
+  --tx-3: #6b6b63;  /* 5.14, trước đây #8A8A82 = 3.33 */
   --tx-inv: #F0EDE8;
   --tx-inv2: rgba(240,237,232,0.65);
 
   /* 唯一强调色：墨金 */
-  --ac:     #B8922A;
+  --ac:     #8a6a12;  /* 4.84 trên nền sáng, trước đây #B8922A = 2.80 */
   --ac-dim: #7A5F1A;
   --ac-bg:  rgba(184,146,42,0.07);
   --ac-bdr: rgba(184,146,42,0.22);
@@ -69,7 +69,7 @@
   --tx-0: #e8eef6;
   --tx-1: #dce4f0;
   --tx-2: #9db0d0;
-  --tx-3: #6a7a96;
+  --tx-3: #8392ad;
   --tx-inv: #0d0d0b;
   --tx-inv2: rgba(13,13,11,0.65);
 
@@ -107,6 +107,16 @@
   --t-text2: var(--tx-2);
   --t-faint: #5f6470;  /* 5.67 */
   --t-gold: #7a5f1a;   /* 5.78 */
+  /* Bàn lá số: màu chữ đặc (không dùng alpha/opacity cho chữ), đều ≥ 4.5:1 */
+  --t-star-bright: #92400e; /* chính tinh miếu vượng */
+  --t-star: #b45309;
+  --t-dim: #a16207;         /* chính tinh hãm */
+  --t-lucky: #0369a1;       /* cát tinh */
+  --t-sha: #b91c1c;         /* sát tinh */
+  --t-shen: #0369a1;        /* Thân cung */
+  --t-purple: #7e22ce;      /* đại hạn */
+  --t-sel: #2563eb;         /* ô chọn, đường Tam phương */
+  --t-lu: #2d7a4a;  --t-quan: #1a56a8;  --t-ke: #854d0e;  --t-ji: #a83228;
 }
 [data-theme="dark"] {
   --t-bg: #020810;
@@ -119,6 +129,15 @@
   --t-text2: #c3cfe2;
   --t-faint: #9db0d0;  /* 9.14 */
   --t-gold: #d4a843;   /* 9.07 */
+  --t-star-bright: #fcd34d;
+  --t-star: #f59e0b;
+  --t-dim: #c98a2e;         /* 6.85 */
+  --t-lucky: #38bdf8;       /* 9.38 */
+  --t-sha: #f87171;         /* 7.27 */
+  --t-shen: #38bdf8;
+  --t-purple: #c084fc;      /* 7.61 */
+  --t-sel: #5b8def;         /* 6.22 */
+  --t-lu: #4ade80;  --t-quan: #60a5fa;  --t-ke: #facc15;  --t-ji: #f87171;
 }
 
 /* Khung kính mờ dùng cho InsightPanel, PatternsCard, FamousPersonCard (cũng chưa từng định nghĩa) */
@@ -127,6 +146,20 @@
   border: 1px solid var(--t-border);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
+}
+
+/* Liên kết "bỏ qua menu": ẩn cho tới khi được focus bằng bàn phím */
+.skip-link {
+  position: absolute; left: 12px; top: -48px; z-index: 100;
+  padding: 8px 14px; border-radius: 8px;
+  background: var(--t-surface); color: var(--t-gold); border: 1px solid var(--t-border-acc);
+}
+.skip-link:focus { top: 12px; }
+
+/* Tôn trọng cài đặt giảm chuyển động của hệ điều hành */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
 }
 
 /* Chỉ báo focus bàn phím chung; !important để thắng các style inline outline:none của form */

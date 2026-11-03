@@ -481,7 +481,7 @@ Lời khuyên cụ thể, làm được, dựa trên Tứ Hóa này.`;
                 animate={{ opacity: 1, y: 0 }}
               >
                 <div
-                  className="text-[11px] tracking-widest mb-2 flex items-center gap-1.5"
+                  className="text-[12px] tracking-widest mb-2 flex items-center gap-1.5"
                   style={{ color: 'var(--t-faint)' }}
                 >
                   <span style={{ color: 'var(--t-gold)', opacity: 0.4 }}>✦</span>

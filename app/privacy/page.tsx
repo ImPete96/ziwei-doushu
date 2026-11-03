@@ -3,14 +3,6 @@ export const metadata = { title: 'Chính sách quyền riêng tư · Lá Số T�
 export default function PrivacyPage() {
   return (
     <>
-      <header style={{ position: 'sticky', top: 0, zIndex: 50, background: 'var(--bg-0)', borderBottom: '1px solid var(--bdr)', padding: '14px 24px', display: 'flex', alignItems: 'center', gap: '16px' }}>
-        <a href="/" style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: '13px', color: 'var(--tx-3)', textDecoration: 'none' }}>
-          <span style={{ fontSize: '16px' }}>‹</span>
-          <span>Về trang chủ</span>
-        </a>
-        <div style={{ width: '1px', height: '20px', background: 'var(--bdr-med)' }} />
-        <span style={{ fontSize: '12px', color: 'var(--ac)', letterSpacing: '0.2em' }}>Lá Số Tử Vi</span>
-      </header>
       <main style={{ maxWidth: 800, margin: '0 auto', padding: '60px 24px 80px', color: 'var(--tx-1)', lineHeight: 1.8, fontSize: 16 }}>
         <h1 style={{ fontSize: 28, fontWeight: 600, marginBottom: 8 }}>Chính sách quyền riêng tư</h1>
         <p style={{ fontSize: 14, color: 'var(--tx-2)', marginBottom: 32 }}>Cập nhật lần cuối: tháng 11/2026</p>
@@ -30,7 +22,7 @@ export default function PrivacyPage() {
         <p>Trang dùng bộ nhớ trình duyệt (localStorage) để ghi nhớ lựa chọn giao diện sáng/tối. Bạn có thể xóa bằng cách xóa dữ liệu trang web trong cài đặt trình duyệt.</p>
 
         <h2 style={{ fontSize: 18, marginTop: 32, marginBottom: 12 }}>4. Thống kê và quảng cáo</h2>
-        <p>Trang không gắn công cụ theo dõi, thống kê hay quảng cáo của bên thứ ba.</p>
+        <p>Khi trang được triển khai trên Vercel, Vercel Web Analytics và Speed Insights ghi nhận số liệu truy cập và tốc độ tải trang ở dạng ẩn danh, không dùng cookie. Trang không gắn quảng cáo hay công cụ theo dõi của bên thứ ba nào khác.</p>
 
         <h2 style={{ fontSize: 18, marginTop: 32, marginBottom: 12 }}>5. Mã nguồn mở</h2>
         <p>Trang được xây từ mã nguồn mở (giấy phép MIT); bạn có thể kiểm tra cách dữ liệu được xử lý trong mã nguồn. Người vận hành từng bản cài đặt chịu trách nhiệm cấu hình dịch vụ AI và máy chủ của mình.</p>

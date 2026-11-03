@@ -53,8 +53,10 @@ export default function StarField() {
         ctx.fillStyle = color;
         ctx.fill();
       });
-      animId = requestAnimationFrame(draw);
+      if (!reduceMotion) animId = requestAnimationFrame(draw);
     };
+    // Người dùng bật "giảm chuyển động": vẽ một khung tĩnh, không nhấp nháy
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     draw();
 
     return () => {

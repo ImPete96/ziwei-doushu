@@ -188,7 +188,7 @@ export default function BirthForm({ onSubmit, loading, initialData, onFormSave, 
   const bg = isDark ? 'rgba(8,16,40,0.85)' : 'rgba(255,255,255,0.92)';
   const border = isDark ? 'rgba(255,255,255,0.12)' : 'rgba(200,160,60,0.2)';
   // 暗色模式标签提亮：从 rgba(74,112,144,1) → rgba(180,200,225,0.9)
-  const labelClr = isDark ? 'rgba(180,200,225,0.9)' : 'rgba(120,80,10,0.55)';
+  const labelClr = 'var(--t-text2)';
   const inputBg = isDark ? 'rgba(255,255,255,0.06)' : 'rgba(255,252,240,0.8)';
   const inputBorder = isDark ? 'rgba(255,255,255,0.18)' : 'rgba(200,160,60,0.25)';
   // 输入文字提亮：从 #c8d8f0 → #e8eef8
@@ -225,7 +225,7 @@ export default function BirthForm({ onSubmit, loading, initialData, onFormSave, 
             animate={{ opacity: 1, y: 0, height: 'auto' }}
             exit={{ opacity: 0, y: -4, height: 0 }}
             transition={{ duration: 0.18 }}
-            style={{ color: errorClr, fontSize: '11px', marginTop: '4px' }}
+            style={{ color: errorClr, fontSize: '13px', marginTop: '4px' }}
           >
             ✕ {msg}
           </motion.p>
@@ -285,7 +285,7 @@ export default function BirthForm({ onSubmit, loading, initialData, onFormSave, 
                   fontWeight: 500,
                   border: `1px solid ${active ? `rgba(${accent},0.6)` : inputBorder}`,
                   background: active ? `rgba(${accent},0.08)` : inputBg,
-                  color: active ? `rgba(${accent},0.9)` : (isDark ? 'rgba(190,205,225,0.7)' : 'rgba(100,80,40,0.4)'),
+                  color: active ? `rgba(${accent},0.9)` : 'var(--t-text2)',
                   transition: 'all 0.2s',
                   cursor: 'pointer',
                 }}
@@ -300,9 +300,10 @@ export default function BirthForm({ onSubmit, loading, initialData, onFormSave, 
 
       {/* ── 姓名 ── */}
       <div style={{ marginBottom: '16px' }}>
-        <label style={{ display: 'block', fontSize: '11px', color: labelClr, marginBottom: '6px', letterSpacing: '0.05em' }}>Họ tên (không bắt buộc)</label>
+        <label style={{ display: 'block', fontSize: '13px', color: labelClr, marginBottom: '6px', letterSpacing: '0.05em' }}>Họ tên (không bắt buộc)</label>
         <input
           type="text"
+          aria-label="Họ tên (không bắt buộc)"
           placeholder="Nhập họ tên"
           value={form.name}
           onChange={e => setForm({ ...form, name: e.target.value })}
@@ -314,10 +315,10 @@ export default function BirthForm({ onSubmit, loading, initialData, onFormSave, 
 
       {/* ── 出生日期 ── */}
       <div style={{ marginBottom: '16px' }}>
-        <label style={{ display: 'block', fontSize: '11px', color: labelClr, marginBottom: '6px', letterSpacing: '0.05em' }}>Ngày sinh (dương lịch)</label>
+        <label style={{ display: 'block', fontSize: '13px', color: labelClr, marginBottom: '6px', letterSpacing: '0.05em' }}>Ngày sinh (dương lịch)</label>
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '8px' }}>
           <div>
-            <select
+            <select aria-label="Năm sinh (dương lịch)"
               value={form.year}
               onChange={e => { setForm({ ...form, year: e.target.value }); setTouched(t => ({ ...t, year: true })); }}
               style={showErr('year') && errors.year ? errorInputStyle : inputStyle}
@@ -331,7 +332,7 @@ export default function BirthForm({ onSubmit, loading, initialData, onFormSave, 
             <FieldError msg={showErr('year') ? errors.year : ''} />
           </div>
           <div>
-            <select
+            <select aria-label="Tháng sinh"
               value={form.month}
               onChange={e => { setForm({ ...form, month: e.target.value }); setTouched(t => ({ ...t, month: true })); }}
               style={showErr('month') && errors.month ? errorInputStyle : inputStyle}
@@ -345,7 +346,7 @@ export default function BirthForm({ onSubmit, loading, initialData, onFormSave, 
             <FieldError msg={showErr('month') ? errors.month : ''} />
           </div>
           <div>
-            <select
+            <select aria-label="Ngày sinh"
               value={form.day}
               onChange={e => { setForm({ ...form, day: e.target.value }); setTouched(t => ({ ...t, day: true })); }}
               style={showErr('day') && errors.day ? errorInputStyle : inputStyle}
@@ -363,7 +364,7 @@ export default function BirthForm({ onSubmit, loading, initialData, onFormSave, 
 
       {/* ── 出生地点 ── */}
       <div style={{ marginBottom: '16px' }}>
-        <label style={{ display: 'block', fontSize: '11px', color: labelClr, marginBottom: '6px', letterSpacing: '0.05em' }}>Quốc gia nơi sinh</label>
+        <label style={{ display: 'block', fontSize: '13px', color: labelClr, marginBottom: '6px', letterSpacing: '0.05em' }}>Quốc gia nơi sinh</label>
         <div style={{ display: 'flex', gap: '8px', marginBottom: '10px' }} role="radiogroup" aria-label="Quốc gia nơi sinh">
           {([['VN', 'Việt Nam'], ['CN', 'Trung Quốc']] as const).map(([c, label]) => {
             const active = formCountry(form) === c;
@@ -392,10 +393,10 @@ export default function BirthForm({ onSubmit, loading, initialData, onFormSave, 
             );
           })}
         </div>
-        <label style={{ display: 'block', fontSize: '11px', color: labelClr, marginBottom: '6px', letterSpacing: '0.05em' }}>Nơi sinh (dùng để hiệu chỉnh giờ mặt trời thật)</label>
+        <label style={{ display: 'block', fontSize: '13px', color: labelClr, marginBottom: '6px', letterSpacing: '0.05em' }}>Nơi sinh (dùng để hiệu chỉnh giờ mặt trời thật)</label>
         {isVN ? (
           <div style={{ display: 'grid', gridTemplateColumns: vnProvince?.localities ? '1fr 1fr' : '1fr', gap: '8px' }}>
-            <select
+            <select aria-label="Tỉnh, thành phố nơi sinh"
               value={vnSelected?.province ?? form.province}
               onChange={e => handleProvince(e.target.value)}
               style={inputStyle}
@@ -408,7 +409,7 @@ export default function BirthForm({ onSubmit, loading, initialData, onFormSave, 
               ))}
             </select>
             {vnProvince?.localities && (
-              <select
+              <select aria-label="Khu vực nơi sinh"
                 value={vnSelected?.city ?? form.city}
                 onChange={e => handleCity(e.target.value)}
                 style={inputStyle}
@@ -424,7 +425,7 @@ export default function BirthForm({ onSubmit, loading, initialData, onFormSave, 
           </div>
         ) : (
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
-            <select
+            <select aria-label="Tỉnh nơi sinh"
               value={form.province}
               onChange={e => handleProvince(e.target.value)}
               style={inputStyle}
@@ -436,7 +437,7 @@ export default function BirthForm({ onSubmit, loading, initialData, onFormSave, 
                 <option key={p.name} value={p.name}>{viPlace(p.name)}</option>
               ))}
             </select>
-            <select
+            <select aria-label="Thành phố nơi sinh"
               value={form.city}
               onChange={e => handleCity(e.target.value)}
               disabled={!form.province}
@@ -460,7 +461,7 @@ export default function BirthForm({ onSubmit, loading, initialData, onFormSave, 
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              style={{ fontSize: '10px', color: isDark ? 'rgba(180,210,235,0.85)' : 'rgba(100,70,10,0.5)', marginTop: '5px' }}
+              style={{ fontSize: '12px', color: 'var(--t-faint)', marginTop: '5px' }}
             >
               <p>
                 {solar.place.name}{solar.place.seat ? ` (${solar.place.seat})` : ''} · Kinh độ {solar.place.longitude.toFixed(2)}°E · {vnZoneLabel} · Hiệu chỉnh {correctionMin > 0 ? '+' : ''}{correctionMin} phút
@@ -474,7 +475,7 @@ export default function BirthForm({ onSubmit, loading, initialData, onFormSave, 
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              style={{ fontSize: '10px', color: isDark ? 'rgba(165,185,210,0.7)' : 'rgba(140,100,20,0.45)', marginTop: '5px' }}
+              style={{ fontSize: '12px', color: 'var(--t-faint)', marginTop: '5px' }}
             >
               * Sinh từ 13/6/1975 trở đi mà chưa chọn nơi sinh thì không hiệu chỉnh giờ mặt trời thật (canh giờ tính thẳng theo giờ đồng hồ đã nhập); sinh trước mốc này bắt buộc chọn nơi sinh. Nên chọn tỉnh/thành để tự động hiệu chỉnh theo kinh độ và múi giờ Việt Nam lúc sinh.
             </motion.p>
@@ -484,7 +485,7 @@ export default function BirthForm({ onSubmit, loading, initialData, onFormSave, 
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              style={{ fontSize: '10px', color: isDark ? 'rgba(180,210,235,0.85)' : 'rgba(100,70,10,0.5)', marginTop: '5px' }}
+              style={{ fontSize: '12px', color: 'var(--t-faint)', marginTop: '5px' }}
             >
               {form.city ? viPlace(form.city) : '(hãy chọn thành phố)'} · Kinh độ {form.longitude.toFixed(1)}°E · Giờ Bắc Kinh UTC+8, kinh tuyến chuẩn 120°E · Chênh lệch {correctionMin > 0 ? '+' : ''}{correctionMin} phút
             </motion.p>
@@ -494,7 +495,7 @@ export default function BirthForm({ onSubmit, loading, initialData, onFormSave, 
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              style={{ fontSize: '10px', color: isDark ? 'rgba(165,185,210,0.7)' : 'rgba(140,100,20,0.45)', marginTop: '5px' }}
+              style={{ fontSize: '12px', color: 'var(--t-faint)', marginTop: '5px' }}
             >
               * Nghê Hải Hạ luận mệnh theo giờ mặt trời thật; nên điền nơi sinh để tự động hiệu chỉnh canh giờ
             </motion.p>
@@ -504,10 +505,10 @@ export default function BirthForm({ onSubmit, loading, initialData, onFormSave, 
 
       {/* ── 出生时间 ── */}
       <div style={{ marginBottom: '16px' }}>
-        <label style={{ display: 'block', fontSize: '11px', color: labelClr, marginBottom: '6px', letterSpacing: '0.05em' }}>{isVN ? 'Giờ sinh (giờ đồng hồ tại Việt Nam lúc sinh)' : 'Giờ sinh (giờ Bắc Kinh, UTC+8)'}</label>
+        <label style={{ display: 'block', fontSize: '13px', color: labelClr, marginBottom: '6px', letterSpacing: '0.05em' }}>{isVN ? 'Giờ sinh (giờ đồng hồ tại Việt Nam lúc sinh)' : 'Giờ sinh (giờ Bắc Kinh, UTC+8)'}</label>
         <div style={{ borderRadius: '14px', padding: '12px', background: panelBg, border: `1px solid ${panelBorder}`, opacity: form.unknownTime ? 0.45 : 1, pointerEvents: form.unknownTime ? 'none' : 'auto', transition: 'opacity 0.2s' }}>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', marginBottom: '8px' }}>
-            <select
+            <select aria-label="Giờ sinh"
               value={form.clockHour}
               onChange={e => setForm({ ...form, clockHour: e.target.value })}
               style={inputStyle}
@@ -516,7 +517,7 @@ export default function BirthForm({ onSubmit, loading, initialData, onFormSave, 
                 <option key={h} value={String(h)}>{h.toString().padStart(2, '0')} giờ</option>
               ))}
             </select>
-            <select
+            <select aria-label="Phút sinh"
               value={form.clockMinute}
               onChange={e => setForm({ ...form, clockMinute: e.target.value })}
               style={inputStyle}
@@ -528,12 +529,12 @@ export default function BirthForm({ onSubmit, loading, initialData, onFormSave, 
           </div>
           {/* 真太阳时结果 */}
           <div style={{ textAlign: 'center', padding: '4px 0' }}>
-            <span style={{ fontSize: '10px', color: isDark ? 'rgba(170,195,220,0.75)' : 'rgba(140,100,20,0.5)' }}>Giờ mặt trời thật → </span>
+            <span style={{ fontSize: '12px', color: 'var(--t-faint)' }}>Giờ mặt trời thật → </span>
             <span style={{ fontSize: '15px', color: goldText, fontWeight: 600, letterSpacing: '0.04em' }}>
               giờ {viBranch(branch)}
             </span>
             {shichenInfo && (
-              <span style={{ fontSize: '10px', color: isDark ? 'rgba(170,195,220,0.75)' : 'rgba(140,100,20,0.5)', marginLeft: '4px' }}>
+              <span style={{ fontSize: '12px', color: 'var(--t-faint)', marginLeft: '4px' }}>
                 ({shichenInfo.range})
               </span>
             )}
@@ -571,7 +572,7 @@ export default function BirthForm({ onSubmit, loading, initialData, onFormSave, 
               gap: '8px',
             }}>
               <span style={{ fontSize: '12px', color: summaryClr }}>✓</span>
-              <span style={{ fontSize: '11px', color: summaryClr, letterSpacing: '0.03em', flex: 1 }}>
+              <span style={{ fontSize: '13px', color: summaryClr, letterSpacing: '0.03em', flex: 1 }}>
                 {summaryText}
               </span>
             </div>

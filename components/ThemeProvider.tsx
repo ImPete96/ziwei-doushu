@@ -1,5 +1,6 @@
 'use client';
 import { createContext, useContext, useEffect, useState } from 'react';
+import { MotionConfig } from 'framer-motion';
 
 export type Theme = 'dark' | 'light';
 
@@ -8,29 +9,26 @@ const ThemeContext = createContext<{
   toggle: () => void;
 }>({ theme: 'dark', toggle: () => {} });
 
-function getInitialTheme(): Theme {
-  if (typeof document !== 'undefined') {
-    const attr = document.documentElement.getAttribute('data-theme');
-    if (attr === 'light' || attr === 'dark') return attr;
-  }
-  return 'dark';
-}
-
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const [theme, setTheme] = useState<Theme>(getInitialTheme);
+  // Lần dựng đầu luôn là 'dark' như máy chủ, để hydration khớp; màu CSS đã đúng ngay từ đầu nhờ
+  // script trong layout đặt data-theme. Gắn xong mới đọc lựa chọn đã lưu cho phần màu tính bằng JS.
+  const [theme, setTheme] = useState<Theme>('dark');
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
     setMounted(true);
-    const saved = localStorage.getItem('ziwei-theme') as Theme | null;
-    if (saved === 'light' || saved === 'dark') setTheme(saved);
+    let saved: string | null = null;
+    try { saved = localStorage.getItem('ziwei-theme'); } catch { /* bộ nhớ trình duyệt bị chặn */ }
+    const attr = document.documentElement.getAttribute('data-theme');
+    const next = saved === 'light' || saved === 'dark' ? saved : attr === 'light' ? 'light' : 'dark';
+    setTheme(next);
   }, []);
 
   useEffect(() => {
     if (!mounted) return;
     const root = document.documentElement;
     root.setAttribute('data-theme', theme);
-    localStorage.setItem('ziwei-theme', theme);
+    try { localStorage.setItem('ziwei-theme', theme); } catch { /* bỏ qua */ }
   }, [theme, mounted]);
 
   const toggle = () => {
@@ -42,7 +40,8 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
 
   return (
     <ThemeContext.Provider value={{ theme, toggle }}>
-      {children}
+      {/* framer-motion bỏ chuyển động biến đổi khi hệ điều hành bật "giảm chuyển động" */}
+      <MotionConfig reducedMotion="user">{children}</MotionConfig>
     </ThemeContext.Provider>
   );
 }

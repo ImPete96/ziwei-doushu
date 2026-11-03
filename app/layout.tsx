@@ -1,6 +1,8 @@
 import type { Metadata } from 'next';
 import './globals.css';
 import { ThemeProvider } from '@/components/ThemeProvider';
+import SiteHeader from '@/components/site/SiteHeader';
+import SiteFooter from '@/components/site/SiteFooter';
 import { Analytics } from '@vercel/analytics/next';
 import { SpeedInsights } from '@vercel/speed-insights/next';
 import { SITE_URL } from '@/lib/site';
@@ -44,7 +46,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body className="min-h-screen">
         <ThemeProvider>
-          {children}
+          <a href="#noi-dung" className="skip-link">Bỏ qua menu, tới nội dung</a>
+          <SiteHeader />
+          <div id="noi-dung" tabIndex={-1} className="outline-none">
+            {children}
+          </div>
+          <SiteFooter />
         </ThemeProvider>
         <Analytics />
         <SpeedInsights />

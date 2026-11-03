@@ -34,50 +34,6 @@ function WeakBoundary({ line }: { line: string }) {
   );
 }
 
-// ─── 主题切换按钮 ────────────────────────────────────────
-function ThemeToggle() {
-  const { theme, toggle } = useTheme();
-  const isDark = theme === 'dark';
-  return (
-    <motion.button
-      onClick={toggle}
-      whileHover={{ scale: 1.05 }}
-      whileTap={{ scale: 0.93 }}
-      aria-label={isDark ? 'Chuyển sang giao diện sáng' : 'Chuyển sang giao diện tối'}
-      className="flex items-center gap-2 px-3 py-1.5 rounded-full border"
-      style={{
-        borderColor: isDark ? 'rgba(212,168,67,0.3)' : 'rgba(140,100,20,0.35)',
-        background: isDark ? 'rgba(255,255,255,0.05)' : 'rgba(255,252,242,0.85)',
-        transition: 'background 0.35s ease, border-color 0.35s ease',
-      }}
-    >
-      <div className="relative w-10 h-5 rounded-full flex-shrink-0"
-        style={{
-          background: isDark ? 'rgba(12,24,64,0.95)' : 'rgba(230,195,80,0.55)',
-          transition: 'background 0.35s ease',
-        }}>
-        <motion.div
-          animate={{ x: isDark ? 2 : 22 }}
-          transition={{ type: 'spring', stiffness: 400, damping: 28 }}
-          className="absolute top-1 w-3.5 h-3.5 rounded-full"
-          style={{
-            background: isDark
-              ? 'linear-gradient(135deg, #b8a050, #e8d090)'
-              : 'linear-gradient(135deg, #e89010, #f8d050)',
-          }}
-        />
-      </div>
-      <span className="text-[11px] font-medium tracking-wide select-none"
-        style={{
-          color: isDark ? 'rgba(212,180,100,0.85)' : 'rgba(110,72,8,0.8)',
-          transition: 'color 0.35s ease',
-        }}>
-        {isDark ? 'Tối' : 'Sáng'}
-      </span>
-    </motion.button>
-  );
-}
-
 // ─── 主星数据 ────────────────────────────────────────────
 const STARS = [
   { name: 'Tử Vi' }, { name: 'Thiên Cơ' }, { name: 'Thái Dương' }, { name: 'Vũ Khúc' },
@@ -432,27 +388,6 @@ export default function HomePage() {
         <div className="absolute bottom-1/4 right-1/4 w-64 h-64 rounded-full"
           style={{ background: `radial-gradient(ellipse, ${c.glowPurple} 0%, transparent 70%)` }} />
       </div>
-
-      {/* ── 顶部导航 ── nav 与 hero 同色（c.bgBase），无 blur 无 border，彻底无色差带 */}
-      <nav className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-4 sm:px-8 py-3 sm:py-4 gap-2"
-        style={{
-          background: c.navBg,
-        }}>
-        <div className="text-[11px] sm:text-xs tracking-[0.3em] sm:tracking-[0.4em] font-medium transition-colors duration-300 flex-shrink-0"
-          style={{ color: c.goldSolid }}>
-          Lá Số Tử Vi
-        </div>
-        <div className="flex items-center gap-1.5 sm:gap-3 flex-shrink-0">
-          <ThemeToggle />
-          <motion.button
-            whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.97 }}
-            onClick={() => router.push('/chart')}
-            className="text-[11px] sm:text-xs px-2.5 sm:px-4 py-1 sm:py-1.5 rounded-full transition-all duration-300"
-            style={{ border: `1px solid ${c.goldLine}`, color: c.goldSolid }}>
-            Lập lá số
-          </motion.button>
-        </div>
-      </nav>
 
       {/* ══ HERO ══════════════════════════════════════════ */}
       <section ref={heroRef} className="relative min-h-[82svh] lg:min-h-[92vh] flex flex-col items-center justify-center px-6 z-10 pb-24 pt-10">
@@ -852,26 +787,6 @@ export default function HomePage() {
         </FadeIn>
       </section>
 
-      {/* Footer */}
-      <footer className="relative z-10 py-10 px-6"
-        style={{ borderTop: `1px solid ${c.niCardBord}` }}>
-
-        <div className="text-center">
-          <p className="text-[10px] tracking-wider mb-3" style={{ color: c.footerText }}>
-            Lá Số Tử Vi · Theo hệ chính tông Nghê Hải Hạ · Chỉ để tham khảo, vận mệnh nằm trong tay bạn
-          </p>
-          <p className="text-[10px] tracking-wider mb-3 max-w-2xl mx-auto leading-relaxed"
-            style={{ color: c.footerText, opacity: 0.85 }}>
-            Nền tảng dựa trên nghiên cứu văn hóa truyền thống Trung Hoa, chỉ cung cấp tài liệu tham khảo học tập.<br className="sm:hidden" />{' '}
-            Không cấu thành bất kỳ lời khuyên y tế, đầu tư, pháp lý hay quyết định trọng đại nào.
-          </p>
-          <p className="text-[10px] tracking-wider" style={{ color: c.footerText }}>
-            <a href="/terms" style={{ color: c.footerText, textDecoration: 'underline' }}>Điều khoản dịch vụ</a>
-            {' · '}
-            <a href="/privacy" style={{ color: c.footerText, textDecoration: 'underline' }}>Chính sách quyền riêng tư</a>
-          </p>
-        </div>
-      </footer>
     </div>
   );
 }
