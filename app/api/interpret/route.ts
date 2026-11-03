@@ -3,9 +3,11 @@ import { generateChart } from '@/lib/ziwei/algorithm';
 import type { BirthInfo } from '@/lib/ziwei/types';
 import { buildChartBrief } from '@/lib/ai/chart-brief';
 import { takeQuota } from '@/lib/ai/rate-limit';
+import { streamOllama, OllamaError, OLLAMA_MODEL, type ChatMessage } from '@/lib/ai/ollama';
 
 /**
- * POST /api/interpret — luận giải lá số bằng Claude.
+ * POST /api/interpret — luận giải lá số bằng Claude, hoặc model chạy trên máy qua Ollama
+ * khi AI_PROVIDER=ollama.
  *
  * Vào: { chart, messages } như InsightPanel / ChatPanel gửi. Lá số được an lại trên máy chủ
  * từ chart.birthInfo, nên dữ liệu đưa cho AI luôn do engine tính, không tin phần còn lại
@@ -16,6 +18,7 @@ import { takeQuota } from '@/lib/ai/rate-limit';
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
+const PROVIDER = process.env.AI_PROVIDER === 'ollama' ? 'ollama' : 'anthropic';
 const MODEL = process.env.ANTHROPIC_MODEL || 'claude-opus-5-5';
 const EFFORT = (process.env.AI_EFFORT || 'medium') as 'low' | 'medium' | 'high' | 'xhigh' | 'max';
 // Mô hình nhận `fallbacks: "default"` (chuyển sang mô hình dự phòng khi bị từ chối nhầm).
@@ -36,8 +39,6 @@ Nguyên tắc:
 - Giọng điềm tĩnh, xây dựng, không phán định mệnh tuyệt đối, không hù dọa.
 - Sức khỏe, pháp lý, tài chính: chỉ nói xu hướng theo lá số, khuyên hỏi chuyên gia khi cần; không chẩn đoán bệnh, không khuyên đầu tư cụ thể.
 - Lục thân (cha mẹ, anh em, con cái): Nghê Hải Hạ cho rằng Đẩu Số yếu hơn ở phần này, nên nói rõ đây chỉ là tham khảo.`;
-
-type ChatMessage = { role: 'user' | 'assistant'; content: string };
 
 function parseMessages(raw: unknown): ChatMessage[] | null {
   if (!Array.isArray(raw) || raw.length === 0 || raw.length > MAX_MESSAGES) return null;
@@ -76,6 +77,11 @@ function clientIp(req: Request): string {
 }
 
 function errorText(err: unknown): string {
+  if (err instanceof OllamaError) {
+    if (err.kind === 'connect') return 'Không kết nối được Ollama. Hãy mở ứng dụng Ollama trên máy rồi thử lại.';
+    if (err.kind === 'model') return `Ollama chưa có model ${OLLAMA_MODEL}. Chạy lệnh: ollama pull ${OLLAMA_MODEL}`;
+    return `Ollama báo lỗi: ${err.message}`;
+  }
   if (err instanceof Anthropic.AuthenticationError) {
     return 'API key Anthropic không hợp lệ. Kiểm tra ANTHROPIC_API_KEY trong file .env.local rồi khởi động lại máy chủ.';
   }
@@ -118,6 +124,15 @@ export async function POST(req: Request) {
           send(quota.reason === 'ip'
             ? 'Bạn đã dùng hết lượt luận giải trong giờ này, vui lòng quay lại sau.'
             : 'Hôm nay đã hết lượt luận giải AI, vui lòng quay lại vào ngày mai.');
+          return;
+        }
+        if (PROVIDER === 'ollama') {
+          await streamOllama({
+            system: `${SYSTEM_PROMPT}\n\n# Lá số của người hỏi\n\n${brief}`,
+            messages,
+            signal: req.signal,
+            onText: send,
+          });
           return;
         }
         const client = new Anthropic();

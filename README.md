@@ -306,6 +306,8 @@ Mỗi lần push và PR đều chạy cùng bộ này trên GitHub Actions (xem 
 >
 > **Luận giải AI (`/api/interpret`)** có sẵn trong bản tiếng Việt này, chạy bằng Claude (Anthropic): điền `ANTHROPIC_API_KEY` vào `.env.local` rồi khởi động lại `npm run dev`. Máy chủ an lại lá số từ ngày giờ sinh, tóm tắt bằng tiếng Việt (12 cung, độ sáng, Tứ Hóa năm sinh / đại hạn / lưu niên, cách cục) rồi gửi cho Claude; họ tên không được gửi đi. Mỗi lần mở lá số, bảng luận giải tự gọi AI một lần cho phần «Mệnh cách», nên mỗi lá số tốn ít nhất một lượt gọi có tính phí. Có giới hạn lượt gọi theo IP và theo ngày (`AI_RATE_PER_HOUR`, `AI_DAILY_LIMIT`), lưu trong bộ nhớ của một tiến trình.
 >
+> **Chạy bằng model trên máy (Ollama):** cài [Ollama](https://ollama.com), tải model (ví dụ `ollama pull gemma3:12b`), rồi đặt `AI_PROVIDER=ollama` trong `.env.local` (đổi model bằng `OLLAMA_MODEL`). Không tốn phí, dữ liệu không rời khỏi máy, nhưng chậm hơn nhiều (vài phút một bài trên máy Mac M1 Pro) và luận kém sâu hơn Claude.
+>
 > **Phân tích AI xem hợp đôi (`/api/heming`)** vẫn chưa có; chỗ này sẽ báo thẳng là bản mã nguồn mở không có API này.
 
 ---
