@@ -1,94 +1,71 @@
 'use client';
 import { motion } from 'framer-motion';
-import type { ZiweiChart } from '@/lib/ziwei/types';
-import { detectPatterns } from '@/lib/ziwei/patterns';
+import type { Pattern } from '@/lib/ziwei/patterns';
 import { viPalace } from '@/lib/vi/terms';
 
-const LevelStyle = {
-  excellent: { dot: 'bg-amber-400', label: 'text-amber-500', badge: 'text-amber-500 bg-amber-500/10 border-amber-500/25' },
-  good:      { dot: 'bg-sky-400',   label: 'text-sky-500',   badge: 'text-sky-500 bg-sky-500/10 border-sky-500/25' },
-  neutral:   { dot: 'bg-slate-400', label: 'text-slate-400', badge: 'text-slate-400 bg-slate-500/10 border-slate-500/20' },
-  caution:   { dot: 'bg-orange-500', label: 'text-orange-500', badge: 'text-orange-500 bg-orange-500/10 border-orange-500/25' },
+// Màu chữ đặc theo token (đủ tương phản ở cả hai giao diện) + nhãn chữ, không chỉ dựa vào màu
+const LEVEL: Record<Pattern['level'], { label: string; color: string }> = {
+  excellent: { label: 'Rất tốt', color: 'var(--t-gold)' },
+  good: { label: 'Tốt', color: 'var(--t-lucky)' },
+  neutral: { label: 'Trung tính', color: 'var(--t-text2)' },
+  caution: { label: 'Cần lưu ý', color: 'var(--t-sha)' },
 };
 
-export default function PatternsCard({ chart }: { chart: ZiweiChart }) {
-  const patterns = detectPatterns(chart);
+/** Bỏ câu trích nguyên văn chữ Hán trong mô tả (đã có nghĩa tiếng Việt đi kèm) */
+const plain = (s: string) => s.replace(/[“"][^”"]*[㐀-鿿][^”"]*[”"]\s*/g, '');
+
+/** Danh sách cách cục engine nhận diện; dữ liệu lấy từ /api/patterns vì patterns.ts chỉ chạy trên máy chủ */
+export default function PatternsCard({ patterns }: { patterns: Pattern[] }) {
   if (patterns.length === 0) return null;
 
   return (
-    <motion.div
+    <motion.section
+      aria-labelledby="cach-cuc-title"
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4 }}
-      className="card-glass rounded-xl p-4 mb-4"
+      className="card-glass rounded-xl p-5"
     >
-      <div className="text-[10px] tracking-widest mb-3 flex items-center gap-2" style={{ color: 'var(--t-faint)' }}>
-        <span style={{ color: 'var(--t-gold)', opacity: 0.6 }}>◉</span>
-        Nhận diện cách cục (theo điều kiện cổ thư nghiêm ngặt)
-        <span className="text-[9px] ml-auto" style={{ color: 'var(--t-faint)', opacity: 0.75 }}>{patterns.length} cách</span>
-      </div>
-      <div className="space-y-2">
+      <h2 id="cach-cuc-title" className="text-[15px] font-semibold mb-3 flex items-center gap-2" style={{ color: 'var(--t-gold)' }}>
+        Cách cục trong lá số
+        <span className="text-[13px] font-normal ml-auto" style={{ color: 'var(--t-faint)' }}>{patterns.length} cách</span>
+      </h2>
+      <div className="space-y-3">
         {patterns.map((p, i) => {
-          const st = LevelStyle[p.level];
+          const lv = LEVEL[p.level];
           return (
-            <motion.div
-              key={`${p.name}-${i}`}
-              initial={{ opacity: 0, x: -8 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: i * 0.04 }}
-              className="card-inner rounded-lg p-3"
-            >
+            <div key={`${p.name}-${i}`} className="rounded-lg p-3" style={{ border: '1px solid var(--t-border)' }}>
               <div className="flex flex-wrap items-center gap-2 mb-1.5">
-                <div className={`w-1.5 h-1.5 rounded-full flex-shrink-0 ${st.dot}`} />
-                <span className={`text-[11px] font-medium ${st.label}`}>{p.name}</span>
-                <div className="flex gap-1 ml-auto">
-                  {p.palaces.slice(0, 2).map(pa => (
-                    <span key={pa} className={`text-[8px] px-1.5 py-px rounded-full border ${st.badge}`}>
-                      {viPalace(pa)}
-                    </span>
-                  ))}
-                </div>
+                <span className="text-[15px] font-semibold" style={{ color: lv.color }}>{p.name}</span>
+                <span className="text-[12px] px-2 py-0.5 rounded-full border" style={{ color: lv.color, borderColor: 'currentColor' }}>{lv.label}</span>
+                <span className="text-[12px] ml-auto" style={{ color: 'var(--t-faint)' }}>
+                  {p.palaces.slice(0, 2).map(viPalace).join(' · ')}
+                </span>
               </div>
 
-              <p className="text-[10px] leading-relaxed pl-3.5" style={{ color: 'var(--t-text2)' }}>
-                {p.description}
-              </p>
+              <p className="text-[14px] leading-relaxed" style={{ color: 'var(--t-text2)' }}>{plain(p.description)}</p>
 
               {p.conditions && (
-                <div className="mt-2 pl-3.5 space-y-0.5">
+                <div className="mt-2 space-y-0.5 text-[13px] leading-relaxed" style={{ color: 'var(--t-text2)' }}>
                   {p.conditions.required.length > 0 && (
-                    <div className="text-[9px] leading-relaxed" style={{ color: 'var(--t-text2)', opacity: 0.85 }}>
-                      <span className="font-medium" style={{ color: 'var(--t-gold)' }}>Bắt buộc</span>
-                      <span style={{ opacity: 0.6 }}> · </span>
-                      {p.conditions.required.join('; ')}
-                    </div>
+                    <div><span className="font-medium" style={{ color: 'var(--t-gold)' }}>Điều kiện</span> · {p.conditions.required.join('; ')}</div>
                   )}
                   {p.conditions.bonus && p.conditions.bonus.length > 0 && (
-                    <div className="text-[9px] leading-relaxed" style={{ color: 'var(--t-text2)', opacity: 0.85 }}>
-                      <span className="font-medium text-emerald-500">Điểm cộng</span>
-                      <span style={{ opacity: 0.6 }}> · </span>
-                      {p.conditions.bonus.join('; ')}
-                    </div>
+                    <div><span className="font-medium" style={{ color: 'var(--t-lu)' }}>Điểm cộng</span> · {p.conditions.bonus.join('; ')}</div>
                   )}
                   {p.conditions.breaking && p.conditions.breaking.length > 0 && (
-                    <div className="text-[9px] leading-relaxed" style={{ color: 'var(--t-text2)', opacity: 0.85 }}>
-                      <span className="font-medium text-orange-500">Phá cách</span>
-                      <span style={{ opacity: 0.6 }}> · </span>
-                      {p.conditions.breaking.join('; ')}
-                    </div>
+                    <div><span className="font-medium" style={{ color: 'var(--t-sha)' }}>Phá cách</span> · {p.conditions.breaking.join('; ')}</div>
                   )}
                 </div>
               )}
 
               {p.source && (
-                <div className="text-[9px] mt-1.5 pl-3.5" style={{ color: 'var(--t-faint)', opacity: 0.5 }}>
-                  Xuất xứ · {p.source}
-                </div>
+                <div className="text-[12px] mt-1.5" style={{ color: 'var(--t-faint)' }}>Xuất xứ · {p.source}</div>
               )}
-            </motion.div>
+            </div>
           );
         })}
       </div>
-    </motion.div>
+    </motion.section>
   );
 }

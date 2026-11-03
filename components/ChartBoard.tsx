@@ -4,7 +4,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import type { ZiweiChart, Palace, Star } from '@/lib/ziwei/types';
 import PalaceCell, { TEXT_HALO } from './PalaceCell';
 import TimeNav, { type TimeView, getYearStemIndex, buildSiHuaOverlay } from './TimeNav';
-import { viBranch, viPalaceFull, viSihua, viWuxingJu } from '@/lib/vi/terms';
+import { viBranch, viGanzhi, viPalaceFull, viSihua, viStar, viStem, viTerm, viWuxingJu } from '@/lib/vi/terms';
+import { nayinVi } from '@/lib/vi/nayin';
 
 interface ChartBoardProps {
   chart: ZiweiChart;
@@ -214,17 +215,44 @@ export default function ChartBoard({ chart, onStarSelect, onPalaceSelect, onSiHu
           className="flex flex-col items-center justify-center p-2 sm:p-4 gap-2 sm:gap-3 min-w-0 h-full"
           style={{ position: 'relative', zIndex: 1, textShadow: TEXT_HALO }}
         >
-          <div className="text-5xl select-none leading-none" style={{ color: 'var(--t-gold)', opacity: 0.12, filter: 'drop-shadow(0 0 12px rgba(180,120,30,0.15))' }}>
-            ☯
-          </div>
-
-          <div className="text-center space-y-1">
-            <div className="text-[13px] space-y-1" style={{ color: 'var(--t-text2)' }}>
-              <div>Cung Mệnh <span style={{ color: 'var(--t-gold)' }}>{viBranch(chart.mingGongBranch)}</span></div>
-              <div>Thân cung <span style={{ color: 'var(--t-shen)' }}>{viBranch(chart.shenGongBranch)}</span></div>
-              <div style={{ color: 'var(--t-gold)' }}>{viWuxingJu(chart.wuxingJuName)}</div>
-            </div>
-          </div>
+          {/* Thiên bàn kiểu lá số Việt: âm dương, nạp âm, cục, Mệnh/Thân chủ, tứ trụ, ngày sinh */}
+          {(() => {
+            const L = chart.lunarInfo;
+            const b = chart.birthInfo;
+            const pillars = L.fourPillarsLunar ?? L.fourPillars;
+            const o = b.origInput;
+            const solar = o
+              ? `${o.day}/${o.month}/${o.year}${b.unknownTime ? '' : ` · ${String(o.clockHour).padStart(2, '0')}:${String(o.clockMinute).padStart(2, '0')}`}`
+              : `${b.day}/${b.month}/${b.year}`;
+            return (
+              <div className="text-center text-[13px] leading-relaxed space-y-0.5" style={{ color: 'var(--t-text2)' }}>
+                <div className="text-[14px] font-medium" style={{ color: 'var(--t-text)' }}>
+                  {chart.yinYangGender ? viTerm(chart.yinYangGender) : (b.gender === 'male' ? 'Nam' : 'Nữ')}
+                  {' · '}{viStem(L.yearStem)} {viBranch(L.yearBranch)}
+                </div>
+                <div>Nạp âm <span style={{ color: 'var(--t-gold)' }}>{nayinVi(L.yearStem, L.yearBranch)}</span></div>
+                <div>
+                  Mệnh <span style={{ color: 'var(--t-gold)' }}>{viBranch(chart.mingGongBranch)}</span>
+                  {' · '}Thân <span style={{ color: 'var(--t-shen)' }}>{viBranch(chart.shenGongBranch)}</span>
+                  {' · '}<span style={{ color: 'var(--t-gold)' }}>{viWuxingJu(chart.wuxingJuName)}</span>
+                </div>
+                {(chart.mingZhu || chart.shenZhu) && (
+                  <div>
+                    Mệnh chủ <span style={{ color: 'var(--t-text)' }}>{chart.mingZhu ? viStar(chart.mingZhu) : '–'}</span>
+                    {' · '}Thân chủ <span style={{ color: 'var(--t-text)' }}>{chart.shenZhu ? viStar(chart.shenZhu) : '–'}</span>
+                  </div>
+                )}
+                {pillars && (
+                  <div className="text-[12px]" style={{ color: 'var(--t-faint)' }}>
+                    Tứ trụ: {pillars.map(viGanzhi).join(' · ')}
+                  </div>
+                )}
+                <div className="text-[12px] font-mono" style={{ color: 'var(--t-faint)' }}>
+                  ÂL {L.lunarDay}/{L.isLeapMonth ? 'nhuận ' : ''}{Math.abs(L.lunarMonth)}/{L.lunarYear} · DL {solar}
+                </div>
+              </div>
+            );
+          })()}
 
           {chart.currentDaXianIndex >= 0 && (() => {
             const dx = chart.daXians[chart.currentDaXianIndex];
@@ -238,10 +266,6 @@ export default function ChartBoard({ chart, onStarSelect, onPalaceSelect, onSiHu
             );
           })()}
 
-          <div className="text-[12px] text-center leading-relaxed font-mono" style={{ color: 'var(--t-faint)' }}>
-            ÂL {chart.lunarInfo.lunarDay}/{chart.lunarInfo.isLeapMonth ? 'nhuận ' : ''}
-            {chart.lunarInfo.lunarMonth}/{chart.lunarInfo.lunarYear}
-          </div>
         </motion.div>
         </div>
 
