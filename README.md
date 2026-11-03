@@ -286,7 +286,7 @@ cd ziwei-doushu
 # Cài dependency
 npm install
 
-# Cấu hình biến môi trường (chỉ xem lá số thì có thể bỏ qua; cấu hình AI chỉ cần khi bạn tự hiện thực các API /api/*)
+# Cấu hình biến môi trường (chỉ xem lá số thì có thể bỏ qua; muốn luận giải AI thì điền ANTHROPIC_API_KEY)
 cp .env.example .env.local
 
 # Khởi động server phát triển
@@ -302,7 +302,11 @@ npm test            # Hồi quy engine lập lá số (768 lá số × quy luậ
 
 Mỗi lần push và PR đều chạy cùng bộ này trên GitHub Actions (xem [`.github/workflows/ci.yml`](./.github/workflows/ci.yml)).
 
-> **Lưu ý: bản mã nguồn mở không có route API backend.** Lập lá số, hiển thị lá số, lập lá số xem hợp đôi đều thực hiện trong trình duyệt bằng engine của repo này, **không cần bất kỳ API Key nào**. Luận giải AI (`/api/interpret`) và phân tích AI xem hợp đôi (`/api/heming`) cần bạn tự hiện thực API; trước khi hiện thực, hai chỗ này sẽ báo thẳng 「开源版不含该接口」 (“Bản mã nguồn mở không có API này”), cấu hình API Key cũng không làm chúng dùng được (#30 chính là vì lý do này).
+> **Lưu ý về API backend.** Lập lá số, hiển thị lá số, lập lá số xem hợp đôi đều thực hiện trong trình duyệt bằng engine của repo này, **không cần bất kỳ API Key nào**.
+>
+> **Luận giải AI (`/api/interpret`)** có sẵn trong bản tiếng Việt này, chạy bằng Claude (Anthropic): điền `ANTHROPIC_API_KEY` vào `.env.local` rồi khởi động lại `npm run dev`. Máy chủ an lại lá số từ ngày giờ sinh, tóm tắt bằng tiếng Việt (12 cung, độ sáng, Tứ Hóa năm sinh / đại hạn / lưu niên, cách cục) rồi gửi cho Claude; họ tên không được gửi đi. Mỗi lần mở lá số, bảng luận giải tự gọi AI một lần cho phần «Mệnh cách», nên mỗi lá số tốn ít nhất một lượt gọi có tính phí. Có giới hạn lượt gọi theo IP và theo ngày (`AI_RATE_PER_HOUR`, `AI_DAILY_LIMIT`), lưu trong bộ nhớ của một tiến trình.
+>
+> **Phân tích AI xem hợp đôi (`/api/heming`)** vẫn chưa có; chỗ này sẽ báo thẳng là bản mã nguồn mở không có API này.
 
 ---
 
