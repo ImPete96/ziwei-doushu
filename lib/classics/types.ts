@@ -12,7 +12,7 @@ export interface Paragraph {
   idx: number;
   /** 段落原文（古文） */
   text: string;
-  /** 现代翻译（可选，未来填充） */
+  /** 越南语译文（Bản dịch tiếng Việt） */
   translation?: string;
   /** 倪师注解（可选，标注来源） */
   niNote?: string;

@@ -1,3 +1,74 @@
+================================================================
+BẢN DỊCH TIẾNG VIỆT (KHÔNG CHÍNH THỨC — BẢN GỐC PHÍA DƯỚI LÀ BẢN CÓ HIỆU LỰC)
+Bản dịch dưới đây chỉ để tham khảo. Khi có khác biệt hoặc mơ hồ, văn bản gốc
+(tiếng Trung / tiếng Anh) nằm phía dưới đường phân cách là bản có hiệu lực.
+================================================================
+
+Bộ dữ liệu mẫu Tử Vi Đẩu Số mở mã nguồn v3.0 (518,400 mẫu) và Bộ dữ liệu luận giải
+mở mã nguồn v4.0 (674,976 lá số × 13 chiều) · Điều khoản sử dụng
+
+----------------------------------------------------------------
+Bản ngắn: được tự do sử dụng, kể cả cho mục đích thương mại; yêu cầu duy nhất là giữ ghi chú nguồn.
+----------------------------------------------------------------
+
+Phạm vi áp dụng
+  Tệp này áp dụng cho các bộ dữ liệu được phát hành với các tag sau trên trang GitHub Releases:
+    · `v3.0-samples`: bộ dữ liệu mẫu v3.0 (ziwei-samples-v3-part1/2/3 và các tệp kiểm tra);
+    · `v4.0-13d`: bộ dữ liệu luận giải v4.0 (year-1950 … year-2026.jsonl.zst,
+      ziwei-interp-v4-all.tar, MANIFEST.json và các tệp kiểm tra).
+  **Mã nguồn** trong repo áp dụng riêng LICENSE (MIT) ở thư mục gốc;
+  **nguyên văn cổ thư** trong repo (Cốt Tủy Phú, Tử Vi Đẩu Số Toàn Tập / Toàn Thư) thuộc phạm vi công cộng.
+
+Điều khoản cấp phép
+  Bộ dữ liệu này được phát hành theo Creative Commons Attribution 4.0 International
+  (CC BY 4.0). Bạn có thể:
+
+    · sử dụng, sao chép, phân phối lại bộ dữ liệu này và bất kỳ phần nào của nó;
+    · sửa đổi, tổ chức lại, tạo ra bộ dữ liệu phái sinh mới;
+    · dùng cho mục đích thương mại —— sản phẩm thương mại, SaaS, ứng dụng trả phí, tinh chỉnh mô hình (mô hình mã nguồn mở hay đóng đều được);
+    · dùng cho nghiên cứu học thuật, giảng dạy, viết bài kỹ thuật.
+
+  Không cần trả phí, không cần xin phép, không cần báo trước.
+
+Yêu cầu duy nhất: giữ ghi chú nguồn
+  Ghi rõ ở vị trí hợp lý (theo phiên bản bạn dùng; giữ nguyên văn câu ghi chú tiếng Trung
+  trong bản gốc phía dưới, phần dịch nghĩa như sau):
+
+    Dự án này sử dụng Bộ dữ liệu mẫu Tử Vi Đẩu Số mở mã nguồn v3.0 (518,400 mẫu)
+    —— hoặc ——
+    Dự án này sử dụng Bộ dữ liệu luận giải Tử Vi Đẩu Số mở mã nguồn v4.0 (674,976 lá số × 13 chiều)
+    Nguồn: https://github.com/Renhuai123/ziwei-doushu
+    Tác giả: 王多鱼AI
+
+  Đặt ở đâu cũng được: trang giới thiệu / nguồn dữ liệu / chân trang của website; trường
+  Training Data của thẻ mô hình hoặc thẻ bộ dữ liệu; tài liệu tham khảo hoặc lời cảm ơn của
+  bài báo; README hoặc tệp metadata của bộ dữ liệu phát hành lại.
+
+Trích dẫn không thuộc phạm vi cấp phép
+  Nguyên lời 《Thiên Kỷ》 của Nghê Hải Hạ được trích dẫn trong văn bản luận giải là những trích
+  dẫn ngắn có ghi số tập và mốc thời gian để chỉ ra xuất xứ của lời đoán, bản quyền thuộc về chủ
+  sở hữu quyền ban đầu, không thuộc phạm vi cấp phép của bộ dữ liệu này; muốn dùng riêng các
+  nguyên lời này theo từng lô thì xử lý theo docs/tianji-ziwei/LICENSE.md (CC BY-NC-SA 4.0) của repo.
+  Nguyên văn các cổ thư như 《Tử Vi Đẩu Số Toàn Thư》 thuộc phạm vi công cộng.
+
+Tuyên bố miễn trừ trách nhiệm
+  Bộ dữ liệu này được engine lập lá số sinh hàng loạt; văn bản luận giải là sự diễn giải văn bản
+  dựa trên hệ thống mệnh lý truyền thống, chỉ dùng cho học tập, nghiên cứu và giao lưu văn hóa,
+  không cấu thành bất kỳ hình thức dự đoán, chẩn đoán hay lời khuyên nào.
+  Dữ liệu được cung cấp “nguyên trạng” (as is), không kèm bất kỳ bảo đảm nào, dù rõ ràng hay ngụ ý.
+
+Ghi chú phiên bản
+  Dữ liệu v3.0 được sinh bởi engine lập lá số bản v3 và kho lời đoán cùng thời; v4.0 được sinh
+  bởi kho lời đoán phiên bản 2026-10-15 (phiên bản nội dung ca268829f7a9). Engine trong repo sẽ
+  liên tục cập nhật, vì vậy đầu ra của engine bản mới có thể khác với bộ dữ liệu này; khi cần
+  khớp hoàn toàn với bộ dữ liệu, xin lấy ghi chú phiên bản đi kèm bộ dữ liệu làm chuẩn.
+
+Toàn văn CC BY 4.0: https://creativecommons.org/licenses/by/4.0/legalcode
+
+================================================================
+VĂN BẢN GỐC (BẢN CÓ HIỆU LỰC) / ORIGINAL TEXT (AUTHORITATIVE)
+================================================================
+
 紫微斗数开源样本数据集 v3.0（518,400 条）与开源解读数据集 v4.0（674,976 张命盘 × 13 维）· 使用条款
 Ziwei Doushu Open Sample Dataset v3.0 & Open Interpretation Dataset v4.0 — License
 

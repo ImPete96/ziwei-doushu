@@ -1,3 +1,84 @@
+# Lời nguyên văn của Nghê Hải Hạ trong 《Thiên Kỷ · Tử Vi Đẩu Số》 (bản tiếng Việt)
+
+> Phần tiếng Việt dưới đây là bản dịch của README gốc tiếng Trung (giữ nguyên ở cuối trang). Trong các tệp bài giảng, mỗi câu nguyên văn chữ Hán được giữ nguyên, kèm ngay bên dưới một dòng dịch tiếng Việt bắt đầu bằng `↳`; tiêu đề giữ nguyên và có thêm dòng `Tiếng Việt: …`. Khi có khác biệt, nguyên văn tiếng Trung là chuẩn.
+
+Đây là lời nguyên văn **phần Tử Vi Đẩu Số** trong khóa 《Thiên Kỷ》 của thầy Nghê Hải Hạ, tổng cộng **1848 mục**, sắp xếp theo từng buổi giảng. Mỗi mục đều kèm mốc thời gian xuất xứ; bấm vào là quay lại đúng giây đó trong video gốc trên Bilibili, có thể tự mình đối chiếu.
+
+Nội dung lấy từ kho chị em [nihai-tianji-corpus](https://github.com/Renhuai123/nihai-tianji-corpus) (toàn bộ ngữ liệu Thiên Kỷ, commit `462faa4`); ở đây chỉ là bản chia theo buổi giảng của phần Tử Vi trong đó, **nội dung lấy kho ngữ liệu làm chuẩn**, và sẽ được cập nhật đồng bộ theo kho ngữ liệu.
+
+![Toàn cảnh 《Thiên Kỷ · Tử Vi Đẩu Số》 của Nghê Hải Hạ trong một hình](./overview.png)
+
+*(Ảnh tổng quan giữ nguyên bản tiếng Trung, chưa được dịch.)*
+
+## Phạm vi thu thập
+
+- **14 buổi giảng Tử Vi Đẩu Số**: từ bài 2 thượng (2上) đến bài 15 thượng (15上), thu đủ toàn bộ, tổng cộng 1808 mục.
+- **Bổ sung 1**: đoạn 2–4 của bài 19 thượng (19上), tức ứng dụng Tử Vi trong kham dư (phong thủy), Đẩu Quân, Lưu nguyệt Lưu nhật, tổng cộng 29 mục.
+- **Bổ sung 2**: các đoạn nói về Tử Vi trong bài 24 hạ (24下), tổng cộng 11 mục.
+
+Không thu thập:
+
+- **Đoạn Đẩu Số trong bài 1 thượng (mệnh tướng cùng tham chiếu)**: ngữ liệu bản hoàn chỉnh của 《Thiên Kỷ》 không có mục tương ứng.
+- **Bản ghi chép nguyên văn đầy đủ**: chỉ thu các trích dẫn ngắn lời nguyên văn của Nghê sư và xuất xứ, không bao gồm bản ghi từng chữ có thể khôi phục lại cả buổi giảng.
+- **Ảnh chụp màn hình video và mọi nội dung nghe nhìn**: mọi xuất xứ đều là liên kết dẫn đến trang video gốc trên Bilibili.
+
+## Mục lục theo buổi giảng
+
+| Buổi | Nội dung | Số mục | Tệp |
+|---|---|---|---|
+| 2上 | Mười hai cung / đồ kinh mạch lưu chú | 180 | [2上.md](./2上.md) |
+| 3上 | Sao Tứ Hóa / hệ sao Bắc Đẩu / hệ sao Nam Đẩu | 143 | [3上.md](./3上.md) |
+| 4上 | Hệ sao Nam Đẩu / sáu sát tinh / phụ tinh / tổng cách / ngày Ly, ngày Tuyệt | 130 | [4上.md](./4上.md) |
+| 5上 | Tử Vi ở Tý / chết chồng / nhà không con | 145 | [5上.md](./5上.md) |
+| 6上 | Xem xoáy tóc định giờ sinh / Tử Vi ở Sửu / Nhật Nguyệt phản bối / xem hợp bát tự / Tử Vi ở Dần | 149 | [6上.md](./6上.md) |
+| 7上 | Tử Vi ở Mão / Thìn / Tỵ / Ngọ / Mùi / Thân | 144 | [7上.md](./7上.md) |
+| 8上 | Tử Vi ở Dậu / Tuất / Hợi / vợ chồng sinh ly tử biệt | 134 | [8上.md](./8上.md) |
+| 9上 | Phép đổi vận khi tái hôn / chọn thời điểm sinh con / tướng mặt góa bụa tuổi trung niên / Hóa Kỵ xung Mệnh | 138 | [9上.md](./9上.md) |
+| 10上 | Ví dụ Tử Vi ở Thân / Thìn / Tý / thân nữ mệnh nam / Phá Quân ở Tý Ngọ / đặt giường / cá tính Sát Phá Tham / kết hôn muộn / dương tinh đại diện con trai / con rể lo hậu sự | 138 | [10上.md](./10上.md) |
+| 11上 | Hữu Bật tọa cung Phụ Mẫu / Khoa Kỵ làm đồ tể / nữ mệnh cách Cự Nhật thiên phòng / mệnh khắc vợ | 118 | [11上.md](./11上.md) |
+| 12上 | Hóa Kỵ xung Mệnh / lục thân không nương tựa / tướng anh em chết yểu / qua Kỵ mới kết hôn / nhiều lần kết hôn | 106 | [12上.md](./12上.md) |
+| 13上 | Sát Phá Tham / Khoa Quyền Lộc tam hội / Tiểu Lục Nhâm / Thái Âm hãm Hóa Kỵ / Hồng Loan Thiên Hỷ Hóa Kỵ | 91 | [13上.md](./13上.md) |
+| 14上 | Kỵ xung Thái Dương / nam mệnh Thái Âm hãm / Thái Âm Hóa Kỵ nhập Mệnh / mệnh cô loan | 96 | [14上.md](./14上.md) |
+| 15上 | Hình phu khắc tử / nữ mệnh Thái Dương hãm / Liêm Tham ở Tỵ Hợi / lục thân không nương tựa / xem chỉ tay | 96 | [15上.md](./15上.md) |
+| 19上 | Bổ sung 1 (đoạn 2–4 bài 19 thượng: ứng dụng Tử Vi trong kham dư, Đẩu Quân, Lưu nguyệt Lưu nhật) | 29 | [19上_补充1.md](./19上_补充1.md) |
+| 24下 | Bổ sung 2 (các đoạn về Tử Vi trong bài 24 hạ) | 11 | [24下_补充2.md](./24下_补充2.md) |
+
+Ghi chú: 上 = thượng (phần đầu buổi), 下 = hạ (phần sau buổi).
+
+## Mỗi mục trông như thế nào
+
+```
+- [00:36:09](https://www.bilibili.com/video/BV1KJsLekEfA?p=9&t=2169) 「倪师原话」〔考据标注〕　册目
+  ↳ *Bản dịch tiếng Việt của lời nguyên văn*
+```
+
+- **Thời gian**: thời điểm bắt đầu của câu nói này trong tập video đó; bấm vào là phát từ đúng giây ấy.
+- **Trong 「」**: lời nguyên văn của Nghê sư. Chỉ lược bỏ từ đệm khẩu ngữ và nhiễu nhận dạng, thêm dấu câu, không sửa chữ.
+- **Trong 〔〕**: chú thích khảo cứu.
+  - Chữ sai trong phụ đề đã được sửa theo phán quyết của người duyệt thì ghi là 「已按裁决改正：错字→正字」 (đã sửa theo phán quyết: chữ sai → chữ đúng).
+  - Lỗi sơ suất trong lời giảng của Nghê sư đã được xác nhận qua việc lập lá số kiểm tính thì ghi là 「勘误：……」 (đính chính: …), lời nguyên văn vẫn giữ nguyên. Hiện có một chỗ ở bài 5 thượng, liên quan 4 mục; xem giải thích tại [trang đính chính của kho ngữ liệu](https://github.com/Renhuai123/nihai-tianji-corpus/blob/main/docs/%E5%8B%98%E8%AF%AF.md).
+- **Danh mục sách (册目)**: vị trí của câu này trong hệ thống mười một tập của kho ngữ liệu, ví dụ 「主星 › 紫微 · 定性」 (Chính tinh › Tử Vi · định tính).
+- **Dòng `↳`**: bản dịch tiếng Việt của câu nguyên văn ngay phía trên (chỉ dịch lời trong 「」; chú thích 〔〕 và danh mục sách giữ nguyên chữ Hán).
+
+`entries.jsonl` là phiên bản máy đọc được của cùng nội dung này, mỗi dòng một mục, các trường giống với kho ngữ liệu; xem giải thích tại [mô tả trường dữ liệu của kho ngữ liệu](https://github.com/Renhuai123/nihai-tianji-corpus/blob/main/data/schema.md).
+
+## Giấy phép
+
+Thư mục này áp dụng **CC BY-NC-SA 4.0**: được trích dẫn, đăng lại nhưng phải ghi rõ nguồn; **không được dùng vào mục đích thương mại**; tác phẩm cải biên phải dùng cùng giấy phép. Thư mục này không áp dụng giấy phép MIT và CC BY 4.0 ở thư mục gốc của kho mã; chi tiết xem [LICENSE.md](./LICENSE.md). Bản dịch tiếng Việt trong thư mục này là tác phẩm phái sinh, cũng phát hành theo CC BY-NC-SA 4.0.
+
+## Bản quyền và lời cảm ơn
+
+- Quyền tác giả đối với nội dung khóa 《Thiên Kỷ》 thuộc về **thầy Nghê Hải Hạ và những người thừa kế quyền của ông**.
+- Các trích dẫn trong thư mục này là **lời khẩu thuật nguyên văn của Nghê sư**. Việc chỉnh lý lấy video công khai trên Bilibili làm tư liệu, qua nhận dạng chữ, kiểm chứng chéo bằng hai bộ máy nhận dạng giọng nói và hiệu đính thủ công mà có; các vấn đề liên quan đã được trao đổi với người tải video lên và họ đã được biết.
+- Liên kết xuất xứ dẫn đến trang video gốc trên Bilibili, tiện cho người đọc phát lại đối chiếu, đồng thời cũng đem lượt truy cập về cho video gốc.
+- Nếu bên có quyền phản đối bất kỳ nội dung nào, sau khi nhận được thông báo chúng tôi sẽ **lập tức gỡ bỏ** phần tương ứng.
+
+Nội dung thuộc loại tư liệu nghiên cứu và học tập văn hóa truyền thống, không cấu thành bất kỳ lời khuyên nào về y tế, đầu tư hay quyết định đời người.
+
+---
+
+**Bản gốc tiếng Trung (README nguyên văn):**
+
 # 倪海厦《天纪 · 紫微斗数》原话
 
 这里是倪海厦先生《天纪》课程中**紫微斗数部分**的原话，共 **1848 条**，按讲次整理。每条都带出处时间，点一下就跳回 B 站原视频的那一秒，可以自己核对。

@@ -1,10 +1,10 @@
-## 改了什么、为什么
+## Đã sửa gì, vì sao
 
-<!-- 一两句话说清楚。关联的 issue 写成 #编号 -->
+<!-- Nói rõ trong một hai câu. Issue liên quan ghi dạng #số -->
 
-## 自查
+## Tự kiểm tra
 
-- [ ] 本地跑过 `npm run typecheck` 和 `npm test`，都通过
-- [ ] 改了排盘结果的，附上对照证据（出处，或其他排盘软件的截图），并在 `scripts/regression/` 加了回归测试、登记到 `package.json` 的 `test`
-- [ ] 一个 PR 只做一件事
-- [ ] 没有提交 `.env.local`、密钥、他人的出生信息等隐私数据
+- [ ] Đã chạy `npm run typecheck` và `npm test` ở máy cục bộ, đều qua
+- [ ] Nếu thay đổi kết quả lập lá số: đã kèm bằng chứng đối chiếu (xuất xứ, hoặc ảnh chụp màn hình từ phần mềm lập lá số khác), đã thêm kiểm thử hồi quy trong `scripts/regression/` và đăng ký vào `test` của `package.json`
+- [ ] Mỗi PR chỉ làm một việc
+- [ ] Không commit `.env.local`, khóa bí mật, thông tin ngày sinh của người khác hay dữ liệu riêng tư khác

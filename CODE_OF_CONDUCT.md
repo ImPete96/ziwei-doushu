@@ -1,23 +1,23 @@
-# 行为准则
+# Quy tắc ứng xử
 
-我们希望这里是一个就事论事、互相尊重的地方。本准则参考 [Contributor Covenant 2.1](https://www.contributor-covenant.org/version/2/1/code_of_conduct/) 的精神改写。
+Chúng tôi mong nơi đây là chỗ bàn chuyện đúng trọng tâm và tôn trọng lẫn nhau. Quy tắc này được viết lại theo tinh thần của [Contributor Covenant 2.1](https://www.contributor-covenant.org/version/2/1/code_of_conduct/).
 
-## 我们期望
+## Chúng tôi mong đợi
 
-- 对事不对人，讨论观点和证据，不攻击提出观点的人。
-- 尊重不同的流派和看法；有分歧时摆出处、摆对照，而不是比嗓门。
-- 对新人耐心，提问不嫌问题简单。
+- Bàn về sự việc, không nhắm vào con người; thảo luận quan điểm và bằng chứng, không công kích người đưa ra quan điểm.
+- Tôn trọng các trường phái và cách nhìn khác nhau; khi bất đồng thì đưa ra xuất xứ, đưa ra đối chiếu, chứ không so ai nói to hơn.
+- Kiên nhẫn với người mới, không chê câu hỏi đơn giản.
 
-## 不能接受
+## Không chấp nhận
 
-- 人身攻击、侮辱、骚扰、歧视性言论。
-- 未经本人同意公开他人的隐私，包括手机号、住址，以及他人的生辰等个人信息。
-- 借命理结论恐吓、诋毁具体的人。
-- 广告刷屏、与项目无关的推销。
+- Công kích cá nhân, lăng mạ, quấy rối, phát ngôn phân biệt đối xử.
+- Công khai thông tin riêng tư của người khác khi chưa có sự đồng ý của chính họ, bao gồm số điện thoại, địa chỉ nhà, cũng như ngày giờ sinh và các thông tin cá nhân khác của người khác.
+- Mượn kết luận mệnh lý để đe dọa, bôi nhọ một người cụ thể.
+- Spam quảng cáo, chào hàng không liên quan đến dự án.
 
-## 处理
+## Xử lý
 
-维护者可以编辑、隐藏或删除违反本准则的内容，必要时锁定讨论或拒绝相关账号继续参与。遇到问题，可以在 issue 里 @ 维护者，或通过 README「关于与联系」里的方式联系。
+Người bảo trì có thể sửa, ẩn hoặc xóa nội dung vi phạm quy tắc này, khi cần có thể khóa thảo luận hoặc từ chối cho tài khoản liên quan tiếp tục tham gia. Khi gặp vấn đề, bạn có thể @ người bảo trì trong issue, hoặc liên hệ theo cách ghi trong mục “Giới thiệu và liên hệ” của README.
 
 ---
 

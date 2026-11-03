@@ -1,39 +1,39 @@
-# 参与贡献
+# Đóng góp
 
-欢迎提问题、提修复、提建议。先说清两件事，能省掉很多来回：
+Hoan nghênh mọi câu hỏi, bản sửa lỗi và đề xuất. Nói rõ trước hai điều để đỡ mất công qua lại:
 
-- 本仓库是 [ouranic.cn](https://ouranic.cn/?from=gh-contrib) 排盘引擎的**开源快照**，定期从线上同步（节奏见 README「维护节奏与贡献」）。
-- 开源版**不含**断语库、AI 解读提示词和任何 `/api/*` 后端接口（见 README「开源边界」）。AI 解读、合盘分析在开源版里返回 404 是预期行为，需要你自己实现。
+- Repo này là **ảnh chụp mã nguồn mở** của engine lập lá số trên [ouranic.cn](https://ouranic.cn/?from=gh-contrib), được đồng bộ định kỳ từ bản trực tuyến (nhịp đồng bộ xem mục “Nhịp bảo trì và đóng góp” trong README).
+- Bản mã nguồn mở **không có** kho lời đoán, prompt luận giải AI và bất kỳ API backend `/api/*` nào (xem mục “Ranh giới mã nguồn mở” trong README). Luận giải AI, phân tích xem hợp đôi trả về 404 trong bản mã nguồn mở là hành vi được dự kiến, bạn cần tự hiện thực.
 
-## 提问题
+## Đặt câu hỏi
 
-- **怎么用、想交流**：去 [讨论区](https://github.com/Renhuai123/ziwei-doushu/discussions)。
-- **觉得盘排得不对**：用「排盘结果疑问」模板，附上公历出生日期、几点几分、出生地或经度、性别、本项目的结果，以及你拿来对照的结果。只写「不准」我们没法查。
-  - 辅星亮度、闰月归属、晚子时是否换日，各流派本来就不同，引擎里做成了可切换的口径；这类差异不算 bug，但欢迎指出。
-- **程序报错、页面异常**：用「程序问题」模板，写清复现步骤和报错。
-- **正式站（ouranic.cn）的问题**：用「正式站问题」模板。
+- **Hỏi cách dùng, muốn trao đổi**: vào [khu thảo luận](https://github.com/Renhuai123/ziwei-doushu/discussions).
+- **Thấy lá số lập chưa đúng**: dùng template “Thắc mắc kết quả lập lá số”, kèm ngày sinh dương lịch, giờ phút, nơi sinh hoặc kinh độ, giới tính, kết quả của dự án này, và kết quả bạn dùng để đối chiếu. Chỉ ghi “không chuẩn” thì chúng tôi không có cách nào kiểm tra.
+  - Độ sáng phụ tinh, quy thuộc tháng nhuận, giờ Tý muộn có đổi ngày hay không vốn khác nhau giữa các trường phái, engine đã làm thành các chuẩn có thể chuyển đổi; những khác biệt này không tính là bug, nhưng hoan nghênh bạn chỉ ra.
+- **Chương trình báo lỗi, trang hiển thị bất thường**: dùng template “Lỗi chương trình”, ghi rõ các bước tái hiện và thông báo lỗi.
+- **Vấn đề của site chính thức (ouranic.cn)**: dùng template “Vấn đề trên site chính thức”.
 
-请不要在 issue 里贴手机号、验证码，或未经本人同意的他人生辰信息。
+Xin đừng đăng số điện thoại, mã xác minh, hay thông tin ngày giờ sinh của người khác khi chưa có sự đồng ý của chính họ vào issue.
 
-## 提交代码
+## Gửi mã nguồn
 
 ```bash
-npm ci               # 按 package-lock.json 安装
-npm run typecheck    # 类型检查
-npm test             # 排盘回归
+npm ci               # cài đặt theo package-lock.json
+npm run typecheck    # kiểm tra kiểu
+npm test             # hồi quy lập lá số
 ```
 
-- 一个 PR 只做一件事，说明里写清改了什么、为什么。
-- **改排盘结果的**：附上对照证据（出处，或其他排盘软件的截图），并在 `scripts/regression/` 加回归测试、登记到 `package.json` 的 `test` 脚本。没有出处的口径改动一般不收。
-- CI 会在每次 push 和 PR 上跑同一套检查。
+- Mỗi PR chỉ làm một việc, phần mô tả ghi rõ đã sửa gì, vì sao.
+- **Thay đổi kết quả lập lá số**: kèm bằng chứng đối chiếu (xuất xứ, hoặc ảnh chụp màn hình từ phần mềm lập lá số khác), đồng thời thêm kiểm thử hồi quy trong `scripts/regression/` và đăng ký vào script `test` của `package.json`. Thay đổi chuẩn không có xuất xứ thường không được nhận.
+- CI sẽ chạy cùng một bộ kiểm tra cho mỗi lần push và PR.
 
-## 许可
+## Giấy phép
 
-提交即表示你同意贡献内容按对应协议发布：
+Gửi đóng góp đồng nghĩa với việc bạn đồng ý nội dung đóng góp được phát hành theo giấy phép tương ứng:
 
-- 代码：[MIT](./LICENSE)
-- 样本数据集：[CC BY 4.0](./DATASET-LICENSE)
-- 倪师原话目录 `docs/tianji-ziwei/`：[CC BY-NC-SA 4.0](./docs/tianji-ziwei/LICENSE.md)，不许商用
+- Mã nguồn: [MIT](./LICENSE)
+- Bộ dữ liệu mẫu: [CC BY 4.0](./DATASET-LICENSE)
+- Thư mục nguyên lời Nghê sư `docs/tianji-ziwei/`: [CC BY-NC-SA 4.0](./docs/tianji-ziwei/LICENSE.md), không được dùng thương mại
 
 ---
 

@@ -1,65 +1,65 @@
-name: 排盘结果疑问 / Chart result question
-description: 觉得某张盘排得不对？请附上出生信息和对照结果，我们才能逐项核。
-title: "[排盘疑问] "
+name: Thắc mắc kết quả lập lá số / Chart result question
+description: Thấy một lá số lập chưa đúng? Hãy kèm thông tin ngày sinh và kết quả đối chiếu để chúng tôi kiểm tra từng mục.
+title: "[Thắc mắc lá số] "
 labels: ["question"]
 body:
   - type: markdown
     attributes:
       value: |
-        只写「不准」我们没法查。请按下面填完整，我们会逐项对照。
-        先看一眼：辅星亮度、闰月归属、晚子时是否换日在各流派本来就不同，这类差异不算 bug，但仍欢迎指出。
+        Chỉ ghi “không chuẩn” thì chúng tôi không có cách nào kiểm tra. Hãy điền đầy đủ theo mẫu dưới đây, chúng tôi sẽ đối chiếu từng mục.
+        Xem qua trước: độ sáng phụ tinh, quy thuộc tháng nhuận, giờ Tý muộn có đổi ngày hay không vốn khác nhau giữa các trường phái; những khác biệt này không tính là bug, nhưng vẫn hoan nghênh bạn chỉ ra.
   - type: input
     id: date
     attributes:
-      label: 出生日期（公历）
-      placeholder: 例：1990-05-12
+      label: Ngày sinh (dương lịch)
+      placeholder: "Ví dụ: 1990-05-12"
     validations:
       required: true
   - type: input
     id: time
     attributes:
-      label: 出生时间（几点几分）
-      placeholder: 例：08:30
+      label: Giờ sinh (giờ, phút)
+      placeholder: "Ví dụ: 08:30"
     validations:
       required: true
   - type: input
     id: place
     attributes:
-      label: 出生地或经度
-      description: 用来换算真太阳时；东西向经度差最多能差出一个时辰。
-      placeholder: 例：浙江杭州 / 东经 120.2°
+      label: Nơi sinh hoặc kinh độ
+      description: Dùng để quy đổi giờ mặt trời thật (chân thái dương thời); chênh lệch kinh độ theo hướng Đông–Tây có thể làm lệch tới một canh giờ.
+      placeholder: "Ví dụ: Hàng Châu, Chiết Giang / kinh độ Đông 120.2°"
   - type: dropdown
     id: gender
     attributes:
-      label: 性别
-      options: ["男", "女"]
+      label: Giới tính
+      options: ["Nam", "Nữ"]
     validations:
       required: true
   - type: textarea
     id: ours
     attributes:
-      label: 本项目排出的结果
-      description: 截图，或贴出 generateChart 输出里相关的那几项。
+      label: Kết quả do dự án này lập ra
+      description: Ảnh chụp màn hình, hoặc dán các mục liên quan trong đầu ra của generateChart.
     validations:
       required: true
   - type: input
     id: ref
     attributes:
-      label: 拿什么对照
-      placeholder: 例：其它排盘软件 / 某本书第几页
+      label: Đối chiếu với nguồn nào
+      placeholder: "Ví dụ: phần mềm lập lá số khác / trang mấy của một cuốn sách"
     validations:
       required: true
   - type: textarea
     id: theirs
     attributes:
-      label: 对照结果
-      description: 截图或文字。
+      label: Kết quả đối chiếu
+      description: Ảnh chụp màn hình hoặc văn bản.
     validations:
       required: true
   - type: textarea
     id: diff
     attributes:
-      label: 具体哪一项不一致
-      placeholder: 例：命宫应在卯，这里排在戌
+      label: Cụ thể mục nào không khớp
+      placeholder: "Ví dụ: cung Mệnh lẽ ra ở Mão, ở đây lại xếp ở Tuất"
     validations:
       required: true

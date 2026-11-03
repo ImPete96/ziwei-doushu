@@ -47,8 +47,10 @@ export interface NiChapter {
   description: string;
   /** 核心要点 */
   keyPoints: string[];
-  /** 倪师语录 */
+  /** 倪师语录（原文，保持中文） */
   quotes?: string[];
+  /** 倪师语录越南语译文，与 quotes 同序同长 */
+  quotesVi?: string[];
   /** 排序 */
   order: number;
 }
@@ -63,8 +65,10 @@ export interface Hexagram {
   upper: string;
   /** 下卦 */
   lower: string;
-  /** 卦辞要点 */
+  /** 卦辞要点（原文，保持中文） */
   meaning: string;
+  /** 卦辞越南语译文 */
+  meaningVi?: string;
   /** 倪师讲解要点 */
   niInterpretation: string;
   /** 断事要诀 */

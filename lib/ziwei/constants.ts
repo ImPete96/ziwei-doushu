@@ -6,18 +6,18 @@ export const BRANCHES = ['子', '丑', '寅', '卯', '辰', '巳', '午', '未',
 
 // 时辰对应地支
 export const SHICHEN = [
-  { branch: 0, name: '子时', range: '23:00-01:00' },
-  { branch: 1, name: '丑时', range: '01:00-03:00' },
-  { branch: 2, name: '寅时', range: '03:00-05:00' },
-  { branch: 3, name: '卯时', range: '05:00-07:00' },
-  { branch: 4, name: '辰时', range: '07:00-09:00' },
-  { branch: 5, name: '巳时', range: '09:00-11:00' },
-  { branch: 6, name: '午时', range: '11:00-13:00' },
-  { branch: 7, name: '未时', range: '13:00-15:00' },
-  { branch: 8, name: '申时', range: '15:00-17:00' },
-  { branch: 9, name: '酉时', range: '17:00-19:00' },
-  { branch: 10, name: '戌时', range: '19:00-21:00' },
-  { branch: 11, name: '亥时', range: '21:00-23:00' },
+  { branch: 0, name: 'giờ Tý', range: '23:00-01:00' },
+  { branch: 1, name: 'giờ Sửu', range: '01:00-03:00' },
+  { branch: 2, name: 'giờ Dần', range: '03:00-05:00' },
+  { branch: 3, name: 'giờ Mão', range: '05:00-07:00' },
+  { branch: 4, name: 'giờ Thìn', range: '07:00-09:00' },
+  { branch: 5, name: 'giờ Tỵ', range: '09:00-11:00' },
+  { branch: 6, name: 'giờ Ngọ', range: '11:00-13:00' },
+  { branch: 7, name: 'giờ Mùi', range: '13:00-15:00' },
+  { branch: 8, name: 'giờ Thân', range: '15:00-17:00' },
+  { branch: 9, name: 'giờ Dậu', range: '17:00-19:00' },
+  { branch: 10, name: 'giờ Tuất', range: '19:00-21:00' },
+  { branch: 11, name: 'giờ Hợi', range: '21:00-23:00' },
 ];
 
 // 十二宫名顺序；地支索引从命宫起每减 1 前进一宫（排盘界面为逆时针）
@@ -107,20 +107,20 @@ export const TIANMA_TABLE: Record<number, number> = {
 // 其余星曜（武曲/廉贞/贪狼/巨门/破军/文昌/火星/陀罗）iztro 默认值与全书一致，无需覆写。
 // 旧 STAR_BRIGHTNESS 是死代码（从未被引用），已在 2026-05-08 清理。
 
-// 主星描述（倪师体系）
+// 主星描述（倪师体系）——键为 iztro zh-CN 星名（逻辑键），值为越南语显示文案
 export const STAR_DESCRIPTIONS: Record<string, { keywords: string; nature: string; element: string }> = {
-  '紫微': { keywords: '帝王·尊贵·独立', nature: '中性偏吉', element: '土' },
-  '天机': { keywords: '智慧·机变·谋略', nature: '吉星', element: '木' },
-  '太阳': { keywords: '阳刚·官贵·慷慨', nature: '吉星', element: '火' },
-  '武曲': { keywords: '财富·刚毅·果断', nature: '中性', element: '金' },
-  '天同': { keywords: '温和·享福·随缘', nature: '吉星', element: '水' },
-  '廉贞': { keywords: '才艺·刑囚·桃花', nature: '凶中带吉', element: '火' },
-  '天府': { keywords: '财库·稳重·保守', nature: '吉星', element: '土' },
-  '太阴': { keywords: '柔美·财富·阴柔', nature: '吉星', element: '水' },
-  '贪狼': { keywords: '欲望·桃花·多才', nature: '中性', element: '木' },
-  '巨门': { keywords: '口舌·是非·善辩', nature: '凶中带吉', element: '水' },
-  '天相': { keywords: '辅佐·行政·印绶', nature: '吉星', element: '水' },
-  '天梁': { keywords: '荫护·医药·长辈', nature: '吉星', element: '土' },
-  '七杀': { keywords: '将星·果决·孤克', nature: '凶星', element: '金' },
-  '破军': { keywords: '开创·变动·破坏', nature: '凶星', element: '水' },
+  '紫微': { keywords: 'Đế vương·Tôn quý·Độc lập', nature: 'Trung tính thiên cát', element: 'Thổ' },
+  '天机': { keywords: 'Trí tuệ·Cơ biến·Mưu lược', nature: 'Cát tinh', element: 'Mộc' },
+  '太阳': { keywords: 'Dương cương·Quan quý·Khảng khái', nature: 'Cát tinh', element: 'Hỏa' },
+  '武曲': { keywords: 'Tài phú·Cương nghị·Quả đoán', nature: 'Trung tính', element: 'Kim' },
+  '天同': { keywords: 'Ôn hòa·Hưởng phúc·Tùy duyên', nature: 'Cát tinh', element: 'Thủy' },
+  '廉贞': { keywords: 'Tài nghệ·Hình tù·Đào hoa', nature: 'Hung trung đới cát', element: 'Hỏa' },
+  '天府': { keywords: 'Kho tài·Vững vàng·Bảo thủ', nature: 'Cát tinh', element: 'Thổ' },
+  '太阴': { keywords: 'Nhu mỹ·Tài phú·Âm nhu', nature: 'Cát tinh', element: 'Thủy' },
+  '贪狼': { keywords: 'Dục vọng·Đào hoa·Đa tài', nature: 'Trung tính', element: 'Mộc' },
+  '巨门': { keywords: 'Khẩu thiệt·Thị phi·Hùng biện', nature: 'Hung trung đới cát', element: 'Thủy' },
+  '天相': { keywords: 'Phò tá·Hành chính·Ấn thụ', nature: 'Cát tinh', element: 'Thủy' },
+  '天梁': { keywords: 'Che chở·Y dược·Bề trên', nature: 'Cát tinh', element: 'Thổ' },
+  '七杀': { keywords: 'Tướng tinh·Quyết đoán·Cô khắc', nature: 'Hung tinh', element: 'Kim' },
+  '破军': { keywords: 'Khai sáng·Biến động·Phá hoại', nature: 'Hung tinh', element: 'Thủy' },
 };

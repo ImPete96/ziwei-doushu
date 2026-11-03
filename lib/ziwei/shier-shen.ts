@@ -36,6 +36,7 @@
  */
 
 import { LUCUN_TABLE } from './constants';
+import { viStar } from '../vi/terms';
 
 /** 将前十二神，自将星起顺行。索引 0-11 = 神序。 */
 export const JIANG_QIAN_SHEN = [
@@ -158,7 +159,7 @@ export const SHIER_SHEN_EN: Record<string, string> = {
   奏书: 'Zou Shu', 飞廉: 'Fei Lian', 喜神: 'Xi Shen', 伏兵: 'Fu Bing',
 };
 
-/** 按语言取十二神显示名；未收录则原样返回中文，绝不显示 undefined。 */
+/** 按语言取十二神显示名（en → 拼音，其余 → 越南语）；未收录则原样返回中文，绝不显示 undefined。 */
 export function shierShenLabel(name: string, lang: string): string {
-  return lang === 'en' ? (SHIER_SHEN_EN[name] ?? name) : name;
+  return lang === 'en' ? (SHIER_SHEN_EN[name] ?? name) : viStar(name);
 }

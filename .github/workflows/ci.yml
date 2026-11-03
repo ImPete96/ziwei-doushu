@@ -13,17 +13,17 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # 仓库已提交 package-lock.json：按锁定版本安装，并开 npm 缓存
+      # Repo đã commit package-lock.json: cài theo phiên bản đã khóa, và bật cache npm
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
           cache: npm
 
-      - name: 安装依赖
+      - name: Cài dependency
         run: npm ci --no-audit --no-fund
 
-      - name: 类型检查
+      - name: Kiểm tra kiểu
         run: npm run typecheck
 
-      - name: 排盘引擎回归
+      - name: Hồi quy engine lập lá số
         run: npm test

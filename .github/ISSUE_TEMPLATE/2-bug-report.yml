@@ -1,35 +1,35 @@
-name: 程序问题 / Bug report
-description: 代码跑不起来、报错、页面显示异常
+name: Lỗi chương trình / Bug report
+description: Mã không chạy được, báo lỗi, trang hiển thị bất thường
 labels: ["bug"]
 body:
   - type: markdown
     attributes:
       value: |
-        先确认：开源版**不含**任何 `/api/*` 后端接口（AI 解读、合盘分析），这些功能出现 404 是预期行为，需要你自己实现，见 README「快速开始」。排盘本身不需要 API Key。
+        Xác nhận trước: bản mã nguồn mở **không có** bất kỳ API backend `/api/*` nào (luận giải AI, phân tích xem hợp đôi); các tính năng này trả về 404 là hành vi được dự kiến, bạn cần tự hiện thực, xem mục “Bắt đầu nhanh” trong README. Bản thân việc lập lá số không cần API Key.
   - type: textarea
     id: steps
     attributes:
-      label: 复现步骤
+      label: Các bước tái hiện
       placeholder: |
         1. npm ci
         2. npm run dev
-        3. 打开 /chart，选 …… 点 ……
+        3. Mở /chart, chọn …… bấm ……
     validations:
       required: true
   - type: textarea
     id: expected
     attributes:
-      label: 期望结果
+      label: Kết quả mong đợi
     validations:
       required: true
   - type: textarea
     id: actual
     attributes:
-      label: 实际结果（报错信息、截图）
+      label: Kết quả thực tế (thông báo lỗi, ảnh chụp màn hình)
     validations:
       required: true
   - type: input
     id: env
     attributes:
-      label: 运行环境
-      placeholder: 例：macOS 15 / Node 22 / Chrome 140
+      label: Môi trường chạy
+      placeholder: "Ví dụ: macOS 15 / Node 22 / Chrome 140"

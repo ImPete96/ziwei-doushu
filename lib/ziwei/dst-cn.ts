@@ -75,7 +75,7 @@ export function chinaDSTRange(year: number): { start: string; end: string } | nu
   const hit = XLS_CN.find(([y]) => y === year);
   if (!hit) return null;
   const [, m1, d1, m2, d2] = hit;
-  return { start: `${m1} 月 ${d1} 日`, end: `${m2} 月 ${d2} 日` };
+  return { start: `ngày ${d1} tháng ${m1}`, end: `ngày ${d2} tháng ${m2}` };
 }
 
 /** 该年的夏令时起止（数字，供英文等其他语言自己拼月日；起止都含）。不在表内返回 null。 */

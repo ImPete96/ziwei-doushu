@@ -1,19 +1,19 @@
-name: 功能建议 / Feature request
-description: 想要的新功能或改进
+name: Đề xuất tính năng / Feature request
+description: Tính năng mới hoặc cải tiến bạn muốn có
 labels: ["enhancement"]
 body:
   - type: textarea
     id: need
     attributes:
-      label: 想解决什么问题
+      label: Muốn giải quyết vấn đề gì
     validations:
       required: true
   - type: textarea
     id: idea
     attributes:
-      label: 你设想的做法
+      label: Cách làm bạn hình dung
   - type: textarea
     id: source
     attributes:
-      label: 依据（涉及命理口径时请写）
-      description: 出自哪本书、哪一讲，或哪个排盘软件的哪种设置。没有出处的口径改动我们一般不收。
+      label: Căn cứ (hãy ghi khi liên quan đến chuẩn mệnh lý)
+      description: Xuất xứ từ cuốn sách nào, bài giảng nào, hoặc thiết lập nào của phần mềm lập lá số nào. Thay đổi chuẩn không có xuất xứ thì chúng tôi thường không nhận.

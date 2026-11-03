@@ -55,31 +55,38 @@ export function getParagraphById(id: string) {
  * 全文搜索
  *
  * 简单子字符串匹配（不分词，对中文 OK）
- * 大小写不敏感、繁简转换暂不支持
+ * 先匹配原文 text，再匹配越南语译文 translation（大小写不敏感）。
+ * 繁简转换暂不支持
  */
 export function searchClassics(query: string, limit = 30): SearchHit[] {
-  const q = query.trim();
+  const q = query.trim().normalize('NFC');
   if (q.length < 1) return [];
 
   const hits: SearchHit[] = [];
   for (const book of ALL_BOOKS) {
     for (const chapter of book.chapters) {
       for (const p of chapter.paragraphs) {
-        const idx = p.text.indexOf(q);
+        // 原文优先；原文未命中时再查译文
+        let source = p.text;
+        let idx = source.indexOf(q);
+        if (idx < 0 && p.translation) {
+          source = p.translation;
+          idx = indexOfIgnoreCase(source, q);
+        }
         if (idx < 0) continue;
 
         // 提取上下文（前后各 40 字）
         const start = Math.max(0, idx - 40);
-        const end = Math.min(p.text.length, idx + q.length + 40);
-        const before = p.text.slice(start, idx);
-        const matched = p.text.slice(idx, idx + q.length);
-        const after = p.text.slice(idx + q.length, end);
+        const end = Math.min(source.length, idx + q.length + 40);
+        const before = source.slice(start, idx);
+        const matched = source.slice(idx, idx + q.length);
+        const after = source.slice(idx + q.length, end);
 
         const snippet = (start > 0 ? '…' : '')
           + escapeHtml(before)
           + `<mark>${escapeHtml(matched)}</mark>`
           + escapeHtml(after)
-          + (end < p.text.length ? '…' : '');
+          + (end < source.length ? '…' : '');
 
         hits.push({
           bookSlug: book.slug,
@@ -95,6 +102,16 @@ export function searchClassics(query: string, limit = 30): SearchHit[] {
     }
   }
   return hits;
+}
+
+/** 大小写不敏感的 indexOf；小写化改变长度时退回精确匹配，保证下标可用于原串 */
+function indexOfIgnoreCase(haystack: string, needle: string): number {
+  const h = haystack.toLowerCase();
+  const n = needle.toLowerCase();
+  if (h.length !== haystack.length || n.length !== needle.length) {
+    return haystack.indexOf(needle);
+  }
+  return h.indexOf(n);
 }
 
 function escapeHtml(s: string): string {

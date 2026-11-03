@@ -94,7 +94,7 @@ const fail = (m: string) => { bad++; console.log(`  ❌ ${m}`); };
   if (!years.every((y, i) => y === ORACLE_XLS_CN[i][0])) fail('年份序列与金标准不一致');
   if (!isChinaDSTYear(1988) || isChinaDSTYear(1992)) fail('isChinaDSTYear 判断错误');
   const r = chinaDSTRange(1990);
-  if (!r || !r.start.includes('4 月 15') || !r.end.includes('9 月 16')) fail(`chinaDSTRange(1990) 异常 → ${JSON.stringify(r)}`);
+  if (!r || !r.start.includes('ngày 15 tháng 4') || !r.end.includes('ngày 16 tháng 9')) fail(`chinaDSTRange(1990) 异常 → ${JSON.stringify(r)}`);
   if (chinaDSTRange(1992) !== null) fail('chinaDSTRange(1992) 应为 null');
   console.log('  ✅ 辅助函数（年份表 / 区间文案）与金标准表一致');
 }

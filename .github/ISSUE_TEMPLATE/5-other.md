@@ -1,18 +1,18 @@
 ---
-name: 其他问题 / Other
-about: 以上几类都不合适时使用；怎么用、想交流请到讨论区
+name: Vấn đề khác / Other
+about: Dùng khi các loại trên đều không phù hợp; hỏi cách dùng, muốn trao đổi xin vào khu thảo luận
 title: ""
 labels: []
 ---
 
 <!--
-先看一眼：
-- 觉得盘排得不对 → 用「排盘结果疑问」模板（要附出生信息和对照结果）
-- 代码报错 → 用「程序问题」模板
-- 使用问题、想法交流 → 讨论区 https://github.com/Renhuai123/ziwei-doushu/discussions
-请勿贴出手机号、验证码或他人的生辰等隐私信息。
+Xem qua trước:
+- Thấy lá số lập chưa đúng → dùng template “Thắc mắc kết quả lập lá số” (cần kèm thông tin ngày sinh và kết quả đối chiếu)
+- Mã báo lỗi → dùng template “Lỗi chương trình”
+- Hỏi cách dùng, trao đổi ý tưởng → khu thảo luận https://github.com/Renhuai123/ziwei-doushu/discussions
+Xin đừng đăng số điện thoại, mã xác minh hay ngày giờ sinh của người khác và thông tin riêng tư khác.
 -->
 
-## 想说的事
+## Điều muốn nói
 
-## 相关信息（截图、链接、环境）
+## Thông tin liên quan (ảnh chụp màn hình, link, môi trường)
