@@ -1,7 +1,7 @@
 'use client';
 import { motion } from 'framer-motion';
 import type { Palace, Star } from '@/lib/ziwei/types';
-import { viBranch, viPalace, viSihuaShort, viStar, viStem } from '@/lib/vi/terms';
+import { viBranch, viBrightness, viPalace, viSihuaShort, viStar, viStem } from '@/lib/vi/terms';
 import clsx from 'clsx';
 
 interface PalaceCellProps {
@@ -17,7 +17,23 @@ interface PalaceCellProps {
   overlayLabel?: string;
   /** 点击叠加四化 badge 回调 */
   onSiHuaClick?: (starName: string, siHua: string) => void;
+  /** Sao không liệt kê trong ô (Tuần / Triệt đã vẽ trên ranh giới cung) */
+  hideStars?: Set<string>;
 }
+
+export const TEXT_HALO = '0 0 2px var(--t-bg), 0 0 3px var(--t-bg), 0 0 5px var(--t-bg)';
+
+/** Độ sáng viết tắt kiểu lá số Việt; chữ đầy đủ hiện khi rê chuột */
+export const BRIGHTNESS_ABBR: Record<string, string> = {
+  庙: 'M', 旺: 'V', 得: 'Đ', 利: 'L', 平: 'B', 不: 'Bt', 闲: 'N', 陷: 'H', 地: 'Đa',
+};
+
+const Brightness = ({ raw, className }: { raw?: string; className?: string }) =>
+  raw && BRIGHTNESS_ABBR[raw] ? (
+    <span title={viBrightness(raw)} className={clsx('ml-0.5 font-normal opacity-70', className)}>
+      ({BRIGHTNESS_ABBR[raw]})
+    </span>
+  ) : null;
 
 const SIHUA_STYLES: Record<string, string> = {
   '禄': 'text-emerald-400 bg-emerald-500/10 border-emerald-500/30',
@@ -55,11 +71,12 @@ const SiHuaBadge = ({
 
 export default function PalaceCell({
   palace, onClick, onStarClick, isSelected, isSanFang, delay = 0,
-  overlayStarSiHua, overlayLabel, onSiHuaClick,
+  overlayStarSiHua, overlayLabel, onSiHuaClick, hideStars,
 }: PalaceCellProps) {
-  const { branch, stem, name, stars, daXianAge, isCurrentDaXian, isMingGong, isShenGong } = palace;
+  const { branch, stem, name, daXianAge, isCurrentDaXian, isMingGong, isShenGong } = palace;
   const ganzhi = `${viStem(stem)} ${viBranch(branch)}`;
 
+  const stars = hideStars ? palace.stars.filter(s => !hideStars.has(s.name)) : palace.stars;
   const majorStars = stars.filter(s => s.type === 'major');
   const luckyStars = stars.filter(s => s.type === 'lucky');
   const shaStars = stars.filter(s => s.type === 'sha');
@@ -73,6 +90,8 @@ export default function PalaceCell({
       className="relative flex flex-col p-1 sm:p-1.5 cursor-pointer transition-all duration-200 h-full min-w-0 overflow-hidden"
       style={{
         minHeight: '90px',
+        // Quầng màu nền quanh chữ: đường Tam phương đi bên dưới không cắt ngang nét chữ
+        textShadow: TEXT_HALO,
         background: isCurrentDaXian
           ? 'rgba(147,51,234,0.08)'
           : isSelected
@@ -81,7 +100,8 @@ export default function PalaceCell({
           ? 'rgba(37,99,235,0.09)'
           : isMingGong
           ? 'rgba(212,168,67,0.04)'
-          : 'var(--t-bg)',
+          // trong suốt: ChartBoard đã tô nền ở lớp dưới, để đường Tam phương hiện ra dưới chữ
+          : 'transparent',
         boxShadow: isCurrentDaXian
           ? 'inset 3px 0 0 rgba(147,51,234,0.5)'
           : isSelected
@@ -138,6 +158,7 @@ export default function PalaceCell({
                 star.brightness === 'bright' ? 'text-amber-300' : star.brightness === 'dim' ? 'text-amber-700/80' : 'text-amber-500',
               )}>
                 {viStar(star.name)}
+                <Brightness raw={star.brightnessRaw} className="text-[9px] sm:text-[10px]" />
               </span>
               {star.siHua && <SiHuaBadge siHua={star.siHua} />}
               {overlaySiHua && (
@@ -164,6 +185,7 @@ export default function PalaceCell({
             return (
               <span key={s.name} className="inline-flex flex-wrap items-center text-[8px] sm:text-[9px] text-sky-500/70 leading-tight">
                 {viStar(s.name)}
+                <Brightness raw={s.brightnessRaw} />
                 {s.siHua && <SiHuaBadge siHua={s.siHua} />}
                 {overlaySiHua && (
                   <SiHuaBadge
@@ -187,7 +209,7 @@ export default function PalaceCell({
         <div className="flex flex-wrap gap-x-1">
           {shaStars.map(s => (
             <span key={s.name} className="text-[8px] sm:text-[9px] text-red-500/60 leading-tight">
-              {viStar(s.name)}{s.siHua && <SiHuaBadge siHua={s.siHua} />}
+              {viStar(s.name)}<Brightness raw={s.brightnessRaw} />{s.siHua && <SiHuaBadge siHua={s.siHua} />}
             </span>
           ))}
         </div>

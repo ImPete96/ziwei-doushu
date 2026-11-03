@@ -2,7 +2,7 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import type { ZiweiChart, Palace, Star } from '@/lib/ziwei/types';
-import PalaceCell from './PalaceCell';
+import PalaceCell, { TEXT_HALO } from './PalaceCell';
 import TimeNav, { type TimeView, getYearStemIndex, buildSiHuaOverlay } from './TimeNav';
 import { viBranch, viPalaceFull, viSihua, viWuxingJu } from '@/lib/vi/terms';
 
@@ -52,6 +52,54 @@ function getSanFangSiZheng(branch: number): [number, number, number, number] {
 
 const ANIMATION_ORDER = [5, 6, 7, 8, 9, 10, 11, 0, 1, 2, 3, 4];
 
+// ── Tuần / Triệt: kiểu lá số Việt đặt nhãn trên ranh giới giữa hai cung ──
+// Engine an mỗi cặp thành hai sao ở hai cung liền nhau (旬空 + 副旬, 截空 + 副截).
+const BORDER_PAIRS = [
+  { label: 'Triệt', names: ['截空', '副截'] },
+  { label: 'Tuần', names: ['旬空', '副旬'] },
+] as const;
+
+type Edge = 'top' | 'bottom' | 'left' | 'right';
+interface BorderMark { label: 'Tuần' | 'Triệt'; host: number; edge: Edge }
+
+const EDGE_STYLE: Record<Edge, React.CSSProperties> = {
+  right: { right: 0, top: '50%', transform: 'translate(50%, -50%)' },
+  left: { left: 0, top: '50%', transform: 'translate(-50%, -50%)' },
+  bottom: { bottom: 0, left: '50%', transform: 'translate(-50%, 50%)' },
+  top: { top: 0, left: '50%', transform: 'translate(-50%, -50%)' },
+};
+
+const BORDER_MARK_COLOR: Record<BorderMark['label'], React.CSSProperties> = {
+  Triệt: { color: 'rgb(248,113,113)', border: '1px solid rgba(248,113,113,0.6)' },
+  Tuần: { color: 'rgb(148,163,184)', border: '1px solid rgba(148,163,184,0.6)' },
+};
+
+/**
+ * Tìm cặp cung Tuần / Triệt liền nhau và gắn nhãn vào cung vẽ sau (theo ANIMATION_ORDER),
+ * để nhãn tràn sang ranh giới mà không bị ô bên cạnh (vẽ sau) che mất.
+ * Cặp không liền nhau thì giữ nguyên sao trong danh sách như cũ.
+ */
+function findBorderMarks(chart: ZiweiChart): { marks: BorderMark[]; hidden: Set<string> } {
+  const marks: BorderMark[] = [];
+  const hidden = new Set<string>();
+  for (const { label, names } of BORDER_PAIRS) {
+    const branches = names.map(n => chart.palaces.find(p => p.stars.some(s => s.name === n))?.branch);
+    if (branches[0] === undefined || branches[1] === undefined) continue;
+    const [a, b] = branches as [number, number];
+    const [ra, ca] = BRANCH_GRID_POS[a];
+    const [rb, cb] = BRANCH_GRID_POS[b];
+    if (Math.abs(ra - rb) + Math.abs(ca - cb) !== 1) continue;
+    const host = ANIMATION_ORDER.indexOf(a) > ANIMATION_ORDER.indexOf(b) ? a : b;
+    const other = host === a ? b : a;
+    const [rh, ch] = BRANCH_GRID_POS[host];
+    const [ro, co] = BRANCH_GRID_POS[other];
+    const edge: Edge = co > ch ? 'right' : co < ch ? 'left' : ro > rh ? 'bottom' : 'top';
+    marks.push({ label, host, edge });
+    names.forEach(n => hidden.add(n));
+  }
+  return { marks, hidden };
+}
+
 export default function ChartBoard({ chart, onStarSelect, onPalaceSelect, onSiHuaClick }: ChartBoardProps) {
   const [selectedBranch, setSelectedBranch] = useState<number | null>(null);
   const [timeView, setTimeView] = useState<TimeView>('mingpan');
@@ -59,6 +107,7 @@ export default function ChartBoard({ chart, onStarSelect, onPalaceSelect, onSiHu
 
   const palaceMap: Record<number, Palace> = {};
   chart.palaces.forEach(p => { palaceMap[p.branch] = p; });
+  const borderMarks = findBorderMarks(chart);
 
   // 计算当前叠加四化数据（大限或流年）
   const currentDx = chart.daXians[chart.currentDaXianIndex];
@@ -128,8 +177,10 @@ export default function ChartBoard({ chart, onStarSelect, onPalaceSelect, onSiHu
           const [row, col] = BRANCH_GRID_POS[branch];
           const palace = palaceMap[branch];
           if (!palace) return null;
+          // 外层只铺底色（不定位，画在连线下面）；内层 z-index 1 承载文字，盖在连线上面
           return (
             <div key={branch} style={{ gridRow: row, gridColumn: col, background: 'var(--t-bg)' }}>
+              <div style={{ position: 'relative', zIndex: 1, height: '100%' }}>
               <PalaceCell
                 palace={palace}
                 onClick={() => handlePalaceClick(branch)}
@@ -140,18 +191,31 @@ export default function ChartBoard({ chart, onStarSelect, onPalaceSelect, onSiHu
                 overlayStarSiHua={Object.keys(overlayData).length > 0 ? overlayData : undefined}
                 overlayLabel={overlayLabel}
                 onSiHuaClick={(starName, siHua) => onSiHuaClick?.(starName, siHua, timeView)}
+                hideStars={borderMarks.hidden}
               />
+              {borderMarks.marks.filter(m => m.host === branch).map(m => (
+                <span
+                  key={m.label}
+                  title={m.label === 'Triệt' ? 'Triệt lộ không vong' : 'Tuần trung không vong'}
+                  className="absolute text-[9px] sm:text-[10px] font-semibold leading-none px-1.5 py-0.5 rounded-full whitespace-nowrap pointer-events-auto"
+                  style={{ ...EDGE_STYLE[m.edge], zIndex: 2, background: 'var(--t-bg)', ...BORDER_MARK_COLOR[m.label] }}
+                >
+                  {m.label}
+                </span>
+              ))}
+              </div>
             </div>
           );
         })}
 
-        {/* 中央信息区 */}
+        {/* 中央信息区：同样拆成底色层 + 文字层，让连线从文字下面穿过 */}
+        <div style={{ gridRow: '2 / 4', gridColumn: '2 / 4', background: 'var(--t-bg)' }}>
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ delay: 0.5 }}
-          className="flex flex-col items-center justify-center p-2 sm:p-4 gap-2 sm:gap-3 min-w-0"
-          style={{ gridRow: '2 / 4', gridColumn: '2 / 4', background: 'var(--t-bg)' }}
+          className="flex flex-col items-center justify-center p-2 sm:p-4 gap-2 sm:gap-3 min-w-0 h-full"
+          style={{ position: 'relative', zIndex: 1, textShadow: TEXT_HALO }}
         >
           <div className="text-5xl select-none leading-none" style={{ color: 'var(--t-gold)', opacity: 0.12, filter: 'drop-shadow(0 0 12px rgba(180,120,30,0.15))' }}>
             ☯
@@ -183,6 +247,7 @@ export default function ChartBoard({ chart, onStarSelect, onPalaceSelect, onSiHu
             {chart.lunarInfo.lunarMonth}/{chart.lunarInfo.lunarYear}
           </div>
         </motion.div>
+        </div>
 
         {/* ── 三方四正 SVG 连线（绝对定位在 grid 内部，受 overflow:hidden 裁切） ── */}
         <AnimatePresence>
@@ -197,7 +262,8 @@ export default function ChartBoard({ chart, onStarSelect, onPalaceSelect, onSiHu
               style={{
                 position: 'absolute',
                 inset: 0,
-                zIndex: 20,
+                // 在宫位底色之上、文字层（zIndex 1）之下
+                zIndex: 0,
               }}
             >
               <svg
@@ -213,7 +279,7 @@ export default function ChartBoard({ chart, onStarSelect, onPalaceSelect, onSiHu
                   const p2 = BRANCH_SVG_POS[sanFangBranches[2]]; // 三合1
                   const p3 = BRANCH_SVG_POS[sanFangBranches[3]]; // 三合2
                   const dash = "6,5";
-                  const stroke = "rgba(37,99,235,0.55)";
+                  const stroke = "rgba(37,99,235,0.45)";
                   const sw = "1.5";
                   return (
                     <>
@@ -278,6 +344,9 @@ export default function ChartBoard({ chart, onStarSelect, onPalaceSelect, onSiHu
         ))}
         <span className="px-1.5 py-0.5 rounded-full" style={{ color: 'var(--t-faint)', border: '1px solid var(--t-border)' }}>
           Bấm vào cung để xem Tam phương tứ chính
+        </span>
+        <span className="w-full text-center" style={{ color: 'var(--t-faint)' }}>
+          Độ sáng: M Miếu · V Vượng · Đ Đắc · L Lợi · B Bình · Bt Bất · H Hãm
         </span>
       </motion.div>
     </div>
