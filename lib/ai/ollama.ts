@@ -19,7 +19,7 @@ export class OllamaError extends Error {
 }
 
 /** Bỏ khối <think>…</think> ở đầu câu trả lời (model có chế độ suy nghĩ như qwen3). */
-function thinkFilter() {
+export function thinkFilter() {
   let state: 'probe' | 'think' | 'pass' = 'probe';
   let buf = '';
   return (chunk: string): string => {

@@ -152,7 +152,8 @@ function AiContent({ text, streaming }: { text: string; streaming?: boolean }) {
   return (
     <div className="space-y-0.5">
       {lines.map((line, i) => {
-        const sectionMatch = line.match(/^\*\*【(.+?)】\*\*$/);
+        // Model nhỏ hay thêm "### " trước tiêu đề **【…】**
+        const sectionMatch = line.trim().match(/^(?:#+\s*)?\*\*【(.+?)】\*\*$/);
         if (sectionMatch) {
           return (
             <div key={i} className="pt-3 pb-0.5 first:pt-0">

@@ -308,6 +308,8 @@ Mỗi lần push và PR đều chạy cùng bộ này trên GitHub Actions (xem 
 >
 > **Chạy bằng model trên máy (Ollama):** cài [Ollama](https://ollama.com), tải model (ví dụ `ollama pull gemma3:12b`), rồi đặt `AI_PROVIDER=ollama` trong `.env.local` (đổi model bằng `OLLAMA_MODEL`). Không tốn phí, dữ liệu không rời khỏi máy, nhưng chậm hơn nhiều (vài phút một bài trên máy Mac M1 Pro) và luận kém sâu hơn Claude.
 >
+> **Hoặc qua LM Studio:** bật máy chủ (`lms server start`), nạp model với ngữ cảnh đủ dài (`lms load qwen/qwen3.5-9b -c 16384`; ngữ cảnh mặc định ngắn sẽ làm mất phần đầu lá số), rồi đặt `AI_PROVIDER=lmstudio` và `LMSTUDIO_MODEL=<tên trong lms ls>` trong `.env.local`. Phần suy nghĩ của model được tắt (`reasoning_effort: none`) để trả lời ngay bằng tiếng Việt.
+>
 > **Phân tích AI xem hợp đôi (`/api/heming`)** vẫn chưa có; chỗ này sẽ báo thẳng là bản mã nguồn mở không có API này.
 
 ---

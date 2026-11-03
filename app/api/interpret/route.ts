@@ -4,10 +4,11 @@ import type { BirthInfo } from '@/lib/ziwei/types';
 import { buildChartBrief } from '@/lib/ai/chart-brief';
 import { takeQuota } from '@/lib/ai/rate-limit';
 import { streamOllama, OllamaError, OLLAMA_MODEL, type ChatMessage } from '@/lib/ai/ollama';
+import { streamLmStudio, LmStudioError } from '@/lib/ai/lmstudio';
 
 /**
- * POST /api/interpret — luận giải lá số bằng Claude, hoặc model chạy trên máy qua Ollama
- * khi AI_PROVIDER=ollama.
+ * POST /api/interpret — luận giải lá số bằng Claude, hoặc model chạy trên máy qua Ollama /
+ * LM Studio khi AI_PROVIDER=ollama / lmstudio.
  *
  * Vào: { chart, messages } như InsightPanel / ChatPanel gửi. Lá số được an lại trên máy chủ
  * từ chart.birthInfo, nên dữ liệu đưa cho AI luôn do engine tính, không tin phần còn lại
@@ -18,7 +19,9 @@ import { streamOllama, OllamaError, OLLAMA_MODEL, type ChatMessage } from '@/lib
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
-const PROVIDER = process.env.AI_PROVIDER === 'ollama' ? 'ollama' : 'anthropic';
+const PROVIDER = process.env.AI_PROVIDER === 'ollama' || process.env.AI_PROVIDER === 'lmstudio'
+  ? process.env.AI_PROVIDER
+  : 'anthropic';
 const MODEL = process.env.ANTHROPIC_MODEL || 'claude-opus-5-5';
 const EFFORT = (process.env.AI_EFFORT || 'medium') as 'low' | 'medium' | 'high' | 'xhigh' | 'max';
 // Mô hình nhận `fallbacks: "default"` (chuyển sang mô hình dự phòng khi bị từ chối nhầm).
@@ -82,6 +85,11 @@ function errorText(err: unknown): string {
     if (err.kind === 'model') return `Ollama chưa có model ${OLLAMA_MODEL}. Chạy lệnh: ollama pull ${OLLAMA_MODEL}`;
     return `Ollama báo lỗi: ${err.message}`;
   }
+  if (err instanceof LmStudioError) {
+    if (err.kind === 'connect') return 'Không kết nối được LM Studio. Mở LM Studio rồi bật máy chủ (lệnh: lms server start).';
+    if (err.kind === 'config') return 'Chưa chọn model LM Studio: thêm LMSTUDIO_MODEL vào file .env.local (xem tên bằng lệnh lms ls).';
+    return `LM Studio báo lỗi: ${err.message}`;
+  }
   if (err instanceof Anthropic.AuthenticationError) {
     return 'API key Anthropic không hợp lệ. Kiểm tra ANTHROPIC_API_KEY trong file .env.local rồi khởi động lại máy chủ.';
   }
@@ -126,12 +134,17 @@ export async function POST(req: Request) {
             : 'Hôm nay đã hết lượt luận giải AI, vui lòng quay lại vào ngày mai.');
           return;
         }
-        if (PROVIDER === 'ollama') {
-          await streamOllama({
+        if (PROVIDER !== 'anthropic') {
+          const local = PROVIDER === 'ollama' ? streamOllama : streamLmStudio;
+          await local({
             system: `${SYSTEM_PROMPT}\n\n# Lá số của người hỏi\n\n${brief}`,
             messages,
             signal: req.signal,
-            onText: send,
+            // Model Qwen chạy local vẫn lọt chữ Hán dù đã dặn, thường kèm nghĩa tiếng Việt trong ngoặc
+            onText: (t) => {
+              const vi = t.replace(/[㐀-鿿]+/g, '');
+              if (vi) send(vi);
+            },
           });
           return;
         }
