@@ -155,7 +155,7 @@ export default function PalaceCell({
               <button
                 type="button"
                 onClick={e => { e.stopPropagation(); onStarClick?.(star); }}
-                className="text-[15px] leading-tight font-bold tracking-tight text-left hover:brightness-125 transition-all"
+                className="font-display text-[17px] leading-tight font-bold text-left hover:underline underline-offset-2"
                 style={{ color: star.brightness === 'bright' ? 'var(--t-star-bright)' : star.brightness === 'dim' ? 'var(--t-dim)' : 'var(--t-star)' }}
               >
                 {viStar(star.name)}

@@ -6,6 +6,11 @@ import SiteFooter from '@/components/site/SiteFooter';
 import { Analytics } from '@vercel/analytics/next';
 import { SpeedInsights } from '@vercel/speed-insights/next';
 import { SITE_URL } from '@/lib/site';
+import { Alegreya, Be_Vietnam_Pro } from 'next/font/google';
+
+// Be Vietnam Pro: chữ thường, vẽ cho dấu tiếng Việt; Alegreya: tiêu đề và tên sao, nét bút như bản in sách cũ
+const body = Be_Vietnam_Pro({ subsets: ['vietnamese', 'latin'], weight: ['400', '500', '600', '700'], variable: '--font-body', display: 'swap' });
+const display = Alegreya({ subsets: ['vietnamese', 'latin'], weight: ['500', '700', '800'], variable: '--font-alegreya', display: 'swap' });
 
 export const metadata: Metadata = {
   title: 'Lá Số Tử Vi · Tử Vi Đẩu Số chính tông Nghê Hải Hạ',
@@ -40,9 +45,9 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="vi" suppressHydrationWarning>
+    <html lang="vi" suppressHydrationWarning className={`${body.variable} ${display.variable}`}>
       <head>
-        <script dangerouslySetInnerHTML={{ __html: `(function(){try{var t=localStorage.getItem('ziwei-theme');if(t==='light'||t==='dark')document.documentElement.setAttribute('data-theme',t);else document.documentElement.setAttribute('data-theme','dark');}catch(e){}})();` }} />
+        <script dangerouslySetInnerHTML={{ __html: `(function(){try{var t=localStorage.getItem('ziwei-theme');if(t==='light'||t==='dark')document.documentElement.setAttribute('data-theme',t);else document.documentElement.setAttribute('data-theme','light');}catch(e){}})();` }} />
       </head>
       <body className="min-h-screen">
         <ThemeProvider>

@@ -165,11 +165,9 @@ function AiContent({ text, streaming }: { text: string; streaming?: boolean }) {
         const sectionMatch = line.trim().match(/^(?:#+\s*)?\*\*【(.+?)】\*\*$/);
         if (sectionMatch) {
           return (
-            <div key={i} className="pt-3 pb-0.5 first:pt-0">
-              <span className="text-[14px] font-semibold tracking-wide" style={{ color: 'var(--t-gold)' }}>
-                【{sectionMatch[1]}】
-              </span>
-            </div>
+            <h3 key={i} className="font-display text-[18px] font-bold pt-4 pb-1 first:pt-0" style={{ color: 'var(--t-gold)' }}>
+              {sectionMatch[1]}
+            </h3>
           );
         }
         if (line.trim() === '') return <div key={i} className="h-1" />;
@@ -480,13 +478,6 @@ Lời khuyên cụ thể, làm được, dựa trên Tứ Hóa này.`;
                 initial={{ opacity: 0, y: 6 }}
                 animate={{ opacity: 1, y: 0 }}
               >
-                <div
-                  className="text-[12px] tracking-widest mb-2 flex items-center gap-1.5"
-                  style={{ color: 'var(--t-faint)' }}
-                >
-                  <span style={{ color: 'var(--t-gold)', opacity: 0.4 }}>✦</span>
-                  Luận giải mệnh lý
-                </div>
                 <AiContent text={msg.content} streaming={loading && isLastMsg} />
                 {msg.error && isLastMsg && !loading && (
                   <button

@@ -19,10 +19,10 @@ export default function SiteHeader() {
   return (
     <header
       className="sticky top-0 z-50"
-      style={{ background: 'color-mix(in srgb, var(--t-bg) 88%, transparent)', borderBottom: '1px solid var(--t-border)', backdropFilter: 'blur(10px)', WebkitBackdropFilter: 'blur(10px)' }}
+      style={{ background: 'var(--t-bg)', borderBottom: '1px solid var(--t-border)' }}
     >
       <div className="mx-auto flex items-center gap-4 px-6 h-14" style={{ maxWidth: 1280 }}>
-        <Link href="/" className="text-[15px] font-semibold tracking-[0.15em] whitespace-nowrap" style={{ color: 'var(--t-gold)' }}>
+        <Link href="/" className="font-display text-[22px] font-bold whitespace-nowrap" style={{ color: 'var(--t-text)' }}>
           Lá Số Tử Vi
         </Link>
         <nav aria-label="Menu chính" className="flex items-center gap-1 ml-auto">
@@ -40,8 +40,8 @@ export default function SiteHeader() {
           <Link
             href="/chart"
             aria-current={pathname.startsWith('/chart') ? 'page' : undefined}
-            className="ml-2 px-4 py-1.5 rounded-full text-[14px] font-medium whitespace-nowrap"
-            style={{ color: 'var(--t-gold)', border: '1px solid var(--t-border-acc)', background: 'color-mix(in srgb, var(--t-gold) 10%, transparent)' }}
+            className="ml-2 px-4 py-1.5 rounded-md text-[14px] font-semibold whitespace-nowrap"
+            style={{ color: 'var(--t-bg)', background: 'var(--t-gold)' }}
           >
             Lập lá số
           </Link>

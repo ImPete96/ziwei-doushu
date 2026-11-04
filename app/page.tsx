@@ -2,7 +2,6 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion, useScroll, useTransform, useInView, AnimatePresence } from 'framer-motion';
-import StarField from '@/components/StarField';
 import { useTheme, type Theme } from '@/components/ThemeProvider';
 
 // ─── 滚动入场 wrapper ────────────────────────────────────
@@ -110,52 +109,53 @@ const NI_TEACHINGS = [
 ];
 
 // ─── 主题色彩 helper ─────────────────────────────────────
+// Màu trang chủ lấy từ token CSS (globals.css) nên tự đổi theo giao diện giấy / đêm;
+// tham số theme giữ lại để không phải sửa các chỗ gọi.
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function useColors(theme: Theme) {
-  const d = theme === 'dark';
+  const ink = 'var(--t-text)';
+  const seal = 'var(--t-gold)';
+  const line = 'var(--t-border)';
+  const card = 'var(--t-card)';
   return {
-    bgBase:       d ? '#020810'                                : '#f5efe0',
-    // nav 用与 bgBase 完全相同的不透明色，避免半透明叠加产生色差带
-    navBg:        d ? '#020810'                                : '#f5efe0',
-    navBorder:    d ? 'rgba(255,255,255,0.05)'                : 'rgba(160,120,30,0.15)',
-    goldGrad:     d ? 'linear-gradient(160deg,#c8993a 0%,#f0d070 40%,#c8993a 70%,#f0c755 100%)'
-                    : 'linear-gradient(160deg,#6a4206 0%,#9a6a10 40%,#6a4206 70%,#885010 100%)',
-    goldSolid:    d ? '#d4a843'                               : '#8b6410',
-    goldLine:     d ? 'rgba(212,168,67,0.4)'                  : 'rgba(140,100,20,0.4)',
-    tagText:      d ? 'rgba(212,168,67,0.6)'                  : 'rgba(120,80,10,0.65)',
-    // 亮色文字用冷灰系（A 方案核心）：暖底 + 冷字 → 视觉不审美疲劳
-    textPrimary:  d ? '#e8eef6'                               : '#1a1d24',
-    textSecond:   d ? '#b8c6df'                               : '#3a3f4a',
-    textMuted:    d ? '#9db0d0'                               : '#5a6275',
-    textFaint:    d ? 'rgba(240,246,255,0.56)'                : '#9da4b3',
-    // 冷色 accent（B 方案核心）：呼应暗色 quan 蓝；用于装饰性 glow / 链接 / 高亮
-    accent:       d ? '#3a78d4'                               : '#3a5a82',
-    accentSoft:   d ? 'rgba(58,120,212,0.18)'                 : 'rgba(58,90,130,0.10)',
-    cardBg:       d ? 'rgba(255,255,255,0.05)'                : 'rgba(255,255,255,0.88)',
-    cardBorder:   d ? 'rgba(255,255,255,0.10)'                : 'rgba(200,160,60,0.25)',
-    cardShadow:   d ? '0 4px 32px rgba(0,0,0,0.5)'           : '0 4px 24px rgba(140,100,20,0.12)',
-    featureBg:    d ? 'rgba(255,255,255,0.04)'                : 'rgba(255,255,255,0.75)',
-    featureBord:  d ? 'rgba(255,255,255,0.08)'                : 'rgba(200,160,60,0.2)',
-    glowTint:     d ? 'rgba(212,168,67,0.07)'                 : 'rgba(180,140,40,0.06)',
-    // 亮色 glow 真用蓝/紫——给整体氛围加冷色点缀
-    glowBlue:     d ? 'rgba(40,80,160,0.12)'                  : 'rgba(58,90,130,0.06)',
-    glowPurple:   d ? 'rgba(120,50,180,0.08)'                 : 'rgba(96,80,140,0.04)',
-    niBg:         d ? 'rgba(255,255,255,0.04)'                : 'rgba(255,255,255,0.8)',
-    niBorder:     d ? 'rgba(212,168,67,0.2)'                  : 'rgba(180,130,40,0.25)',
-    niDivider:    d ? 'rgba(255,255,255,0.08)'                : 'rgba(180,130,40,0.12)',
-    niCardBg:     d ? 'rgba(255,255,255,0.04)'                : 'rgba(255,255,255,0.9)',
-    niCardBord:   d ? 'rgba(255,255,255,0.08)'                : 'rgba(200,160,60,0.2)',
-    niCardShadow: d ? '0 2px 20px rgba(0,0,0,0.4)'           : '0 2px 16px rgba(140,100,20,0.1)',
-    starBg:       d ? 'rgba(255,255,255,0.04)'                : 'rgba(255,255,255,0.7)',
-    starBorder:   d ? 'rgba(212,168,67,0.22)'                 : 'rgba(160,120,30,0.3)',
-    starText:     d ? 'rgba(212,168,67,0.7)'                  : 'rgba(120,80,10,0.7)',
-    ctaBg:        d ? 'linear-gradient(135deg,#b8892a,#f0d070,#b8892a)'
-                    : 'linear-gradient(135deg,#6a4206,#9a6810,#6a4206)',
-    ctaText:      d ? '#08080a'                               : '#f8f3e8',
-    footerText:   d ? 'rgba(255,255,255,0.08)'                : '#d0b878',
-    scrollLine:   d ? 'rgba(212,168,67,0.3)'                  : 'rgba(140,100,20,0.3)',
-    scrollText:   d ? 'rgba(255,255,255,0.12)'                : '#c0a870',
-    altSection:   d ? 'rgba(255,255,255,0.02)'                : 'rgba(255,255,255,0.4)',
-    quoteBg:      d ? 'rgba(212,168,67,0.04)'                 : 'rgba(255,255,255,0.9)',
+    bgBase: 'var(--t-bg)',
+    navBg: 'var(--t-bg)',
+    navBorder: line,
+    // giữ dạng gradient vì tiêu đề dùng background-clip: text
+    goldGrad: `linear-gradient(${ink}, ${ink})`,
+    goldSolid: seal,
+    goldLine: 'var(--t-border-acc)',
+    tagText: 'var(--t-text2)',
+    textPrimary: ink,
+    textSecond: 'var(--t-text2)',
+    textMuted: 'var(--t-faint)',
+    textFaint: 'var(--t-faint)',
+    accent: 'var(--t-star)',
+    accentSoft: 'var(--t-surface)',
+    cardBg: card,
+    cardBorder: line,
+    cardShadow: 'none',
+    featureBg: card,
+    featureBord: line,
+    glowTint: 'transparent',
+    glowBlue: 'transparent',
+    glowPurple: 'transparent',
+    niBg: card,
+    niBorder: line,
+    niDivider: line,
+    niCardBg: card,
+    niCardBord: line,
+    niCardShadow: 'none',
+    starBg: card,
+    starBorder: line,
+    starText: 'var(--t-text2)',
+    ctaBg: seal,
+    ctaText: 'var(--t-bg)',
+    footerText: 'var(--t-faint)',
+    scrollLine: line,
+    scrollText: 'var(--t-faint)',
+    altSection: 'var(--t-surface)',
+    quoteBg: card,
   };
 }
 
@@ -377,64 +377,22 @@ export default function HomePage() {
     <div style={{ background: c.bgBase, transition: 'background 0.35s ease' }} className="overflow-x-hidden">
       {/* 致用户公告——首次访问全屏覆盖，关闭后才进入首页 */}
 
-      <StarField />
 
-      {/* 全局光晕 */}
-      <div className="fixed inset-0 pointer-events-none z-0">
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[900px] h-[500px] rounded-full"
-          style={{ background: `radial-gradient(ellipse, ${c.glowTint} 0%, transparent 70%)` }} />
-        <div className="absolute top-1/3 left-1/4 w-96 h-96 rounded-full"
-          style={{ background: `radial-gradient(ellipse, ${c.glowBlue} 0%, transparent 70%)` }} />
-        <div className="absolute bottom-1/4 right-1/4 w-64 h-64 rounded-full"
-          style={{ background: `radial-gradient(ellipse, ${c.glowPurple} 0%, transparent 70%)` }} />
-      </div>
 
       {/* ══ HERO ══════════════════════════════════════════ */}
       <section ref={heroRef} className="relative min-h-[82svh] lg:min-h-[92vh] flex flex-col items-center justify-center px-6 z-10 pb-24 pt-10">
         <motion.div style={{ y: heroY, opacity: heroOpacity, maxWidth: '960px' }} className="text-center w-full mx-auto mt-10">
-          {/* 标签行 */}
-          <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.1 }}
-            className="flex items-center justify-center gap-3 mb-8">
-            <div className="h-px w-12" style={{ background: `linear-gradient(to right, transparent, ${c.goldLine})` }} />
-            <span className="text-[11px] tracking-[0.45em] transition-colors duration-300" style={{ color: c.tagText }}>
-              Tử Vi Đẩu Số · Hệ Nghê Hải Hạ
-            </span>
-            <div className="h-px w-12" style={{ background: `linear-gradient(to left, transparent, ${c.goldLine})` }} />
-          </motion.div>
-
-          {/* 主标题 */}
-          <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.9, delay: 0.2, ease: [0.25, 0.1, 0.25, 1] }}
-            style={{ position: 'relative', display: 'inline-block' }}>
-            <h1
-              className={`grad-text ${theme === 'dark' ? 'grad-text-dark' : 'grad-text-light'} font-bold leading-none mb-5`}
-              style={{
-                fontSize: 'clamp(44px, 9vw, 112px)',
-                letterSpacing: '0.03em',
-              }}>
+          {/* Một lần hiện duy nhất khi tải trang; không nhãn trang trí, không chữ gradient */}
+          <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, ease: [0.25, 0.1, 0.25, 1] }}>
+            <h1 className="font-bold leading-none mb-6" style={{ fontSize: 'clamp(48px, 9vw, 116px)', color: c.textPrimary }}>
               Lá Số Tử Vi
             </h1>
+            <p className="text-lg md:text-xl max-w-2xl mx-auto leading-relaxed mb-10" style={{ color: c.textSecond }}>
+              Lập lá số Tử Vi Đẩu Số theo hệ Nghê Hải Hạ từ ngày giờ và nơi sinh của bạn,
+              rồi đọc luận giải từng cung, từng đại hạn bằng AI.
+            </p>
           </motion.div>
-
-          <motion.p initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 0.45 }}
-            className="text-base md:text-lg tracking-[0.18em] mb-2"
-            style={{ color: c.textSecond, fontWeight: 500 }}>
-            Tử Vi là cửa · Thiên Địa Nhân là đường · Nghê Hải Hạ là thầy
-          </motion.p>
-          <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }}
-            transition={{ duration: 0.7, delay: 0.55 }}
-            className="text-xs md:text-sm tracking-[0.3em] mb-6"
-            style={{ color: c.textMuted, opacity: 0.85 }}>
-            AI giải đáp · Tri hành hợp nhất
-          </motion.p>
-          <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }}
-            transition={{ duration: 0.7, delay: 0.65 }}
-            className="text-sm max-w-xl mx-auto leading-relaxed mb-10"
-            style={{ color: c.textMuted }}>
-            Nhập ngày giờ và nơi sinh để lập lá số Tử Vi Đẩu Số của riêng bạn, kèm luận giải AI theo hệ Nghê Hải Hạ.
-          </motion.p>
 
           {/* CTA */}
           <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}
@@ -443,7 +401,7 @@ export default function HomePage() {
             <motion.button
               whileHover={{ y: -2, filter: 'brightness(1.06)' }} whileTap={{ scale: 0.97 }}
               onClick={() => router.push('/chart')}
-              className="px-12 py-4 font-semibold text-base tracking-widest rounded-full"
+              className="px-10 py-3.5 font-semibold text-base rounded-md"
               style={{ background: c.ctaBg, color: c.ctaText }}>
               Lập lá số ngay
             </motion.button>
@@ -465,53 +423,32 @@ export default function HomePage() {
           </motion.div>
         </motion.div>
 
-        {/* 滚动提示（绝对定位，不影响 hero opacity 计算） */}
-        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}
-          transition={{ delay: 2, duration: 1 }}
-          className="absolute bottom-6 left-0 right-0 flex flex-col items-center gap-2 pointer-events-none">
-          <span className="text-[9px] tracking-[0.4em] uppercase" style={{ color: c.scrollText }}>Khám phá thêm</span>
-          <motion.div animate={{ y: [0, 6, 0] }} transition={{ repeat: Infinity, duration: 2, ease: 'easeInOut' }}
-            className="w-px h-8" style={{ background: `linear-gradient(to bottom, ${c.scrollLine}, transparent)` }} />
-        </motion.div>
       </section>
 
       {/* ══ 哲学引言 ══════════════════════════════════════ */}
       <section className="relative z-10 overflow-hidden min-h-[82svh] lg:min-h-[92vh] flex items-center" style={{ padding: '72px 24px' }}>
         <WeakBoundary line={c.navBorder} />
-        <div className="absolute inset-0"
-          style={{
-            background: theme === 'dark'
-              ? 'linear-gradient(to bottom, #020810 0%, #020810 6%, #030a18 22%, #0d0820 40%, #0a0618 68%, #030a18 86%, #020810 100%)'
-              : 'linear-gradient(to bottom, #f5efe0 0%, #f5efe0 6%, #c08055 18%, #6a2810 32%, #1e0a02 50%, #1e0a02 70%, #6a2810 84%, #f5efe0 100%)',
-            transition: 'background 0.4s ease',
-          }} />
-        <div className="absolute inset-0 flex items-center justify-center pointer-events-none select-none overflow-hidden">
-          <span className="font-bold" style={{ fontSize: 'clamp(220px, 38vw, 460px)', color: 'rgba(212,168,67,0.012)', lineHeight: 1, fontFamily: 'serif' }}>✦</span>
-        </div>
+        {/* Dải chàm đêm cho câu dẫn: cùng một màu ở cả hai giao diện */}
+        <div className="absolute inset-0" style={{ background: '#1B2340' }} />
         <FadeIn className="relative mx-auto text-center w-full" y={20}>
-          <div className="flex items-center justify-center gap-4 mb-8">
-            <div className="h-px w-16" style={{ background: 'linear-gradient(to right, transparent, rgba(212,168,67,0.45))' }} />
-            <span className="text-[10px] tracking-[0.55em] uppercase" style={{ color: 'rgba(212,168,67,0.5)' }}>Mệnh · Vận · Quan</span>
-            <div className="h-px w-16" style={{ background: 'linear-gradient(to left, transparent, rgba(212,168,67,0.45))' }} />
-          </div>
           <div className="space-y-3" style={{ maxWidth: '840px', margin: '0 auto' }}>
             {[
-              { text: 'Ý nghĩa của việc nhìn trước vận mệnh', size: 'clamp(17px, 2.2vw, 28px)', color: 'rgba(215,228,252,0.72)', delay: 0.1 },
-              { text: 'không nằm ở việc biết trước tương lai', size: 'clamp(19px, 2.6vw, 32px)', color: 'rgba(220,232,250,0.74)', delay: 0.25 },
-              { text: 'mà ở việc không ngừng hiểu chính mình', size: 'clamp(21px, 3vw, 40px)', color: 'rgba(218,230,248,0.8)', delay: 0.34 },
+              { text: 'Ý nghĩa của việc nhìn trước vận mệnh', size: 'clamp(17px, 2.2vw, 28px)', color: '#C3C9DC', delay: 0.1 },
+              { text: 'không nằm ở việc biết trước tương lai', size: 'clamp(19px, 2.6vw, 32px)', color: '#D5DAE8', delay: 0.25 },
+              { text: 'mà ở việc không ngừng hiểu chính mình', size: 'clamp(21px, 3vw, 40px)', color: '#E2E6F0', delay: 0.34 },
             ].map((line, i) => (
               <motion.p key={i}
                 initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.7, delay: line.delay }}
-                className="tracking-wider" style={{ fontSize: line.size, color: line.color, fontWeight: 400 }}>
+                style={{ fontSize: line.size, color: line.color, fontWeight: 400 }}>
                 {line.text}
               </motion.p>
             ))}
             <motion.p
               initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.45 }}
-              className={`grad-text ${theme === 'dark' ? 'grad-text-dark' : 'grad-text-light'} font-bold`}
-              style={{ fontSize: 'clamp(22px, 3.4vw, 48px)', letterSpacing: '0.02em', lineHeight: 1.35 }}>
+              className="font-display font-bold"
+              style={{ fontSize: 'clamp(22px, 3.4vw, 48px)', lineHeight: 1.35, color: '#F2A08F' }}>
               để rồi tự viết nên kịch bản cuộc đời mình
             </motion.p>
           </div>
@@ -531,7 +468,6 @@ export default function HomePage() {
                   <FadeIn delay={0}>
                     <div className="flex items-center gap-3 mb-6">
                       <div className="h-px w-8" style={{ background: c.goldLine }} />
-                      <span className="text-[10px] tracking-[0.5em] uppercase" style={{ color: c.tagText }}>{feature.tag}</span>
                     </div>
                   </FadeIn>
                   <FadeIn delay={0.1}>
@@ -585,9 +521,6 @@ export default function HomePage() {
           <FadeIn>
             <div className="text-center mb-10">
               <div className="flex items-center justify-center gap-3 mb-6">
-                <div className="h-px w-12" style={{ background: `linear-gradient(to right, transparent, ${c.goldLine})` }} />
-                <span className="text-[10px] tracking-[0.5em] uppercase" style={{ color: c.tagText }}>Ni Haixia · Philosophy</span>
-                <div className="h-px w-12" style={{ background: `linear-gradient(to left, transparent, ${c.goldLine})` }} />
               </div>
               <h2 className={`grad-text ${theme === 'dark' ? 'grad-text-dark' : 'grad-text-light'} font-bold mb-5 tracking-tight`}
                 style={{ fontSize: 'clamp(32px, 4vw, 48px)' }}>
@@ -647,9 +580,6 @@ export default function HomePage() {
           <FadeIn>
             <div className="text-center mb-10">
               <div className="flex items-center justify-center gap-3 mb-6">
-                <div className="h-px w-12" style={{ background: `linear-gradient(to right, transparent, ${c.goldLine})` }} />
-                <span className="text-[10px] tracking-[0.5em] uppercase" style={{ color: c.tagText }}>Master · 1953 – 2012</span>
-                <div className="h-px w-12" style={{ background: `linear-gradient(to left, transparent, ${c.goldLine})` }} />
               </div>
               <h2 className={`grad-text ${theme === 'dark' ? 'grad-text-dark' : 'grad-text-light'} font-bold mb-6 tracking-tight`}
                 style={{ fontSize: 'clamp(32px, 4vw, 48px)' }}>
@@ -672,8 +602,8 @@ export default function HomePage() {
                   { label: 'Truyền thừa', value: 'Tử Vi Đẩu Số', sub: 'Đông y Kinh phương · Kinh Dịch' },
                 ].map(item => (
                   <div key={item.label} className="text-center rounded-xl px-4 py-3"
-                    style={{ border: `1px solid ${c.niDivider}`, background: 'rgba(255,255,255,0.02)' }}>
-                    <div className="text-[10px] tracking-[0.3em] mb-1" style={{ color: c.textFaint }}>{item.label}</div>
+                    style={{ border: `1px solid ${c.niDivider}`, background: 'var(--t-card)' }}>
+                    <div className="text-[13px] mb-1" style={{ color: c.textFaint }}>{item.label}</div>
                     <div className="text-2xl font-semibold mb-0.5" style={{ color: c.goldSolid }}>{item.value}</div>
                     <div className="text-[11px]" style={{ color: c.textMuted }}>{item.sub}</div>
                   </div>
@@ -742,7 +672,6 @@ export default function HomePage() {
 
       <section className="relative z-10 py-40 px-6 text-center" style={{ background: c.altSection }}>
         <FadeIn>
-          <p className="text-[10px] tracking-[0.6em] uppercase mb-6" style={{ color: c.tagText }}>Bắt đầu hành trình lá số của bạn</p>
           <h2 className={`grad-text ${theme === 'dark' ? 'grad-text-dark' : 'grad-text-light'} font-bold mb-8 tracking-tight leading-tight`}
             style={{ fontSize: 'clamp(32px, 5vw, 60px)' }}>
             Lá số Tử Vi của bạn<br />đang chờ được luận giải

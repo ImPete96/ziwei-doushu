@@ -6,39 +6,40 @@
 :root {
   /* 字体 */
   /* Font Latin đứng trước để dấu tiếng Việt lấy từ font Latin; font CJK làm fallback cho nguyên văn chữ Hán */
-  --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', 'Noto Sans', Arial, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'Noto Sans CJK SC', 'Noto Sans SC', sans-serif;
+  --font: var(--font-body), -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', 'Noto Sans', Arial, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'Noto Sans CJK SC', 'Noto Sans SC', sans-serif;
+  --font-display: var(--font-alegreya), Georgia, serif;
   --font-mono: 'SF Mono', 'Menlo', 'Noto Sans Mono', 'Consolas', monospace;
 
   /* 背景层级 */
-  --bg-0: #FAFAF9;
-  --bg-1: #F4F3EF;
-  --bg-2: #ECEAE4;
+  --bg-0: #EDEFEA;
+  --bg-1: #E3E6E0;
+  --bg-2: #D8DCD5;
   --bg-inv: #0D0D0B;
 
   /* 文字层级 */
-  --tx-0: #0D0D0B;
-  --tx-1: #1A1A18;
-  --tx-2: #4A4A45;
-  --tx-3: #6b6b63;  /* 5.14, trước đây #8A8A82 = 3.33 */
+  --tx-0: #141A2B;
+  --tx-1: #1E2638;
+  --tx-2: #3E4760;
+  --tx-3: #5B6378;  /* 5.14, trước đây #8A8A82 = 3.33 */
   --tx-inv: #F0EDE8;
   --tx-inv2: rgba(240,237,232,0.65);
 
   /* 唯一强调色：墨金 */
-  --ac:     #8a6a12;  /* 4.84 trên nền sáng, trước đây #B8922A = 2.80 */
-  --ac-dim: #7A5F1A;
-  --ac-bg:  rgba(184,146,42,0.07);
-  --ac-bdr: rgba(184,146,42,0.22);
+  --ac:     #A3271C;  /* chu sa, 6.33 trên nền giấy */
+  --ac-dim: #7E1D15;
+  --ac-bg:  rgba(163,39,28,0.07);
+  --ac-bdr: rgba(163,39,28,0.30);
 
   /* 四化语义色（仅用于命盘数据，不用于UI装饰） */
-  --lu:   #2D7A4A;
-  --quan: #1A56A8;
-  --ke:   #8A7018;
-  --ji:   #A83228;
+  --lu:   #2E6B57;
+  --quan: #2B3A6B;
+  --ke:   #7A5A10;
+  --ji:   #A3271C;
 
   /* 边框 */
-  --bdr:      rgba(0,0,0,0.07);
-  --bdr-med:  rgba(0,0,0,0.11);
-  --bdr-heavy:rgba(0,0,0,0.18);
+  --bdr:      rgba(43,58,107,0.10);
+  --bdr-med:  rgba(43,58,107,0.18);
+  --bdr-heavy:rgba(43,58,107,0.28);
 
   /* 阴影 */
   --sh-xs: 0 1px 2px rgba(0,0,0,0.05);
@@ -47,8 +48,8 @@
   --sh-lg: 0 12px 40px rgba(0,0,0,0.10), 0 4px 12px rgba(0,0,0,0.06);
 
   /* 卡片/内容块背景 */
-  --bg-card: #FFFFFF;
-  --bg-page: #fbf6e8;
+  --bg-card: #F6F7F3;
+  --bg-page: #EDEFEA;
 
   /* 圆角 */
   --r-xs:  4px;
@@ -61,26 +62,26 @@
 
 /* ─── 暗色模式 Token 覆盖 ──────────────────────────────── */
 [data-theme="dark"] {
-  --bg-0: #020810;
-  --bg-1: #0a1020;
-  --bg-2: #141e30;
+  --bg-0: #141A2E;
+  --bg-1: #1B2340;
+  --bg-2: #24305A;
   --bg-inv: #f0ede8;
 
-  --tx-0: #e8eef6;
-  --tx-1: #dce4f0;
-  --tx-2: #9db0d0;
-  --tx-3: #8392ad;
+  --tx-0: #EEF0F6;
+  --tx-1: #E2E6F0;
+  --tx-2: #B9C0D6;
+  --tx-3: #9AA3BF;
   --tx-inv: #0d0d0b;
   --tx-inv2: rgba(13,13,11,0.65);
 
-  --ac:     #d4a843;
-  --ac-dim: #e8c060;
-  --ac-bg:  rgba(212,168,67,0.10);
-  --ac-bdr: rgba(212,168,67,0.25);
+  --ac:     #E8836F;
+  --ac-dim: #F2A08F;
+  --ac-bg:  rgba(232,131,111,0.10);
+  --ac-bdr: rgba(232,131,111,0.35);
 
-  --bdr:      rgba(255,255,255,0.07);
-  --bdr-med:  rgba(255,255,255,0.12);
-  --bdr-heavy:rgba(255,255,255,0.20);
+  --bdr:      rgba(226,230,240,0.08);
+  --bdr-med:  rgba(226,230,240,0.14);
+  --bdr-heavy:rgba(226,230,240,0.22);
 
   --sh-xs: 0 1px 2px rgba(0,0,0,0.3);
   --sh-sm: 0 2px 8px rgba(0,0,0,0.4), 0 1px 3px rgba(0,0,0,0.3);
@@ -88,7 +89,7 @@
   --sh-lg: 0 12px 40px rgba(0,0,0,0.6), 0 4px 12px rgba(0,0,0,0.4);
 
   --bg-card: rgba(255,255,255,0.04);
-  --bg-page: #020810;
+  --bg-page: #141A2E;
 }
 
 /* ─── Token --t-* cho trang lá số ───────────────────────────
@@ -98,55 +99,56 @@
  */
 :root {
   --t-bg: var(--bg-0);
-  --t-surface: var(--bg-1);
-  --t-card: var(--bg-card);
-  --t-border: var(--bdr-heavy);
-  --t-border-acc: rgba(122,95,26,0.45);
+  --t-surface: #E3E6E0;
+  --t-card: #F6F7F3;
+  --t-border: rgba(43,58,107,0.28);
+  --t-border-acc: rgba(163,39,28,0.45);
   --t-text: var(--tx-1);
   --t-text1: var(--tx-1);
   --t-text2: var(--tx-2);
-  --t-faint: #5f6470;  /* 5.67 */
-  --t-gold: #7a5f1a;   /* 5.78 */
+  --t-faint: #5B6378;  /* 5.67 */
+  --t-gold: #A3271C;   /* tên giữ từ bản gốc; nay là màu nhấn chu sa, 6.33 */
   /* Bàn lá số: màu chữ đặc (không dùng alpha/opacity cho chữ), đều ≥ 4.5:1 */
-  --t-star-bright: #92400e; /* chính tinh miếu vượng */
-  --t-star: #b45309;
-  --t-dim: #a16207;         /* chính tinh hãm */
-  --t-lucky: #0369a1;       /* cát tinh */
-  --t-sha: #b91c1c;         /* sát tinh */
-  --t-shen: #0369a1;        /* Thân cung */
-  --t-purple: #7e22ce;      /* đại hạn */
-  --t-sel: #2563eb;         /* ô chọn, đường Tam phương */
-  --t-lu: #2d7a4a;  --t-quan: #1a56a8;  --t-ke: #854d0e;  --t-ji: #a83228;
+  --t-star-bright: #8F1F17; /* chính tinh miếu vượng */
+  --t-star: #2B3A6B;
+  --t-dim: #6E6A60;         /* chính tinh hãm */
+  --t-lucky: #2E6B57;       /* cát tinh */
+  --t-sha: #9A3412;         /* sát tinh */
+  --t-shen: #2B3A6B;        /* Thân cung */
+  --t-purple: #3F3C8F;      /* đại hạn */
+  --t-sel: #2B3A6B;         /* ô chọn, đường Tam phương */
+  --t-lu: #2E6B57;  --t-quan: #2B3A6B;  --t-ke: #7A5A10;  --t-ji: #A3271C;
 }
 [data-theme="dark"] {
-  --t-bg: #020810;
-  --t-surface: #0a1020;
+  --t-bg: #141A2E;
+  --t-surface: #1B2340;
   --t-card: rgba(255,255,255,0.04);
-  --t-border: rgba(255,255,255,0.14);
-  --t-border-acc: rgba(212,168,67,0.4);
-  --t-text: #e8eef6;
-  --t-text1: #e8eef6;
-  --t-text2: #c3cfe2;
-  --t-faint: #9db0d0;  /* 9.14 */
-  --t-gold: #d4a843;   /* 9.07 */
-  --t-star-bright: #fcd34d;
-  --t-star: #f59e0b;
-  --t-dim: #c98a2e;         /* 6.85 */
-  --t-lucky: #38bdf8;       /* 9.38 */
-  --t-sha: #f87171;         /* 7.27 */
-  --t-shen: #38bdf8;
-  --t-purple: #c084fc;      /* 7.61 */
-  --t-sel: #5b8def;         /* 6.22 */
-  --t-lu: #4ade80;  --t-quan: #60a5fa;  --t-ke: #facc15;  --t-ji: #f87171;
+  --t-border: rgba(226,230,240,0.16);
+  --t-border-acc: rgba(232,131,111,0.5);
+  --t-text: #E2E6F0;
+  --t-text1: #E2E6F0;
+  --t-text2: #C3C9DC;
+  --t-faint: #9AA3BF;  /* 9.14 */
+  --t-gold: #E8836F;   /* chu sa sáng, 6.50 trên nền chàm đêm */
+  --t-star-bright: #F6B4A5;
+  --t-star: #A9BCF5;
+  --t-dim: #B8A98A;         /* 6.85 */
+  --t-lucky: #7FC9B1;       /* 9.38 */
+  --t-sha: #F0956B;         /* 7.27 */
+  --t-shen: #8FB8F0;
+  --t-purple: #B6B3F5;      /* 7.61 */
+  --t-sel: #8FA8F0;         /* 6.22 */
+  --t-lu: #7FC9B1;  --t-quan: #8FB8F0;  --t-ke: #E5C66B;  --t-ji: #F07E6B;
 }
 
 /* Khung kính mờ dùng cho InsightPanel, PatternsCard, FamousPersonCard (cũng chưa từng định nghĩa) */
 .card-glass {
   background: var(--t-card);
   border: 1px solid var(--t-border);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
 }
+
+/* Tiêu đề dùng Alegreya: chữ có nét bút như sách in, đặt cạnh chữ thường Be Vietnam Pro */
+h1, h2, h3, .font-display { font-family: var(--font-display); letter-spacing: 0; }
 
 /* Liên kết "bỏ qua menu": ẩn cho tới khi được focus bằng bàn phím */
 .skip-link {
@@ -386,11 +388,10 @@ body {
   color: transparent;
   display: inline-block;
 }
-.grad-text-dark {
-  background-image: linear-gradient(160deg, #c8993a 0%, #f0d070 40%, #c8993a 70%, #f0c755 100%);
-}
+/* Bỏ chữ ánh kim gradient (dấu hiệu "kiểu AI"): tiêu đề dùng màu mực đặc của theme */
+.grad-text-dark,
 .grad-text-light {
-  background-image: linear-gradient(160deg, #6a4206 0%, #9a6a10 40%, #6a4206 70%, #885010 100%);
+  background-image: linear-gradient(var(--t-text), var(--t-text));
 }
 
 /* ─── 命盘工作台响应式 ─────────────────────────────────── */

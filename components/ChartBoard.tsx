@@ -161,14 +161,15 @@ export default function ChartBoard({ chart, onStarSelect, onPalaceSelect, onSiHu
 
       {/* 4x4 命盘网格（含 SVG 叠加层） */}
       <div
-        className="grid rounded-xl overflow-hidden relative"
+        className="grid overflow-hidden relative"
         style={{
           gridTemplateColumns: 'repeat(4, 1fr)',
           gridTemplateRows: 'repeat(4, auto)',
           gap: '1px',
           background: 'var(--t-border)',
-          border: '1px solid var(--t-border)',
-          boxShadow: '0 4px 32px rgba(0,0,0,0.15)',
+          // Khung mực chàm hai lớp như lá số in: viền đậm ngoài + đường kẻ mảnh giữa các cung
+          border: '3px double var(--t-star)',
+          borderRadius: 4,
         }}
       >
         {ANIMATION_ORDER.map((branch, i) => {
@@ -225,10 +226,18 @@ export default function ChartBoard({ chart, onStarSelect, onPalaceSelect, onSiHu
               ? `${o.day}/${o.month}/${o.year}${b.unknownTime ? '' : ` · ${String(o.clockHour).padStart(2, '0')}:${String(o.clockMinute).padStart(2, '0')}`}`
               : `${b.day}/${b.month}/${b.year}`;
             return (
-              <div className="text-center text-[13px] leading-relaxed space-y-0.5" style={{ color: 'var(--t-text2)' }}>
+              <div className="flex flex-col items-center text-center text-[13px] leading-relaxed gap-0.5" style={{ color: 'var(--t-text2)' }}>
+                {/* Con dấu chu sa ghi can chi năm sinh: điểm nhấn duy nhất của bàn lá số */}
+                <div
+                  aria-label={`Năm sinh ${viStem(L.yearStem)} ${viBranch(L.yearBranch)}`}
+                  className="font-display font-extrabold leading-[1.05] flex flex-col items-center justify-center mb-1.5"
+                  style={{ width: 64, height: 64, fontSize: 20, color: 'var(--t-gold)', border: '2.5px solid var(--t-gold)', borderRadius: 6, transform: 'rotate(-3deg)', textShadow: 'none' }}
+                >
+                  <span>{viStem(L.yearStem)}</span>
+                  <span>{viBranch(L.yearBranch)}</span>
+                </div>
                 <div className="text-[14px] font-medium" style={{ color: 'var(--t-text)' }}>
                   {chart.yinYangGender ? viTerm(chart.yinYangGender) : (b.gender === 'male' ? 'Nam' : 'Nữ')}
-                  {' · '}{viStem(L.yearStem)} {viBranch(L.yearBranch)}
                 </div>
                 <div>Nạp âm <span style={{ color: 'var(--t-gold)' }}>{nayinVi(L.yearStem, L.yearBranch)}</span></div>
                 <div>

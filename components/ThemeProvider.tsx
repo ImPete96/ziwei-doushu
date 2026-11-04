@@ -20,7 +20,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     let saved: string | null = null;
     try { saved = localStorage.getItem('ziwei-theme'); } catch { /* bộ nhớ trình duyệt bị chặn */ }
     const attr = document.documentElement.getAttribute('data-theme');
-    const next = saved === 'light' || saved === 'dark' ? saved : attr === 'light' ? 'light' : 'dark';
+    const next = saved === 'light' || saved === 'dark' ? saved : attr === 'dark' ? 'dark' : 'light';
     setTheme(next);
   }, []);
 
