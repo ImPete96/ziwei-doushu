@@ -251,7 +251,7 @@ function FeatureVisual({ index, colors: c }: { index: number; colors: ReturnType
           <div className="text-[11px] tracking-widest mb-2 transition-colors duration-300"
             style={{ color: c.textFaint }}>Tứ Hóa phi tinh</div>
           <div className="flex gap-2 flex-wrap">
-            {[['Hóa Lộc', 'rgba(52,211,153,0.7)'], ['Hóa Quyền', 'rgba(96,165,250,0.7)'], ['Hóa Khoa', 'rgba(250,204,21,0.7)'], ['Hóa Kỵ', 'rgba(248,113,113,0.7)']].map(([label, color]) => (
+            {[['Hóa Lộc', 'var(--t-lu)'], ['Hóa Quyền', 'var(--t-quan)'], ['Hóa Khoa', 'var(--t-ke)'], ['Hóa Kỵ', 'var(--t-ji)']].map(([label, color]) => (
               <motion.button key={label}
                 onClick={() => setSel(sel === label ? null : label)}
                 whileHover={{ scale: 1.08 }} whileTap={{ scale: 0.95 }}
@@ -329,14 +329,14 @@ function FeatureVisual({ index, colors: c }: { index: number; colors: ReturnType
             transition={{ delay: i * 0.12 }}
             className="flex items-center gap-3 px-3 py-2.5 rounded-lg"
             style={{
-              border: `1px solid ${p.ok ? 'rgba(96,165,250,0.25)' : 'rgba(251,146,60,0.25)'}`,
-              background: p.ok ? 'rgba(96,165,250,0.05)' : 'rgba(251,146,60,0.05)',
+              border: `1px solid ${p.ok ? 'color-mix(in srgb, var(--t-sel) 25%, transparent)' : 'color-mix(in srgb, var(--t-sha) 30%, transparent)'}`,
+              background: p.ok ? 'color-mix(in srgb, var(--t-sel) 5%, transparent)' : 'color-mix(in srgb, var(--t-sha) 5%, transparent)',
             }}>
             <div className="w-1.5 h-1.5 rounded-full flex-shrink-0"
-              style={{ background: p.ok ? 'rgba(96,165,250,0.6)' : 'rgba(251,146,60,0.6)' }} />
+              style={{ background: p.ok ? 'var(--t-sel)' : 'var(--t-sha)' }} />
             <div>
               <div className="text-[11px] font-medium"
-                style={{ color: p.ok ? 'rgba(147,197,253,0.8)' : 'rgba(253,186,116,0.8)' }}>{p.name}</div>
+                style={{ color: p.ok ? 'var(--t-lucky)' : 'var(--t-sha)' }}>{p.name}</div>
               <div className="text-[10px]" style={{ color: c.textMuted }}>{p.desc}</div>
             </div>
           </motion.div>
@@ -359,8 +359,6 @@ export default function HomePage() {
 
   const heroRef = useRef(null);
   const { scrollYProgress } = useScroll({ target: heroRef, offset: ['start start', 'end start'] });
-  const heroY = useTransform(scrollYProgress, [0, 1], ['0%', '28%']);
-  const heroOpacity = useTransform(scrollYProgress, [0, 0.55], [1, 0]);
 
   // 把 body / html 背景同步到 home 主题色，消除半透明 nav 透出 #fafaf9 的色差
   // useLayoutEffect 保证在浏览器绘制前同步更新，避免与根 div 的 transition 不同步
@@ -381,9 +379,9 @@ export default function HomePage() {
 
       {/* ══ HERO ══════════════════════════════════════════ */}
       <section ref={heroRef} className="relative min-h-[82svh] lg:min-h-[92vh] flex flex-col items-center justify-center px-6 z-10 pb-24 pt-10">
-        <motion.div style={{ y: heroY, opacity: heroOpacity, maxWidth: '960px' }} className="text-center w-full mx-auto mt-10">
+        <div style={{ maxWidth: '960px' }} className="text-center w-full mx-auto mt-10">
           {/* Một lần hiện duy nhất khi tải trang; không nhãn trang trí, không chữ gradient */}
-          <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}
+          <motion.div initial={false} animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, ease: [0.25, 0.1, 0.25, 1] }}>
             <h1 className="font-bold leading-none mb-6" style={{ fontSize: 'clamp(48px, 9vw, 116px)', color: c.textPrimary }}>
               Lá Số Tử Vi
@@ -395,7 +393,7 @@ export default function HomePage() {
           </motion.div>
 
           {/* CTA */}
-          <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}
+          <motion.div initial={false} animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.85 }}
             className="flex flex-col items-center gap-4">
             <motion.button
@@ -408,12 +406,12 @@ export default function HomePage() {
           </motion.div>
 
           {/* 十四主星 */}
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}
+          <motion.div initial={false} animate={{ opacity: 1 }}
             transition={{ delay: 1.05, duration: 0.8 }}
             className="mt-12 grid grid-cols-4 sm:grid-cols-7 gap-1.5 max-w-[720px] mx-auto">
             {STARS.map((star, i) => (
               <motion.div key={star.name}
-                initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }}
+                initial={false} animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: 1.05 + i * 0.03, duration: 0.35 }}
                 className="flex items-center justify-center px-2 py-1 rounded-full whitespace-nowrap"
                 style={{ background: c.starBg, border: `1px solid ${c.starBorder}` }}>
@@ -421,7 +419,7 @@ export default function HomePage() {
               </motion.div>
             ))}
           </motion.div>
-        </motion.div>
+        </div>
 
       </section>
 
@@ -535,8 +533,8 @@ export default function HomePage() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-4">
             {[
               { glyph: 'Thiên', label: 'Vận mệnh tiên thiên', pct: '⅓', color: c.goldSolid, borderColor: c.goldLine, desc: 'Điều Tử Vi Đẩu Số hé lộ là cách cục lá số tiên thiên của một người — sự bố trí tinh diệu, Ngũ hành cục, chính tinh cung Mệnh do thời điểm sinh quyết định. Đó chỉ là một phần ba vận mệnh, là nền của đời người chứ không phải toàn cảnh.', sub: 'Lá số · Tinh diệu · Ngũ hành' },
-              { glyph: 'Địa', label: 'Môi trường địa lý', pct: '⅓', color: 'rgba(96,165,250,0.9)', borderColor: 'rgba(96,165,250,0.3)', desc: 'Môi trường địa lý, thành phố, quốc gia, phong thủy nơi bạn sống, cho đến gia cảnh và cấu trúc xã hội, cùng tạo nên phương diện thứ hai của vận mệnh. Cùng một lá số, sinh ở nơi khác nhau, cơ duyên có thể khác nhau một trời một vực.', sub: 'Vùng đất · Phong thủy · Môi trường' },
-              { glyph: 'Nhân', label: 'Lòng người, ý niệm', pct: '⅓', color: 'rgba(100,216,139,0.9)', borderColor: 'rgba(100,216,139,0.3)', desc: 'Ý chí, tâm thái, lựa chọn và hành động của mỗi người mới là sức mạnh chủ động nhất để thay đổi vận mệnh. Nghê sư nhấn mạnh: hiểu lá số là để sống tốt hơn, chứ không phải ngồi chờ số phận an bài. Tự tinh tấn là cách phá cục mạnh nhất.', sub: 'Ý chí · Lựa chọn · Hành động' },
+              { glyph: 'Địa', label: 'Môi trường địa lý', pct: '⅓', color: 'var(--t-star)', borderColor: c.cardBorder, desc: 'Môi trường địa lý, thành phố, quốc gia, phong thủy nơi bạn sống, cho đến gia cảnh và cấu trúc xã hội, cùng tạo nên phương diện thứ hai của vận mệnh. Cùng một lá số, sinh ở nơi khác nhau, cơ duyên có thể khác nhau một trời một vực.', sub: 'Vùng đất · Phong thủy · Môi trường' },
+              { glyph: 'Nhân', label: 'Lòng người, ý niệm', pct: '⅓', color: 'var(--t-lucky)', borderColor: c.cardBorder, desc: 'Ý chí, tâm thái, lựa chọn và hành động của mỗi người mới là sức mạnh chủ động nhất để thay đổi vận mệnh. Nghê sư nhấn mạnh: hiểu lá số là để sống tốt hơn, chứ không phải ngồi chờ số phận an bài. Tự tinh tấn là cách phá cục mạnh nhất.', sub: 'Ý chí · Lựa chọn · Hành động' },
             ].map((item, i) => (
               <FadeIn key={item.glyph} delay={0.1 + i * 0.12}>
                 <motion.div whileHover={{ y: -4 }} transition={{ duration: 0.1 }}
@@ -546,7 +544,6 @@ export default function HomePage() {
                     <div className="text-4xl font-bold leading-none" style={{ color: item.color }}>{item.glyph}</div>
                     <div className="text-right">
                       <div className="text-2xl font-bold" style={{ color: item.color }}>{item.pct}</div>
-                      <div className="text-[9px] mt-0.5 tracking-widest" style={{ color: c.textMuted }}>of life</div>
                     </div>
                   </div>
                   <div className="mb-3">
@@ -683,34 +680,22 @@ export default function HomePage() {
           <motion.button
             whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}
             onClick={() => router.push('/chart')}
-            className="px-14 py-4 font-semibold text-base tracking-widest rounded-full"
+            className="px-10 py-3.5 font-semibold text-base rounded-md"
             style={{ background: c.ctaBg, color: c.ctaText }}>
             Lập lá số miễn phí
           </motion.button>
           <div className="mt-4 flex flex-wrap gap-3 justify-center">
             <motion.a
               href="/knowledge"
-              whileHover={{ scale: 1.02 }}
-              className="text-xs tracking-[0.2em] inline-flex items-center gap-2 px-4 py-2 rounded-full"
-              style={{
-                color: c.goldSolid,
-                border: `1px solid ${c.goldLine}`,
-                background: 'transparent',
-                textDecoration: 'none',
-              }}>
-              ✦ Kho tri thức Tử Vi Đẩu Số →
+              className="text-[15px] underline underline-offset-4"
+              style={{ color: c.goldSolid }}>
+              Kho kiến thức 14 chính tinh
             </motion.a>
             <motion.a
               href="/library"
-              whileHover={{ scale: 1.02 }}
-              className="text-xs tracking-[0.2em] inline-flex items-center gap-2 px-4 py-2 rounded-full"
-              style={{
-                color: c.goldSolid,
-                border: `1px solid ${c.goldLine}`,
-                background: 'transparent',
-                textDecoration: 'none',
-              }}>
-              📜 Thư viện cổ thư →
+              className="text-[15px] underline underline-offset-4"
+              style={{ color: c.goldSolid }}>
+              Thư viện cổ thư
             </motion.a>
           </div>
         </FadeIn>

@@ -102,10 +102,10 @@ export default function TimeNav({
           className="relative flex-1 flex items-center justify-center rounded-lg py-1.5 gap-1 transition-all duration-200"
           style={{
             background: view === 'liunian'
-              ? 'rgba(212,168,67,0.12)'
+              ? 'var(--ac-bg)'
               : 'transparent',
             border: view === 'liunian'
-              ? '1px solid rgba(212,168,67,0.25)'
+              ? '1px solid var(--ac-bdr)'
               : '1px solid transparent',
           }}
         >
@@ -186,9 +186,9 @@ function TabButton({
       aria-pressed={active}
       className="flex-1 py-1.5 px-1 text-[13px] leading-tight font-medium rounded-lg transition-all duration-200"
       style={{
-        background: active ? 'rgba(212,168,67,0.12)' : 'transparent',
+        background: active ? 'var(--ac-bg)' : 'transparent',
         color: active ? 'var(--t-gold)' : 'var(--t-faint)',
-        border: active ? '1px solid rgba(212,168,67,0.25)' : '1px solid transparent',
+        border: active ? '1px solid var(--ac-bdr)' : '1px solid transparent',
       }}
     >
       {children}

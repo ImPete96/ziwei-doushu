@@ -193,14 +193,14 @@ export default function BirthForm({ onSubmit, loading, initialData, onFormSave, 
   const inputBorder = isDark ? 'rgba(255,255,255,0.18)' : 'rgba(200,160,60,0.25)';
   // 输入文字提亮：从 #c8d8f0 → #e8eef8
   const inputClr = isDark ? '#e8eef8' : '#2a1a00';
-  const focusBorder = isDark ? 'rgba(212,168,67,0.5)' : 'rgba(180,120,20,0.5)';
+  const focusBorder = isDark ? 'var(--t-gold)' : 'rgba(180,120,20,0.5)';
   const errorClr = isDark ? '#f87171' : '#dc2626';
   const panelBg = isDark ? 'rgba(255,255,255,0.03)' : 'rgba(255,250,235,0.7)';
   const panelBorder = isDark ? 'rgba(255,255,255,0.07)' : 'rgba(200,160,60,0.2)';
-  const goldText = isDark ? '#d4a843' : '#7a5008';
-  const summaryBg = isDark ? 'rgba(37,99,235,0.12)' : 'rgba(37,99,235,0.07)';
-  const summaryBorder = isDark ? 'rgba(37,99,235,0.35)' : 'rgba(37,99,235,0.25)';
-  const summaryClr = isDark ? 'rgba(147,197,253,0.9)' : 'rgba(37,99,235,0.85)';
+  const goldText = isDark ? 'var(--t-gold)' : '#7a5008';
+  const summaryBg = isDark ? 'color-mix(in srgb, var(--t-sel) 12%, transparent)' : 'color-mix(in srgb, var(--t-sel) 7%, transparent)';
+  const summaryBorder = isDark ? 'color-mix(in srgb, var(--t-sel) 35%, transparent)' : 'color-mix(in srgb, var(--t-sel) 25%, transparent)';
+  const summaryClr = isDark ? 'rgba(147,197,253,0.9)' : 'var(--t-sel)';
 
   const inputStyle = {
     background: inputBg,
@@ -254,7 +254,7 @@ export default function BirthForm({ onSubmit, loading, initialData, onFormSave, 
         {steps.map((done, i) => (
           <motion.div
             key={i}
-            animate={{ background: done ? (isDark ? '#d4a843' : '#b07820') : (isDark ? 'rgba(255,255,255,0.08)' : 'rgba(200,160,60,0.15)') }}
+            animate={{ background: done ? (isDark ? 'var(--t-gold)' : '#b07820') : (isDark ? 'rgba(255,255,255,0.08)' : 'rgba(200,160,60,0.15)') }}
             transition={{ duration: 0.3 }}
             style={{ flex: 1, height: '2px', borderRadius: '2px' }}
           />
@@ -382,7 +382,7 @@ export default function BirthForm({ onSubmit, loading, initialData, onFormSave, 
                   fontSize: '12px',
                   fontWeight: 500,
                   border: `1px solid ${active ? focusBorder : inputBorder}`,
-                  background: active ? (isDark ? 'rgba(212,168,67,0.1)' : 'rgba(180,120,20,0.08)') : inputBg,
+                  background: active ? (isDark ? 'var(--ac-bg)' : 'rgba(180,120,20,0.08)') : inputBg,
                   color: active ? goldText : (isDark ? 'rgba(190,205,225,0.7)' : 'rgba(100,80,40,0.5)'),
                   cursor: 'pointer',
                   transition: 'all 0.2s',
@@ -596,12 +596,12 @@ export default function BirthForm({ onSubmit, loading, initialData, onFormSave, 
           border: 'none',
           cursor: loading ? 'not-allowed' : 'pointer',
           background: loading
-            ? (isDark ? 'rgba(212,168,67,0.15)' : 'rgba(180,120,20,0.15)')
+            ? (isDark ? 'var(--ac-bdr)' : 'rgba(180,120,20,0.15)')
             : (isDark
               ? 'linear-gradient(135deg, rgba(180,130,40,0.9), rgba(240,200,80,0.9))'
               : 'linear-gradient(135deg, #9a6210, #c88020)'),
-          color: loading ? (isDark ? 'rgba(212,168,67,0.4)' : 'rgba(120,80,10,0.4)') : (isDark ? '#08080a' : '#fff8e8'),
-          boxShadow: loading ? 'none' : (isDark ? '0 4px 20px rgba(212,168,67,0.2)' : '0 4px 16px rgba(140,100,20,0.25)'),
+          color: loading ? (isDark ? 'var(--ac-bdr)' : 'rgba(120,80,10,0.4)') : (isDark ? '#08080a' : '#fff8e8'),
+          boxShadow: loading ? 'none' : (isDark ? '0 4px 20px var(--ac-bdr)' : '0 4px 16px rgba(140,100,20,0.25)'),
           transition: 'all 0.2s',
         }}
       >

@@ -111,7 +111,7 @@ export default async function KnowledgePage({ params }: { params: Promise<{ star
 
       {/* 顶栏 */}
       <div className="px-6 py-4 flex items-center justify-between"
-        style={{ borderBottom: '1px solid rgba(184,146,42,0.15)', background: 'var(--bg-page)' }}>
+        style={{ borderBottom: '1px solid var(--ac-bdr)', background: 'var(--bg-page)' }}>
         <Link href="/" style={{ fontSize: '12px', color: 'var(--ac)', letterSpacing: '0.06em', textDecoration: 'none' }}>
           ← Trang chủ
         </Link>
@@ -137,10 +137,10 @@ export default async function KnowledgePage({ params }: { params: Promise<{ star
 
         {/* 标题区 */}
         <header style={{ marginBottom: '36px' }}>
-          <div style={{ fontSize: '11px', color: 'var(--tx-3)', letterSpacing: '0.25em', marginBottom: '8px' }}>
+          <div style={{ fontSize: '11px', color: 'var(--tx-3)', letterSpacing: '0.02em', marginBottom: '8px' }}>
             {data.topicLabel} · Giải chi tiết theo hệ Nghê Hải Hạ
           </div>
-          <h1 style={{ fontSize: 'clamp(28px, 5vw, 44px)', fontWeight: 700, color: 'var(--tx-0)', letterSpacing: '0.02em', lineHeight: 1.2 }}>
+          <h1 style={{ fontSize: 'clamp(28px, 5vw, 44px)', fontWeight: 700, color: 'var(--tx-0)', lineHeight: 1.2 }}>
             {starVi} nhập {palaceVi}
           </h1>
           {STAR_BRIEF_SEO[star] && (
@@ -187,9 +187,9 @@ export default async function KnowledgePage({ params }: { params: Promise<{ star
         <div style={{
           margin: '40px 0 30px',
           padding: '24px',
-          background: 'linear-gradient(135deg, rgba(212,169,72,0.15) 0%, rgba(184,146,42,0.06) 100%)',
+          background: 'linear-gradient(135deg, rgba(212,169,72,0.15) 0%, var(--ac-bg) 100%)',
           borderRadius: '14px',
-          border: '1px solid rgba(184,146,42,0.3)',
+          border: '1px solid var(--ac-bdr)',
           textAlign: 'center',
         }}>
           <div style={{ fontSize: '14px', color: 'var(--tx-0)', fontWeight: 600, letterSpacing: '0.1em', marginBottom: '6px' }}>
@@ -201,14 +201,14 @@ export default async function KnowledgePage({ params }: { params: Promise<{ star
           <Link href="/chart" style={{
             display: 'inline-block',
             padding: '12px 28px',
-            background: 'linear-gradient(135deg, #d4a948 0%, #b8922a 100%)',
+            background: 'linear-gradient(135deg, var(--t-gold) 0%, var(--t-gold) 100%)',
             color: 'white',
             borderRadius: '999px',
             fontSize: '14px',
             fontWeight: 600,
             letterSpacing: '0.15em',
             textDecoration: 'none',
-            boxShadow: '0 4px 12px rgba(184,146,42,0.3)',
+            boxShadow: '0 4px 12px var(--ac-bdr)',
           }}>
             Lập lá số ngay →
           </Link>
@@ -227,7 +227,7 @@ export default async function KnowledgePage({ params }: { params: Promise<{ star
                     fontSize: '12px',
                     padding: '6px 12px',
                     background: 'var(--bg-card)',
-                    border: '1px solid rgba(184,146,42,0.25)',
+                    border: '1px solid var(--ac-bdr)',
                     borderRadius: '999px',
                     color: 'var(--tx-2)',
                     textDecoration: 'none',
@@ -251,7 +251,7 @@ export default async function KnowledgePage({ params }: { params: Promise<{ star
                   fontSize: '12px',
                   padding: '6px 12px',
                   background: 'var(--bg-card)',
-                  border: '1px solid rgba(184,146,42,0.25)',
+                  border: '1px solid var(--ac-bdr)',
                   borderRadius: '999px',
                   color: 'var(--tx-2)',
                   textDecoration: 'none',
@@ -267,8 +267,8 @@ export default async function KnowledgePage({ params }: { params: Promise<{ star
         <div style={{
           marginTop: '40px',
           padding: '16px 20px',
-          background: 'rgba(184,146,42,0.04)',
-          border: '1px dashed rgba(184,146,42,0.25)',
+          background: 'var(--ac-bg)',
+          border: '1px dashed var(--ac-bdr)',
           borderRadius: '10px',
           textAlign: 'center',
         }}>
@@ -282,7 +282,7 @@ export default async function KnowledgePage({ params }: { params: Promise<{ star
       </article>
 
       {/* 页脚 */}
-      <footer style={{ borderTop: '1px solid rgba(184,146,42,0.15)', padding: '20px 24px', textAlign: 'center', fontSize: '11px', color: 'var(--tx-3)', letterSpacing: '0.1em' }}>
+      <footer style={{ borderTop: '1px solid var(--ac-bdr)', padding: '20px 24px', textAlign: 'center', fontSize: '11px', color: 'var(--tx-3)', letterSpacing: '0.1em' }}>
         <div style={{ marginBottom: '6px' }}>Nghiên cứu Tử Vi · Theo hệ chính tông Nghê Hải Hạ · Chỉ để tham khảo học tập</div>
         <div style={{ opacity: 0.85 }}>Nền tảng không cấu thành bất kỳ lời khuyên y tế, đầu tư, pháp lý hay quyết định trọng đại nào</div>
       </footer>
@@ -300,7 +300,7 @@ function Section({ title, children, gradient, minimal }: { title: string; childr
         fontSize: '13px',
         color: 'var(--ac)',
         fontWeight: 600,
-        letterSpacing: '0.2em',
+        letterSpacing: '0.02em',
         marginBottom: '12px',
       }}>
         <span style={{ width: '4px', height: '14px', background: 'var(--ac)', borderRadius: '2px' }} />
@@ -308,9 +308,9 @@ function Section({ title, children, gradient, minimal }: { title: string; childr
       </h2>
       <div style={{
         background: gradient
-          ? 'linear-gradient(135deg, rgba(212,169,72,0.12) 0%, rgba(184,146,42,0.04) 100%)'
+          ? 'linear-gradient(135deg, rgba(212,169,72,0.12) 0%, var(--ac-bg) 100%)'
           : 'white',
-        border: '1px solid rgba(184,146,42,0.15)',
+        border: '1px solid var(--ac-bdr)',
         borderRadius: '10px',
         padding: minimal ? '14px 18px' : '20px 22px',
       }}>

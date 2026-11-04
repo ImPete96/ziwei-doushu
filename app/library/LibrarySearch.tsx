@@ -28,9 +28,9 @@ export default function LibrarySearch() {
       gap: '8px',
       padding: '6px',
       background: 'var(--bg-card)',
-      border: '1px solid rgba(184,146,42,0.3)',
+      border: '1px solid var(--ac-bdr)',
       borderRadius: '12px',
-      boxShadow: '0 4px 16px rgba(184,146,42,0.08)',
+      boxShadow: '0 4px 16px var(--ac-bg)',
     }}>
       <input
         value={q}
@@ -52,13 +52,12 @@ export default function LibrarySearch() {
         disabled={isPending || !q.trim()}
         style={{
           padding: '10px 22px',
-          borderRadius: '8px',
+          borderRadius: '6px',
           border: 'none',
-          background: 'linear-gradient(135deg, #d4a948 0%, #b8922a 100%)',
-          color: 'white',
-          fontSize: '13px',
+          background: 'var(--ac)',
+          color: 'var(--bg-0)',
+          fontSize: '14px',
           fontWeight: 600,
-          letterSpacing: '0.05em',
           whiteSpace: 'nowrap',
           cursor: q.trim() ? 'pointer' : 'not-allowed',
           opacity: q.trim() ? 1 : 0.5,

@@ -6,7 +6,7 @@ import ThemeToggle from './ThemeToggle';
 const NAV = [
   { href: '/knowledge', label: 'Kiến thức' },
   { href: '/library', label: 'Thư viện cổ thư' },
-  { href: '/library/search', label: 'Tìm kiếm' },
+  { href: '/library/search', label: 'Tra cổ thư' },
 ];
 
 /** Thanh menu chung cho mọi trang (gắn trong app/layout.tsx) */

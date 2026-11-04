@@ -255,7 +255,7 @@ export default function StarDetailPanel({ star, palaceName, onClose }: StarDetai
                 <div className="flex flex-wrap gap-1.5">
                   {desc.keywords.split('·').map(k => (
                     <span key={k} className="text-[11px] px-2 py-0.5 rounded-full"
-                      style={{ color: 'var(--t-gold)', border: '1px solid rgba(212,168,67,0.2)', background: 'rgba(212,168,67,0.06)' }}>
+                      style={{ color: 'var(--t-gold)', border: '1px solid var(--ac-bdr)', background: 'var(--ac-bg)' }}>
                       {k.trim()}
                     </span>
                   ))}
@@ -265,12 +265,12 @@ export default function StarDetailPanel({ star, palaceName, onClose }: StarDetai
 
             {/* 古书原文 */}
             {detail && (
-              <div className="rounded-xl p-3" style={{ background: 'rgba(212,168,67,0.04)', border: '1px solid rgba(212,168,67,0.12)' }}>
+              <div className="rounded-xl p-3" style={{ background: 'var(--ac-bg)', border: '1px solid var(--ac-bg)' }}>
                 <div className="text-[10px] tracking-widest mb-1.5 flex items-center gap-1" style={{ color: 'var(--t-gold)', opacity: 0.7 }}>
                   Nguyên văn cổ thư
                 </div>
                 <p lang="zh-Hans" className="text-[11px] leading-relaxed italic" style={{ color: 'var(--t-gold)', opacity: 0.8 }}>{detail.classical}</p>
-                <p lang="vi" className="text-[11px] leading-relaxed mt-1.5 pl-2" style={{ color: 'var(--t-text2)', borderLeft: '2px solid rgba(212,168,67,0.3)' }}>{detail.classicalVi}</p>
+                <p lang="vi" className="text-[11px] leading-relaxed mt-1.5 pl-2" style={{ color: 'var(--t-text2)', borderLeft: '2px solid var(--ac-bdr)' }}>{detail.classicalVi}</p>
               </div>
             )}
 

@@ -93,17 +93,17 @@ export default function PalaceCell({
         // Quầng màu nền quanh chữ: đường Tam phương đi bên dưới không cắt ngang nét chữ
         textShadow: TEXT_HALO,
         background: isCurrentDaXian
-          ? 'rgba(147,51,234,0.08)'
+          ? 'color-mix(in srgb, var(--t-purple) 8%, transparent)'
           : isSelected
-          ? 'rgba(37,99,235,0.18)'
+          ? 'color-mix(in srgb, var(--t-sel) 14%, transparent)'
           : isSanFang
-          ? 'rgba(37,99,235,0.09)'
+          ? 'color-mix(in srgb, var(--t-sel) 7%, transparent)'
           : isMingGong
-          ? 'rgba(212,168,67,0.04)'
+          ? 'color-mix(in srgb, var(--t-gold) 5%, transparent)'
           // trong suốt: ChartBoard đã tô nền ở lớp dưới, để đường Tam phương hiện ra dưới chữ
           : 'transparent',
         boxShadow: isCurrentDaXian
-          ? 'inset 3px 0 0 rgba(147,51,234,0.5)'
+          ? 'inset 3px 0 0 var(--t-purple)'
           : isSelected
           ? 'inset 0 0 0 2px var(--t-sel)'
           : isSanFang

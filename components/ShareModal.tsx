@@ -78,7 +78,7 @@ export default function ShareModal({ open, onClose, shareUrl, chart, birth, high
             {/* 顶部标题 */}
             <div style={{
               padding: '14px 18px',
-              borderBottom: '1px solid rgba(184,146,42,0.15)',
+              borderBottom: '1px solid var(--ac-bdr)',
               display: 'flex', alignItems: 'center', justifyContent: 'space-between',
             }}>
               <div style={{ fontSize: '14px', fontWeight: 600, color: '#3d2f10', letterSpacing: '0.06em' }}>
@@ -109,10 +109,10 @@ export default function ShareModal({ open, onClose, shareUrl, chart, birth, high
               <button onClick={downloadImage} disabled={downloading}
                 style={{
                   padding: '14px', borderRadius: '10px', border: 'none',
-                  background: 'linear-gradient(135deg, #d4a948 0%, #b8922a 100%)',
+                  background: 'linear-gradient(135deg, var(--t-gold) 0%, var(--t-gold) 100%)',
                   color: 'white', fontSize: '14px', fontWeight: 600, letterSpacing: '0.05em',
                   cursor: downloading ? 'not-allowed' : 'pointer',
-                  boxShadow: '0 4px 12px rgba(184,146,42,0.3)',
+                  boxShadow: '0 4px 12px var(--ac-bdr)',
                   opacity: downloading ? 0.7 : 1,
                 }}
               >
@@ -122,8 +122,8 @@ export default function ShareModal({ open, onClose, shareUrl, chart, birth, high
               <button onClick={copyLink}
                 style={{
                   padding: '14px', borderRadius: '10px',
-                  border: '1px solid rgba(184,146,42,0.4)', background: 'white',
-                  color: '#b8922a', fontSize: '14px', fontWeight: 500, letterSpacing: '0.05em',
+                  border: '1px solid var(--ac-bdr)', background: 'white',
+                  color: 'var(--t-gold)', fontSize: '14px', fontWeight: 500, letterSpacing: '0.05em',
                   cursor: 'pointer',
                 }}
               >
@@ -132,7 +132,7 @@ export default function ShareModal({ open, onClose, shareUrl, chart, birth, high
 
               <div style={{
                 fontSize: '11px', color: '#a89b7c', lineHeight: 1.7,
-                padding: '10px 12px', background: 'rgba(184,146,42,0.05)',
+                padding: '10px 12px', background: 'var(--ac-bg)',
                 borderRadius: '8px', marginTop: '4px',
               }}>
                 <div style={{ marginBottom: '4px', fontWeight: 600, color: '#8b6a14' }}>Gợi ý sử dụng:</div>

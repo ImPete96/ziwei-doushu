@@ -12,7 +12,7 @@ const CATEGORY_COLORS: Record<string, string> = {
 };
 
 export default function FamousPersonCard({ person }: { person: FamousPerson }) {
-  const catColor = CATEGORY_COLORS[person.category] ?? '#d4a843';
+  const catColor = CATEGORY_COLORS[person.category] ?? 'var(--t-gold)';
   return (
     <motion.div
       initial={{ opacity: 0, y: 12 }}

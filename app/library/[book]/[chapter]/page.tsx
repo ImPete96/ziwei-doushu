@@ -34,7 +34,7 @@ export default async function ChapterPage({ params }: { params: Promise<{ book: 
   return (
     <div style={{ background: 'var(--bg-page)', minHeight: '100vh' }}>
       <div className="px-6 py-4 flex items-center justify-between"
-        style={{ borderBottom: '1px solid rgba(184,146,42,0.15)', background: 'var(--bg-page)' }}>
+        style={{ borderBottom: '1px solid var(--ac-bdr)', background: 'var(--bg-page)' }}>
         <Link href={`/library/${book.slug}`} style={{ fontSize: '12px', color: 'var(--ac)', letterSpacing: '0.06em', textDecoration: 'none' }}>
           ← Mục lục {book.title}
         </Link>
@@ -49,10 +49,10 @@ export default async function ChapterPage({ params }: { params: Promise<{ book: 
       <article className="max-w-3xl mx-auto px-6 py-12">
         {/* 标题 */}
         <div className="text-center mb-10">
-          <div style={{ fontSize: '11px', color: 'var(--tx-3)', letterSpacing: '0.25em', marginBottom: '8px' }}>
+          <div style={{ fontSize: '11px', color: 'var(--tx-3)', letterSpacing: '0.02em', marginBottom: '8px' }}>
             {book.title} · {book.dynasty}
           </div>
-          <h1 style={{ fontSize: 'clamp(24px, 3.5vw, 36px)', fontWeight: 700, color: 'var(--tx-0)', letterSpacing: '0.04em', marginBottom: '8px' }}>
+          <h1 style={{ fontSize: 'clamp(24px, 3.5vw, 36px)', fontWeight: 700, color: 'var(--tx-0)', marginBottom: '8px' }}>
             {chapter.title}
           </h1>
           {chapter.subtitle && (
@@ -63,7 +63,7 @@ export default async function ChapterPage({ params }: { params: Promise<{ book: 
         </div>
 
         {/* 段落 */}
-        <div style={{ background: 'var(--bg-card)', borderRadius: '14px', border: '1px solid rgba(184,146,42,0.2)', padding: '32px 28px' }}>
+        <div style={{ background: 'var(--bg-card)', borderRadius: '14px', border: '1px solid var(--ac-bdr)', padding: '32px 28px' }}>
           {chapter.paragraphs.map((p, i) => (
             <div
               key={p.id}
@@ -71,7 +71,7 @@ export default async function ChapterPage({ params }: { params: Promise<{ book: 
               style={{
                 marginBottom: i === chapter.paragraphs.length - 1 ? 0 : '20px',
                 paddingBottom: i === chapter.paragraphs.length - 1 ? 0 : '20px',
-                borderBottom: i === chapter.paragraphs.length - 1 ? 'none' : '1px dashed rgba(184,146,42,0.15)',
+                borderBottom: i === chapter.paragraphs.length - 1 ? 'none' : '1px dashed var(--ac-bdr)',
                 scrollMarginTop: '80px',
               }}
             >
@@ -105,8 +105,8 @@ export default async function ChapterPage({ params }: { params: Promise<{ book: 
                   marginTop: '10px',
                   marginLeft: '36px',
                   padding: '10px 14px',
-                  background: 'rgba(184,146,42,0.06)',
-                  borderLeft: '3px solid rgba(184,146,42,0.45)',
+                  background: 'var(--ac-bg)',
+                  borderLeft: '3px solid var(--ac-bdr)',
                   borderRadius: '0 6px 6px 0',
                   fontSize: '14px',
                   color: 'var(--tx-1)',
@@ -144,13 +144,13 @@ export default async function ChapterPage({ params }: { params: Promise<{ book: 
                 flex: 1,
                 padding: '14px 18px',
                 background: 'var(--bg-card)',
-                border: '1px solid rgba(184,146,42,0.2)',
+                border: '1px solid var(--ac-bdr)',
                 borderRadius: '10px',
                 textDecoration: 'none',
                 color: 'var(--tx-0)',
               }}
             >
-              <div style={{ fontSize: '10px', color: 'var(--tx-3)', letterSpacing: '0.2em', marginBottom: '2px' }}>← Chương trước</div>
+              <div style={{ fontSize: '10px', color: 'var(--tx-3)', letterSpacing: '0.02em', marginBottom: '2px' }}>← Chương trước</div>
               <div style={{ fontSize: '13px', fontWeight: 500 }}>{book.chapters[prevIdx].title}</div>
             </Link>
           ) : <div style={{ flex: 1 }} />}
@@ -161,14 +161,14 @@ export default async function ChapterPage({ params }: { params: Promise<{ book: 
                 flex: 1,
                 padding: '14px 18px',
                 background: 'var(--bg-card)',
-                border: '1px solid rgba(184,146,42,0.2)',
+                border: '1px solid var(--ac-bdr)',
                 borderRadius: '10px',
                 textDecoration: 'none',
                 color: 'var(--tx-0)',
                 textAlign: 'right',
               }}
             >
-              <div style={{ fontSize: '10px', color: 'var(--tx-3)', letterSpacing: '0.2em', marginBottom: '2px' }}>Chương sau →</div>
+              <div style={{ fontSize: '10px', color: 'var(--tx-3)', letterSpacing: '0.02em', marginBottom: '2px' }}>Chương sau →</div>
               <div style={{ fontSize: '13px', fontWeight: 500 }}>{book.chapters[nextIdx].title}</div>
             </Link>
           ) : <div style={{ flex: 1 }} />}

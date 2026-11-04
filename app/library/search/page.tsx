@@ -17,7 +17,7 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
   return (
     <div style={{ background: 'var(--bg-page)', minHeight: '100vh' }}>
       <div className="px-6 py-4 flex items-center justify-between"
-        style={{ borderBottom: '1px solid rgba(184,146,42,0.15)', background: 'var(--bg-page)' }}>
+        style={{ borderBottom: '1px solid var(--ac-bdr)', background: 'var(--bg-page)' }}>
         <Link href="/library" style={{ fontSize: '12px', color: 'var(--ac)', letterSpacing: '0.06em', textDecoration: 'none' }}>
           ← Thư viện cổ thư
         </Link>
@@ -49,7 +49,7 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
             borderRadius: '12px',
             textAlign: 'center',
             color: 'var(--tx-2)',
-            border: '1px solid rgba(184,146,42,0.15)',
+            border: '1px solid var(--ac-bdr)',
           }}>
             <div style={{ fontSize: '40px', marginBottom: '12px', opacity: 0.4 }}>📜</div>
             {q ? (
@@ -81,7 +81,7 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
                     background: 'var(--bg-card)',
                     padding: '16px 20px',
                     borderRadius: '10px',
-                    border: '1px solid rgba(184,146,42,0.18)',
+                    border: '1px solid var(--ac-bdr)',
                     textDecoration: 'none',
                     color: 'inherit',
                     transition: 'border-color 0.15s',
@@ -112,12 +112,12 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
                       color: fromOriginal ? 'var(--tx-0)' : 'var(--tx-1)',
                       lineHeight: 1.9,
                       letterSpacing: '0.02em',
-                      ...(fromOriginal ? {} : { borderLeft: '3px solid rgba(184,146,42,0.45)', paddingLeft: '10px' }),
+                      ...(fromOriginal ? {} : { borderLeft: '3px solid var(--ac-bdr)', paddingLeft: '10px' }),
                     }}
                     dangerouslySetInnerHTML={{ __html: hit.snippet }}
                   />
                   {fromOriginal && translation && (
-                    <div lang="vi" style={{ fontSize: '13px', color: 'var(--tx-2)', lineHeight: 1.8, marginTop: '6px', borderLeft: '3px solid rgba(184,146,42,0.45)', paddingLeft: '10px' }}>
+                    <div lang="vi" style={{ fontSize: '13px', color: 'var(--tx-2)', lineHeight: 1.8, marginTop: '6px', borderLeft: '3px solid var(--ac-bdr)', paddingLeft: '10px' }}>
                       {translation}
                     </div>
                   )}
@@ -129,7 +129,7 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
       </div>
 
       <style>{`
-        mark { background: rgba(184,146,42,0.3); color: #8b6a14; padding: 0 2px; border-radius: 2px; font-weight: 600; }
+        mark { background: var(--ac-bdr); color: #8b6a14; padding: 0 2px; border-radius: 2px; font-weight: 600; }
       `}</style>
     </div>
   );

@@ -427,11 +427,10 @@ Lời khuyên cụ thể, làm được, dựa trên Tứ Hóa này.`;
                 onClick={() => handleTopicClick(t.key)}
                 aria-disabled={loading}
                 aria-pressed={isActive}
-                className={`py-1.5 px-0.5 text-[12px] leading-tight font-medium rounded-lg transition-all duration-150 whitespace-nowrap ${loading ? 'opacity-40 cursor-not-allowed' : ''}`}
+                className={`py-1.5 px-0.5 text-[13px] leading-tight font-medium whitespace-nowrap ${loading ? 'opacity-40 cursor-not-allowed' : ''}`}
                 style={{
-                  background: isActive ? 'rgba(212,168,67,0.12)' : 'transparent',
-                  border: `1px solid ${isActive ? 'rgba(212,168,67,0.3)' : 'var(--t-border)'}`,
-                  color: isActive ? 'var(--t-gold)' : 'var(--t-faint)',
+                  borderBottom: `2px solid ${isActive ? 'var(--t-gold)' : 'transparent'}`,
+                  color: isActive ? 'var(--t-gold)' : 'var(--t-text2)',
                 }}
               >
                 {t.label}
@@ -459,8 +458,8 @@ Lời khuyên cụ thể, làm được, dựa trên Tứ Hóa này.`;
                   <div
                     className="max-w-[85%] rounded-xl px-3 py-2 text-[14px] leading-relaxed"
                     style={{
-                      background: 'rgba(212,168,67,0.08)',
-                      border: '1px solid rgba(212,168,67,0.18)',
+                      background: 'var(--ac-bg)',
+                      border: '1px solid var(--ac-bdr)',
                       color: 'var(--t-gold)',
                     }}
                   >
@@ -520,7 +519,7 @@ Lời khuyên cụ thể, làm được, dựa trên Tứ Hóa này.`;
             onClick={() => analyzePalace(pendingPalace)}
             disabled={loading}
             className="px-3 py-1.5 rounded-lg text-[13px] font-medium disabled:opacity-40 disabled:cursor-not-allowed"
-            style={{ background: 'rgba(212,168,67,0.15)', border: '1px solid var(--t-border-acc)', color: 'var(--t-gold)' }}
+            style={{ background: 'var(--t-gold)', color: 'var(--t-bg)' }}
           >
             Luận cung này
           </button>
@@ -561,9 +560,8 @@ Lời khuyên cụ thể, làm được, dựa trên Tứ Hóa này.`;
               disabled={!input.trim()}
               className="px-3 py-2 rounded-lg text-[14px] font-medium transition-all disabled:opacity-30 disabled:cursor-not-allowed"
               style={{
-                background: 'rgba(212,168,67,0.15)',
-                border: '1px solid rgba(212,168,67,0.25)',
-                color: 'var(--t-gold)',
+                background: 'var(--t-gold)',
+                color: 'var(--t-bg)',
               }}
             >
               Hỏi

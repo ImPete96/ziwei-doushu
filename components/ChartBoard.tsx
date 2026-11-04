@@ -154,7 +154,7 @@ export default function ChartBoard({ chart, onStarSelect, onPalaceSelect, onSiHu
         animate={{ opacity: 1, y: 0 }}
         className="text-center mb-3"
       >
-        <h2 className="text-[17px] tracking-[0.05em] font-semibold" style={{ color: 'var(--t-gold)' }}>
+        <h2 className="font-display text-[20px] font-bold" style={{ color: 'var(--t-text)' }}>
           {chart.birthInfo.name ? `${chart.birthInfo.name} · ` : ''}Lá số Tử Vi Đẩu Số
         </h2>
       </motion.div>
@@ -266,8 +266,7 @@ export default function ChartBoard({ chart, onStarSelect, onPalaceSelect, onSiHu
           {chart.currentDaXianIndex >= 0 && (() => {
             const dx = chart.daXians[chart.currentDaXianIndex];
             return (
-              <div className="rounded-lg px-3 py-2 text-center"
-                style={{ background: 'color-mix(in srgb, var(--t-purple) 8%, transparent)', border: '1px solid color-mix(in srgb, var(--t-purple) 45%, transparent)', color: 'var(--t-purple)' }}>
+              <div className="text-center" style={{ color: 'var(--t-purple)' }}>
                 <div className="text-[12px] mb-0.5">Đại hạn hiện tại</div>
                 <div className="text-[15px] font-semibold tabular-nums">{dx.startAge}–{dx.endAge} tuổi</div>
                 <div className="text-[12px]">{viPalaceFull(dx.palaceName)}</div>
@@ -369,14 +368,13 @@ export default function ChartBoard({ chart, onStarSelect, onPalaceSelect, onSiHu
           { h: '化科', c: 'var(--t-ke)' },
           { h: '化忌', c: 'var(--t-ji)' },
         ].map(({ h, c }) => (
-          <span key={h} className="border px-2 py-0.5 rounded-full font-medium"
-            style={{ color: c, borderColor: `color-mix(in srgb, ${c} 45%, transparent)` }}>{viSihua(h)}</span>
+          <span key={h} className="inline-flex items-center gap-1.5 font-medium" style={{ color: c }}>
+            <span aria-hidden className="inline-block w-2 h-2" style={{ background: c }} />{viSihua(h)}
+          </span>
         ))}
         <span style={{ color: 'var(--t-lucky)' }}>Cát tinh</span>
         <span style={{ color: 'var(--t-sha)' }}>Sát tinh</span>
-        <span className="px-1.5 py-0.5 rounded-full" style={{ color: 'var(--t-faint)', border: '1px solid var(--t-border)' }}>
-          Bấm vào cung để xem Tam phương tứ chính
-        </span>
+        <span style={{ color: 'var(--t-faint)' }}>Bấm vào cung để xem Tam phương tứ chính</span>
         <span className="w-full text-center" style={{ color: 'var(--t-faint)' }}>
           Độ sáng: M Miếu · V Vượng · Đ Đắc · L Lợi · B Bình · Bt Bất · H Hãm
         </span>
